@@ -12,4 +12,5 @@ python-multipart>=0.0.17
 langgraph>=0.2.0
 qdrant-client>=1.12.0
 structlog>=24.4.0
+email-validator>=2.2.0
 ruff>=0.8.0

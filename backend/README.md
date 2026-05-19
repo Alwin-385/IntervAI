@@ -21,7 +21,30 @@ ruff format app
 
 ## Migrations
 
+Ensure PostgreSQL is running and `DATABASE_URL` is set in `.env`.
+
+```bash
+alembic upgrade head
+```
+
 ```bash
 alembic revision --autogenerate -m "description"
 alembic upgrade head
 ```
+
+See [docs/database.md](../docs/database.md) for schema details.
+
+## API (Phase 2)
+
+| Method | Path | Description |
+|--------|------|-------------|
+| POST | `/api/v1/users` | Create user |
+| GET | `/api/v1/users` | List users (paginated) |
+| GET | `/api/v1/users/{id}` | Get user |
+| PATCH | `/api/v1/users/{id}` | Update user |
+| DELETE | `/api/v1/users/{id}` | Delete user |
+| POST | `/api/v1/resumes` | Create resume |
+| GET | `/api/v1/resumes/user/{user_id}` | List resumes |
+| POST | `/api/v1/interview-sessions` | Create session |
+| POST | `/api/v1/weak-areas` | Create weak area |
+| POST | `/api/v1/roadmaps` | Create roadmap |
