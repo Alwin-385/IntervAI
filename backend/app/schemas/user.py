@@ -28,3 +28,11 @@ class UserResponse(UUIDSchema, TimestampSchema):
     full_name: str
     role: UserRole
     is_active: bool
+    clerk_id: str | None = None
+    avatar_url: str | None = None
+
+
+class MeResponse(UserResponse):
+    """Current authenticated user profile."""
+
+    clerk_user_id: str

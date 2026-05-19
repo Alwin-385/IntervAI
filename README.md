@@ -88,3 +88,12 @@ cd backend && ruff check app && ruff format --check app
 - [x] Health check API (`GET /api/v1/health`)
 - [x] Landing page with backend connectivity
 - [x] Docker Compose (Postgres, Redis, Qdrant, API, Celery, Frontend)
+
+## Phase 3 — Authentication
+
+- [x] Clerk on frontend (sign-in, sign-up, protected dashboard)
+- [x] Clerk JWT verification on backend
+- [x] `GET /api/v1/me` and `GET /api/me`
+- [x] User sync to PostgreSQL
+
+See [docs/auth.md](docs/auth.md) for Clerk setup.

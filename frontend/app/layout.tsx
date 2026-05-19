@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
+
+export const dynamic = "force-dynamic";
 import { Geist, Geist_Mono } from "next/font/google";
 
+import { AppClerkProvider } from "@/components/providers/clerk-provider";
 import { QueryProvider } from "@/components/providers/query-provider";
 import { env } from "@/lib/env";
 
@@ -32,7 +35,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} min-h-screen font-sans antialiased`}
       >
-        <QueryProvider>{children}</QueryProvider>
+        <AppClerkProvider>
+          <QueryProvider>{children}</QueryProvider>
+        </AppClerkProvider>
       </body>
     </html>
   );

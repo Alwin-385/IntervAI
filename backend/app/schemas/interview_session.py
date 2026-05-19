@@ -10,7 +10,6 @@ from app.schemas.common import SchemaBase, TimestampSchema, UUIDSchema
 
 
 class InterviewSessionCreate(SchemaBase):
-    user_id: UUID
     title: str = Field(min_length=1, max_length=255)
     target_role: str = Field(min_length=1, max_length=255)
     resume_id: UUID | None = None

@@ -9,7 +9,6 @@ from app.schemas.common import SchemaBase, TimestampSchema, UUIDSchema
 
 
 class WeakAreaCreate(SchemaBase):
-    user_id: UUID
     area_name: str = Field(min_length=1, max_length=255)
     category: str = Field(min_length=1, max_length=128)
     severity: WeakAreaSeverity = WeakAreaSeverity.MEDIUM

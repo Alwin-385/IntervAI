@@ -48,6 +48,12 @@ class Settings(BaseSettings):
     qdrant_url: str = "http://localhost:6333"
     qdrant_api_key: str | None = None
 
+    clerk_secret_key: str | None = None
+    clerk_jwt_issuer: str | None = Field(
+        default=None,
+        description="Clerk JWT issuer, e.g. https://your-app.clerk.accounts.dev",
+    )
+
     @property
     def cors_origins_list(self) -> list[str]:
         return [origin.strip() for origin in self.cors_origins.split(",") if origin.strip()]

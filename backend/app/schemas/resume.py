@@ -9,7 +9,6 @@ from app.schemas.common import SchemaBase, TimestampSchema, UUIDSchema
 
 
 class ResumeCreate(SchemaBase):
-    user_id: UUID
     title: str = Field(min_length=1, max_length=255)
     file_name: str = Field(min_length=1, max_length=512)
     storage_path: str = Field(min_length=1, max_length=1024)

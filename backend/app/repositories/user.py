@@ -14,6 +14,11 @@ class UserRepository(BaseRepository[User]):
         result = await self.session.execute(stmt)
         return result.scalar_one_or_none()
 
+    async def get_by_clerk_id(self, clerk_id: str) -> User | None:
+        stmt = select(User).where(User.clerk_id == clerk_id)
+        result = await self.session.execute(stmt)
+        return result.scalar_one_or_none()
+
     async def list_active(
         self,
         *,

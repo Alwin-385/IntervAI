@@ -24,10 +24,12 @@ class WeakAreaService(BaseService[WeakAreaRepository, WeakAreaResponse]):
     def _to_response(area: WeakArea) -> WeakAreaResponse:
         return WeakAreaResponse.model_validate(area)
 
-    async def create(self, payload: WeakAreaCreate) -> WeakAreaResponse:
-        if await self.user_repository.get_by_id(payload.user_id) is None:
-            raise NotFoundError("User", str(payload.user_id))
-        entity = await self.repository.create(payload.model_dump())
+    async def create(self, user_id: UUID, payload: WeakAreaCreate) -> WeakAreaResponse:
+        if await self.user_repository.get_by_id(user_id) is None:
+            raise NotFoundError("User", str(user_id))
+        entity = await self.repository.create(
+            {"user_id": user_id, **payload.model_dump()},
+        )
         return self._to_response(entity)
 
     async def get(self, area_id: UUID) -> WeakAreaResponse:

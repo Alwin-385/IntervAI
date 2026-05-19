@@ -24,10 +24,12 @@ class RoadmapService(BaseService[RoadmapRepository, RoadmapResponse]):
     def _to_response(roadmap: Roadmap) -> RoadmapResponse:
         return RoadmapResponse.model_validate(roadmap)
 
-    async def create(self, payload: RoadmapCreate) -> RoadmapResponse:
-        if await self.user_repository.get_by_id(payload.user_id) is None:
-            raise NotFoundError("User", str(payload.user_id))
-        entity = await self.repository.create(payload.model_dump())
+    async def create(self, user_id: UUID, payload: RoadmapCreate) -> RoadmapResponse:
+        if await self.user_repository.get_by_id(user_id) is None:
+            raise NotFoundError("User", str(user_id))
+        entity = await self.repository.create(
+            {"user_id": user_id, **payload.model_dump()},
+        )
         return self._to_response(entity)
 
     async def get(self, roadmap_id: UUID) -> RoadmapResponse:

@@ -10,7 +10,6 @@ from app.schemas.common import SchemaBase, TimestampSchema, UUIDSchema
 
 
 class RoadmapCreate(SchemaBase):
-    user_id: UUID
     title: str = Field(min_length=1, max_length=255)
     description: str | None = None
     status: RoadmapStatus = RoadmapStatus.DRAFT

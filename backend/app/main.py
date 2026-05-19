@@ -3,11 +3,17 @@
 from contextlib import asynccontextmanager
 from collections.abc import AsyncIterator
 
-from fastapi import FastAPI
+from typing import Annotated
+
+from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app import __version__
+from app.api.v1.endpoints.me import get_current_user_profile
 from app.api.v1.router import api_router
+from app.core.auth.dependencies import get_current_user
+from app.models.user import User
+from app.schemas.user import MeResponse
 from app.core.config import Settings, get_settings
 from app.core.database import db_manager
 from app.core.exceptions import AppException, app_exception_handler
@@ -53,6 +59,13 @@ def create_app() -> FastAPI:
     )
 
     application.include_router(api_router, prefix=settings.api_v1_prefix)
+
+    @application.get("/api/me", response_model=MeResponse, tags=["auth"])
+    async def get_me_alias(
+        current_user: Annotated[User, Depends(get_current_user)],
+    ) -> MeResponse:
+        """Alias for GET /api/v1/me (spec-compatible path)."""
+        return await get_current_user_profile(current_user)
 
     @application.get("/", tags=["root"])
     async def root() -> dict[str, str]:

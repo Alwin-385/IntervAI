@@ -39,9 +39,15 @@ class InterviewSessionService(
         if resume_id and await self.resume_repository.get_by_id(resume_id) is None:
             raise NotFoundError("Resume", str(resume_id))
 
-    async def create_session(self, payload: InterviewSessionCreate) -> InterviewSessionResponse:
-        await self._validate_refs(payload.user_id, payload.resume_id)
-        session = await self.repository.create(payload.model_dump())
+    async def create_session(
+        self,
+        user_id: UUID,
+        payload: InterviewSessionCreate,
+    ) -> InterviewSessionResponse:
+        await self._validate_refs(user_id, payload.resume_id)
+        session = await self.repository.create(
+            {"user_id": user_id, **payload.model_dump()},
+        )
         return self._to_response(session)
 
     async def get_session(self, session_id: UUID) -> InterviewSessionResponse:

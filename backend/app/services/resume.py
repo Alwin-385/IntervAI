@@ -28,9 +28,11 @@ class ResumeService(BaseService[ResumeRepository, ResumeResponse]):
         if await self.user_repository.get_by_id(user_id) is None:
             raise NotFoundError("User", str(user_id))
 
-    async def create_resume(self, payload: ResumeCreate) -> ResumeResponse:
-        await self._ensure_user(payload.user_id)
-        resume = await self.repository.create(payload.model_dump())
+    async def create_resume(self, user_id: UUID, payload: ResumeCreate) -> ResumeResponse:
+        await self._ensure_user(user_id)
+        resume = await self.repository.create(
+            {"user_id": user_id, **payload.model_dump()},
+        )
         return self._to_response(resume)
 
     async def get_resume(self, resume_id: UUID) -> ResumeResponse:

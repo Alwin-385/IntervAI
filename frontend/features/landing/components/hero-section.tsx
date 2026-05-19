@@ -1,9 +1,9 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowRight, Brain, Mic, Sparkles, Target } from "lucide-react";
+import { Brain, Mic, Sparkles, Target } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
+import { HeroCta } from "@/features/landing/components/hero-cta";
 import { env } from "@/lib/env";
 
 const features = [
@@ -62,15 +62,7 @@ export function HeroSection() {
             from mock interviews to detailed performance analytics.
           </p>
 
-          <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-            <Button size="lg" className="gap-2 px-8">
-              Get started
-              <ArrowRight className="h-4 w-4" />
-            </Button>
-            <Button size="lg" variant="outline">
-              View demo
-            </Button>
-          </div>
+          <HeroCta />
         </motion.div>
 
         <div className="mt-20 grid gap-6 md:grid-cols-3">

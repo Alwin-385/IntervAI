@@ -24,13 +24,17 @@ class User(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     __tablename__ = "users"
     __table_args__ = (
         UniqueConstraint("email", name="uq_users_email"),
+        UniqueConstraint("clerk_id", name="uq_users_clerk_id"),
         Index("ix_users_email", "email"),
+        Index("ix_users_clerk_id", "clerk_id"),
         Index("ix_users_is_active", "is_active"),
     )
 
+    clerk_id: Mapped[str | None] = mapped_column(String(255), nullable=True)
     email: Mapped[str] = mapped_column(String(320), nullable=False)
-    hashed_password: Mapped[str] = mapped_column(String(255), nullable=False)
+    hashed_password: Mapped[str | None] = mapped_column(String(255), nullable=True)
     full_name: Mapped[str] = mapped_column(String(255), nullable=False)
+    avatar_url: Mapped[str | None] = mapped_column(String(1024), nullable=True)
     role: Mapped[UserRole] = mapped_column(
         ENUM(UserRole, name="user_role", create_type=True),
         default=UserRole.CANDIDATE,
