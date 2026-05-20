@@ -97,3 +97,10 @@ cd backend && ruff check app && ruff format --check app
 - [x] User sync to PostgreSQL
 
 See [docs/auth.md](docs/auth.md) for Clerk setup.
+
+## Phase 4 — UI foundation
+
+- [x] Full marketing landing page (hero, features, workflow, demo, CTA, footer)
+- [x] Dashboard shell with sidebar + top navbar (mobile responsive)
+- [x] Premium dashboard home (stats, quick actions, placeholders)
+- [x] Framer Motion animations, skeletons, animated counters

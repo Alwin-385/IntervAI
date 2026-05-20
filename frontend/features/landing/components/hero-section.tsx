@@ -1,87 +1,104 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Brain, Mic, Sparkles, Target } from "lucide-react";
+import { Play, Sparkles, Zap } from "lucide-react";
 
 import { HeroCta } from "@/features/landing/components/hero-cta";
 import { env } from "@/lib/env";
 
-const features = [
-  {
-    icon: Brain,
-    title: "AI Mock Interviews",
-    description: "Role-specific sessions powered by LangGraph agents.",
-  },
-  {
-    icon: Target,
-    title: "Skill Evaluation",
-    description: "Structured scoring across technical and behavioral dimensions.",
-  },
-  {
-    icon: Mic,
-    title: "Speech Analysis",
-    description: "Real-time feedback on clarity, pace, and confidence.",
-  },
-];
-
 export function HeroSection() {
   return (
-    <section className="relative overflow-hidden">
+    <section className="relative min-h-[90vh] overflow-hidden">
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 bg-grid-pattern opacity-30"
+        className="pointer-events-none absolute inset-0 bg-grid-pattern opacity-25"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute left-1/2 top-0 h-[500px] w-[800px] -translate-x-1/2 rounded-full bg-gradient-to-b from-primary/25 via-accent/10 to-transparent blur-3xl"
       />
 
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -left-32 top-20 h-72 w-72 rounded-full bg-primary/20 blur-3xl"
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -right-32 top-40 h-96 w-96 rounded-full bg-accent/20 blur-3xl"
-      />
-
-      <div className="relative mx-auto max-w-6xl px-6 pb-24 pt-20 md:pt-28">
+      <div className="relative mx-auto flex max-w-6xl flex-col items-center px-6 pb-16 pt-24 md:pt-32">
         <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="mb-8 inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-sm text-primary backdrop-blur"
+        >
+          <Sparkles className="h-4 w-4" />
+          {env.appName}
+          <span className="rounded-full bg-accent/20 px-2 py-0.5 text-xs text-accent">
+            AI-native
+          </span>
+        </motion.div>
+
+        <motion.h1
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="mx-auto max-w-3xl text-center"
+          transition={{ duration: 0.6, delay: 0.1 }}
+          className="max-w-4xl text-center text-4xl font-bold leading-[1.1] tracking-tight md:text-6xl lg:text-7xl"
         >
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-border/60 bg-card/60 px-4 py-1.5 text-sm text-muted-foreground backdrop-blur">
-            <Sparkles className="h-4 w-4 text-accent" />
-            {env.appName}
-          </div>
+          Hire-ready interviews,{" "}
+          <span className="text-gradient">powered by intelligence</span>
+        </motion.h1>
 
-          <h1 className="text-4xl font-bold tracking-tight md:text-6xl md:leading-tight">
-            Ace your next interview with{" "}
-            <span className="text-gradient">AI intelligence</span>
-          </h1>
-          <p className="mt-6 text-lg text-muted-foreground md:text-xl">
-            Prepare, practice, and get evaluated with production-grade AI —
-            from mock interviews to detailed performance analytics.
-          </p>
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="mt-6 max-w-2xl text-center text-lg text-muted-foreground md:text-xl"
+        >
+          Practice role-specific mock interviews, get scored feedback, and track
+          weak areas — the modern stack recruiters expect from top candidates.
+        </motion.p>
 
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+        >
           <HeroCta />
         </motion.div>
 
-        <div className="mt-20 grid gap-6 md:grid-cols-3">
-          {features.map((feature, index) => (
-            <motion.div
-              key={feature.title}
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 + index * 0.1 }}
-              className="rounded-xl border border-border/60 bg-card/60 p-6 backdrop-blur-sm"
-            >
-              <feature.icon className="mb-4 h-8 w-8 text-primary" />
-              <h3 className="font-semibold">{feature.title}</h3>
-              <p className="mt-2 text-sm text-muted-foreground">
-                {feature.description}
-              </p>
-            </motion.div>
-          ))}
-        </div>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.96 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.7, delay: 0.45 }}
+          className="mt-16 w-full max-w-4xl"
+        >
+          <div className="glass-card glow-primary overflow-hidden rounded-2xl p-1">
+            <div className="rounded-xl bg-gradient-to-br from-card via-card to-muted/30 p-6 md:p-8">
+              <div className="flex items-center gap-2 border-b border-border/50 pb-4">
+                <span className="h-3 w-3 rounded-full bg-red-500/80" />
+                <span className="h-3 w-3 rounded-full bg-amber-500/80" />
+                <span className="h-3 w-3 rounded-full bg-emerald-500/80" />
+                <span className="ml-2 text-xs text-muted-foreground">
+                  Live interview preview
+                </span>
+              </div>
+              <div className="mt-6 space-y-4">
+                <div className="flex gap-3">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/20">
+                    <Zap className="h-4 w-4 text-primary" />
+                  </div>
+                  <div className="rounded-lg rounded-tl-none border border-border/60 bg-muted/30 px-4 py-3 text-sm">
+                    Tell me about a time you led a cross-functional project under
+                    tight deadlines.
+                  </div>
+                </div>
+                <div className="flex justify-end gap-3">
+                  <div className="max-w-[85%] rounded-lg rounded-tr-none border border-primary/30 bg-primary/10 px-4 py-3 text-sm">
+                    I aligned engineering and design on a two-week sprint…
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <Play className="h-3.5 w-3.5" />
+                  AI evaluating clarity, depth, and structure…
+                </div>
+              </div>
+            </div>
+          </div>
+        </motion.div>
       </div>
     </section>
   );
