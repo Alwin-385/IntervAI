@@ -54,6 +54,16 @@ class Settings(BaseSettings):
         description="Clerk JWT issuer, e.g. https://your-app.clerk.accounts.dev",
     )
 
+    storage_backend: Literal["local", "s3"] = "local"
+    storage_local_path: str = "./storage/resumes"
+    resume_max_size_bytes: int = 5 * 1024 * 1024  # 5 MB
+
+    s3_bucket: str | None = None
+    s3_region: str = "us-east-1"
+    s3_endpoint_url: str | None = None
+    s3_access_key_id: str | None = None
+    s3_secret_access_key: str | None = None
+
     @property
     def cors_origins_list(self) -> list[str]:
         return [origin.strip() for origin in self.cors_origins.split(",") if origin.strip()]

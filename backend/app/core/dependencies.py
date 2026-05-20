@@ -21,6 +21,7 @@ from app.services.interview_answer import InterviewAnswerService
 from app.services.interview_question import InterviewQuestionService
 from app.services.interview_session import InterviewSessionService
 from app.services.resume import ResumeService
+from app.services.resume_upload import ResumeUploadService
 from app.services.resume_analysis import ResumeAnalysisService
 from app.services.roadmap import RoadmapService
 from app.services.speech_analysis import SpeechAnalysisService
@@ -100,6 +101,12 @@ async def get_resume_service(
     user_repo: Annotated[UserRepository, Depends(get_user_repository)],
 ) -> ResumeService:
     return ResumeService(resume_repo, user_repo)
+
+
+async def get_resume_upload_service(
+    resume_repo: Annotated[ResumeRepository, Depends(get_resume_repository)],
+) -> ResumeUploadService:
+    return ResumeUploadService(resume_repo)
 
 
 async def get_resume_analysis_service(

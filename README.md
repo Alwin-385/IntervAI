@@ -104,3 +104,11 @@ See [docs/auth.md](docs/auth.md) for Clerk setup.
 - [x] Dashboard shell with sidebar + top navbar (mobile responsive)
 - [x] Premium dashboard home (stats, quick actions, placeholders)
 - [x] Framer Motion animations, skeletons, animated counters
+
+## Phase 5 — Resume upload
+
+- [x] Secure PDF upload (validation, size limits, local/S3 storage)
+- [x] Drag-and-drop UI with progress bar
+- [x] Replace resume flow
+
+See [docs/resumes.md](docs/resumes.md).

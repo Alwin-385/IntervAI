@@ -9,8 +9,11 @@ from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app import __version__
+from app.api.v1.endpoints import resumes as resumes_endpoints
 from app.api.v1.endpoints.me import get_current_user_profile
 from app.api.v1.router import api_router
+from app.schemas.common import PaginatedResponse
+from app.schemas.resume import ResumeResponse, ResumeUploadResponse
 from app.core.auth.dependencies import get_current_user
 from app.models.user import User
 from app.schemas.user import MeResponse
@@ -59,6 +62,29 @@ def create_app() -> FastAPI:
     )
 
     application.include_router(api_router, prefix=settings.api_v1_prefix)
+
+    # Spec-compatible resume API aliases (/api/resumes/*)
+    application.add_api_route(
+        "/api/resumes/upload",
+        resumes_endpoints.upload_resume,
+        methods=["POST"],
+        response_model=ResumeUploadResponse,
+        tags=["resumes"],
+    )
+    application.add_api_route(
+        "/api/resumes",
+        resumes_endpoints.list_resumes,
+        methods=["GET"],
+        response_model=PaginatedResponse[ResumeResponse],
+        tags=["resumes"],
+    )
+    application.add_api_route(
+        "/api/resumes/{resume_id}",
+        resumes_endpoints.get_resume,
+        methods=["GET"],
+        response_model=ResumeResponse,
+        tags=["resumes"],
+    )
 
     @application.get("/api/me", response_model=MeResponse, tags=["auth"])
     async def get_me_alias(
