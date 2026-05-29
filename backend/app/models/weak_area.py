@@ -6,11 +6,12 @@ import uuid
 from typing import TYPE_CHECKING
 
 from sqlalchemy import ForeignKey, Index, String, Text
-from sqlalchemy.dialects.postgresql import ENUM, UUID
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base
 from app.models.enums import WeakAreaSeverity
+from app.models.pg_enum import pg_enum
 from app.models.mixins import TimestampMixin, UUIDPrimaryKeyMixin
 
 if TYPE_CHECKING:
@@ -39,7 +40,7 @@ class WeakArea(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     area_name: Mapped[str] = mapped_column(String(255), nullable=False)
     category: Mapped[str] = mapped_column(String(128), nullable=False)
     severity: Mapped[WeakAreaSeverity] = mapped_column(
-        ENUM(WeakAreaSeverity, name="weak_area_severity", create_type=True),
+        pg_enum(WeakAreaSeverity, name="weak_area_severity", create_type=True),
         default=WeakAreaSeverity.MEDIUM,
         nullable=False,
     )

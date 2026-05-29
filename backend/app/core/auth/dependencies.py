@@ -5,7 +5,8 @@ from typing import Annotated
 from fastapi import Depends
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
-from app.core.auth.clerk import ClerkTokenPayload, verify_clerk_token
+from app.core.config import get_settings
+from app.core.auth.clerk import ClerkTokenPayload, enrich_payload_from_clerk_api, verify_clerk_token
 from app.core.dependencies import get_user_repository
 from app.core.exceptions import UnauthorizedError
 from app.models.user import User
@@ -23,7 +24,9 @@ async def get_token_payload(
 ) -> ClerkTokenPayload:
     if credentials is None or credentials.scheme.lower() != "bearer":
         raise UnauthorizedError("Missing Bearer authentication token")
-    return verify_clerk_token(credentials.credentials)
+    payload = verify_clerk_token(credentials.credentials)
+    settings = get_settings()
+    return await enrich_payload_from_clerk_api(payload, settings.clerk_secret_key)
 
 
 async def get_auth_service(
@@ -50,6 +53,8 @@ async def get_optional_user(
         return None
     try:
         payload = verify_clerk_token(credentials.credentials)
+        settings = get_settings()
+        payload = await enrich_payload_from_clerk_api(payload, settings.clerk_secret_key)
         return await auth_service.sync_user_from_clerk(payload)
     except UnauthorizedError:
         return None

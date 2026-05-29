@@ -71,7 +71,12 @@ export function uploadResume({
     });
 
     xhr.addEventListener("error", () => {
-      reject(new UploadError("Network error during upload", 0));
+      reject(
+        new UploadError(
+          `Cannot reach the API at ${url}. Start the backend from c:\\IntervAI with .\\scripts\\start-backend.ps1, then open ${getApiBaseUrl()}/api/v1/health in your browser.`,
+          0,
+        ),
+      );
     });
 
     xhr.addEventListener("abort", () => {

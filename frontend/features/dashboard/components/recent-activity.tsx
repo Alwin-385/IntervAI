@@ -1,7 +1,14 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Clock, Inbox } from "lucide-react";
+import {
+  AlertCircle,
+  Clock,
+  FileCheck,
+  FileText,
+  Inbox,
+  Loader2,
+} from "lucide-react";
 
 import {
   Card,
@@ -11,18 +18,39 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import type { DashboardActivityItem } from "@/features/dashboard/types";
 
-const placeholders = [
-  { title: "No interviews yet", time: "—" },
-  { title: "No resume uploads", time: "—" },
-  { title: "No evaluations", time: "—" },
-];
+function activityIcon(kind: string) {
+  switch (kind) {
+    case "resume_analyzed":
+      return FileCheck;
+    case "resume_processing":
+      return Loader2;
+    case "resume_failed":
+      return AlertCircle;
+    case "resume_upload":
+    default:
+      return FileText;
+  }
+}
+
+function formatWhen(iso: string) {
+  return new Date(iso).toLocaleString(undefined, {
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  });
+}
 
 interface RecentActivityProps {
+  items?: DashboardActivityItem[];
   isLoading?: boolean;
 }
 
-export function RecentActivity({ isLoading }: RecentActivityProps) {
+export function RecentActivity({ items = [], isLoading }: RecentActivityProps) {
+  const hasItems = items.length > 0;
+
   return (
     <Card className="glass-card border-border/50">
       <CardHeader>
@@ -45,11 +73,46 @@ export function RecentActivity({ isLoading }: RecentActivityProps) {
               </div>
             ))}
           </div>
+        ) : hasItems ? (
+          <div className="space-y-2">
+            {items.map((item, index) => {
+              const Icon = activityIcon(item.kind);
+              const spinning = item.kind === "resume_processing";
+              return (
+                <motion.div
+                  key={`${item.kind}-${item.timestamp}-${index}`}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: index * 0.04 }}
+                  className="flex items-start gap-4 rounded-lg border border-border/50 bg-muted/10 px-4 py-3"
+                >
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                    <Icon
+                      className={`h-4 w-4 text-primary ${spinning ? "animate-spin" : ""}`}
+                    />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-medium leading-snug">{item.title}</p>
+                    <p className="mt-0.5 line-clamp-2 text-xs text-muted-foreground">
+                      {item.subtitle}
+                    </p>
+                    <p className="mt-1 text-[11px] text-muted-foreground/80">
+                      {formatWhen(item.timestamp)}
+                    </p>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
         ) : (
           <div className="space-y-1">
-            {placeholders.map((item, index) => (
+            {[
+              { title: "No interviews yet", time: "—" },
+              { title: "No resume uploads", time: "—" },
+              { title: "No evaluations", time: "—" },
+            ].map((placeholder, index) => (
               <motion.div
-                key={item.title}
+                key={placeholder.title}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: index * 0.05 }}
@@ -60,14 +123,14 @@ export function RecentActivity({ isLoading }: RecentActivityProps) {
                 </div>
                 <div className="flex-1">
                   <p className="text-sm font-medium text-muted-foreground">
-                    {item.title}
+                    {placeholder.title}
                   </p>
-                  <p className="text-xs text-muted-foreground/70">{item.time}</p>
+                  <p className="text-xs text-muted-foreground/70">{placeholder.time}</p>
                 </div>
               </motion.div>
             ))}
             <p className="pt-4 text-center text-xs text-muted-foreground">
-              Activity will populate after your first interview session
+              Upload a resume or start an interview to see activity here
             </p>
           </div>
         )}

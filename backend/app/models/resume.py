@@ -6,11 +6,12 @@ import uuid
 from typing import TYPE_CHECKING
 
 from sqlalchemy import BigInteger, ForeignKey, Index, String, Text
-from sqlalchemy.dialects.postgresql import ENUM, UUID
+from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base
 from app.models.enums import ResumeStatus
+from app.models.pg_enum import pg_enum
 from app.models.mixins import TimestampMixin, UUIDPrimaryKeyMixin
 
 if TYPE_CHECKING:
@@ -38,9 +39,13 @@ class Resume(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     mime_type: Mapped[str] = mapped_column(String(128), nullable=False, default="application/pdf")
     file_size_bytes: Mapped[int] = mapped_column(BigInteger, nullable=False, default=0)
     content_text: Mapped[str | None] = mapped_column(Text, nullable=True)
+    cleaned_text: Mapped[str | None] = mapped_column(Text, nullable=True)
+    extracted_data: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
+    text_chunks: Mapped[list | None] = mapped_column(JSONB, nullable=True)
+    extraction_error: Mapped[str | None] = mapped_column(Text, nullable=True)
     status: Mapped[ResumeStatus] = mapped_column(
-        ENUM(ResumeStatus, name="resume_status", create_type=True),
-        default=ResumeStatus.UPLOADED,
+        pg_enum(ResumeStatus, name="resume_status", create_type=True),
+        default=ResumeStatus.QUEUED,
         nullable=False,
     )
 

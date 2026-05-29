@@ -1,0 +1,162 @@
+version: "3.9"
+
+# Production docker-compose — all services self-contained.
+# For cloud deployment use individual services (Railway, Render, Vercel) instead.
+# Use this for single-VPS deployments or staging environments.
+
+x-backend-env: &backend-env
+  DATABASE_URL: ${DATABASE_URL}
+  REDIS_URL: ${REDIS_URL}
+  CELERY_BROKER_URL: ${CELERY_BROKER_URL}
+  CELERY_RESULT_BACKEND: ${CELERY_RESULT_BACKEND}
+  QDRANT_URL: ${QDRANT_URL:-http://qdrant:6333}
+  QDRANT_API_KEY: ${QDRANT_API_KEY:-}
+  CORS_ORIGINS: ${CORS_ORIGINS}
+  CLERK_SECRET_KEY: ${CLERK_SECRET_KEY}
+  CLERK_JWT_ISSUER: ${CLERK_JWT_ISSUER}
+  OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+  ENVIRONMENT: production
+  LOG_JSON: "true"
+  LOG_LEVEL: INFO
+  BACKGROUND_JOBS_ENABLED: "true"
+  BACKGROUND_JOBS_MODE: celery
+  SENTRY_DSN: ${SENTRY_DSN:-}
+  STORAGE_BACKEND: ${STORAGE_BACKEND:-local}
+  S3_BUCKET: ${S3_BUCKET:-}
+  S3_REGION: ${S3_REGION:-us-east-1}
+  S3_ENDPOINT_URL: ${S3_ENDPOINT_URL:-}
+  S3_ACCESS_KEY_ID: ${S3_ACCESS_KEY_ID:-}
+  S3_SECRET_ACCESS_KEY: ${S3_SECRET_ACCESS_KEY:-}
+
+services:
+  # ── Infrastructure ─────────────────────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:-intervai}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-intervai}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - internal
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes", "--requirepass", "${REDIS_PASSWORD:-}"]
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - internal
+
+  qdrant:
+    image: qdrant/qdrant:v1.12.5
+    restart: unless-stopped
+    volumes:
+      - qdrant_data:/qdrant/storage
+    networks:
+      - internal
+
+  # ── Application ────────────────────────────────────────────────────────────
+  backend:
+    build:
+      context: .
+      dockerfile: docker/backend.prod.Dockerfile
+    restart: unless-stopped
+    environment:
+      <<: *backend-env
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - resume_storage:/app/storage/resumes
+      - audio_storage:/app/storage/audio
+    ports:
+      - "8000:8000"
+    networks:
+      - internal
+      - external
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  celery-worker:
+    build:
+      context: .
+      dockerfile: docker/backend.prod.Dockerfile
+    restart: unless-stopped
+    command: >
+      celery -A app.workers.celery_app worker
+      --loglevel=info
+      -Q default,resume,interview,ai
+      --concurrency=2
+    environment:
+      <<: *backend-env
+    depends_on:
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    volumes:
+      - resume_storage:/app/storage/resumes
+      - audio_storage:/app/storage/audio
+    networks:
+      - internal
+
+  celery-beat:
+    build:
+      context: .
+      dockerfile: docker/backend.prod.Dockerfile
+    restart: unless-stopped
+    command: celery -A app.workers.celery_app beat --loglevel=info
+    environment:
+      <<: *backend-env
+    depends_on:
+      - redis
+    networks:
+      - internal
+
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/frontend.prod.Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-https://api.your-domain.com}
+    restart: unless-stopped
+    environment:
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-https://api.your-domain.com}
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - external
+
+volumes:
+  postgres_data:
+  redis_data:
+  qdrant_data:
+  resume_storage:
+  audio_storage:
+
+networks:
+  internal:
+    driver: bridge
+  external:
+    driver: bridge

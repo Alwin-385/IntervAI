@@ -6,11 +6,12 @@ import uuid
 from typing import TYPE_CHECKING
 
 from sqlalchemy import ForeignKey, Index, Integer, Text, UniqueConstraint
-from sqlalchemy.dialects.postgresql import ENUM, UUID
+from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base
 from app.models.enums import QuestionType
+from app.models.pg_enum import pg_enum
 from app.models.mixins import TimestampMixin, UUIDPrimaryKeyMixin
 
 if TYPE_CHECKING:
@@ -36,11 +37,16 @@ class InterviewQuestion(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     )
     question_text: Mapped[str] = mapped_column(Text, nullable=False)
     question_type: Mapped[QuestionType] = mapped_column(
-        ENUM(QuestionType, name="question_type", create_type=True),
+        pg_enum(QuestionType, name="question_type", create_type=True),
         nullable=False,
     )
     order_index: Mapped[int] = mapped_column(Integer, nullable=False)
     time_limit_seconds: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    question_metadata: Mapped[dict | None] = mapped_column(
+        "metadata",
+        JSONB,
+        nullable=True,
+    )
 
     session: Mapped[InterviewSession] = relationship(back_populates="questions")
     answers: Mapped[list[InterviewAnswer]] = relationship(

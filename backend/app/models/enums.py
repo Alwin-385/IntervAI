@@ -9,9 +9,9 @@ class UserRole(str, enum.Enum):
 
 
 class ResumeStatus(str, enum.Enum):
-    UPLOADED = "uploaded"
-    PROCESSING = "processing"
-    READY = "ready"
+    QUEUED = "queued"
+    EXTRACTING_RESUME = "extracting_resume"
+    COMPLETED = "completed"
     FAILED = "failed"
 
 
@@ -49,3 +49,41 @@ class WeakAreaSeverity(str, enum.Enum):
     MEDIUM = "medium"
     HIGH = "high"
     CRITICAL = "critical"
+
+
+class InterviewCategory(str, enum.Enum):
+    HR = "hr"
+    TECHNICAL = "technical"
+    BEHAVIORAL = "behavioral"
+    DSA = "dsa"
+    RESUME_BASED = "resume_based"
+    MIXED = "mixed"
+
+
+class InterviewDifficulty(str, enum.Enum):
+    BEGINNER = "beginner"
+    INTERMEDIATE = "intermediate"
+    ADVANCED = "advanced"
+
+
+class AnswerMode(str, enum.Enum):
+    TEXT = "text"
+    VOICE = "voice"
+
+
+class BackgroundJobType(str, enum.Enum):
+    RESUME_EXTRACTION = "resume_extraction"
+    RESUME_ANALYSIS = "resume_analysis"
+    QUESTION_GENERATION = "question_generation"
+    TRANSCRIPTION = "transcription"
+    ANSWER_EVALUATION = "answer_evaluation"
+    ROADMAP_GENERATION = "roadmap_generation"
+
+
+class BackgroundJobStatus(str, enum.Enum):
+    PENDING = "pending"
+    RUNNING = "running"
+    RETRYING = "retrying"
+    COMPLETED = "completed"
+    FAILED = "failed"
+    CANCELLED = "cancelled"

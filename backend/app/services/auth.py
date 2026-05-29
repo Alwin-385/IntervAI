@@ -16,7 +16,10 @@ class AuthService:
 
     async def sync_user_from_clerk(self, payload: ClerkTokenPayload) -> User:
         if not payload.email:
-            raise UnauthorizedError("Clerk token must include an email address")
+            raise UnauthorizedError(
+                "Could not resolve your email from Clerk. Ensure CLERK_SECRET_KEY is set "
+                "in backend/.env and your Clerk user has a verified email.",
+            )
 
         user = await self.user_repository.get_by_clerk_id(payload.clerk_user_id)
         if user:

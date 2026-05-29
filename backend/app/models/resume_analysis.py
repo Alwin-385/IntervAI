@@ -6,11 +6,12 @@ import uuid
 from typing import TYPE_CHECKING, Any
 
 from sqlalchemy import Float, ForeignKey, Index, Text
-from sqlalchemy.dialects.postgresql import ENUM, JSONB, UUID
+from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base
 from app.models.enums import AnalysisStatus
+from app.models.pg_enum import pg_enum
 from app.models.mixins import TimestampMixin, UUIDPrimaryKeyMixin
 
 if TYPE_CHECKING:
@@ -31,7 +32,7 @@ class ResumeAnalysis(Base, UUIDPrimaryKeyMixin, TimestampMixin):
         nullable=False,
     )
     status: Mapped[AnalysisStatus] = mapped_column(
-        ENUM(AnalysisStatus, name="analysis_status", create_type=True),
+        pg_enum(AnalysisStatus, name="analysis_status", create_type=True),
         default=AnalysisStatus.PENDING,
         nullable=False,
     )

@@ -7,12 +7,14 @@ import {
   FileText,
   LayoutDashboard,
   Mic,
+  Plus,
   Route,
   Sparkles,
   Target,
   X,
 } from "lucide-react";
 
+import { UserNav } from "@/components/auth/user-nav";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
@@ -51,6 +53,14 @@ export function DashboardSidebar({
           </Button>
         )}
       </div>
+      <div className="px-4 pt-4">
+        <Button asChild size="sm" className="w-full gap-2">
+          <Link href="/dashboard/interviews/new" onClick={onClose}>
+            <Plus className="h-4 w-4" />
+            New interview
+          </Link>
+        </Button>
+      </div>
       <nav className="flex-1 space-y-1 p-4">
         {navItems.map((item) => {
           const active =
@@ -74,7 +84,8 @@ export function DashboardSidebar({
           );
         })}
       </nav>
-      <div className="border-t border-border/60 p-4">
+      <div className="space-y-3 border-t border-border/60 p-4">
+        <UserNav showSignOutLabel />
         <div className="rounded-lg border border-border/50 bg-gradient-to-br from-primary/10 to-accent/5 p-4">
           <p className="text-xs font-medium text-primary">Pro tip</p>
           <p className="mt-1 text-xs text-muted-foreground">

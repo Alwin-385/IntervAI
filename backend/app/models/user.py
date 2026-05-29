@@ -6,11 +6,11 @@ import uuid
 from typing import TYPE_CHECKING
 
 from sqlalchemy import Boolean, Index, String, UniqueConstraint
-from sqlalchemy.dialects.postgresql import ENUM
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base
 from app.models.enums import UserRole
+from app.models.pg_enum import pg_enum
 from app.models.mixins import TimestampMixin, UUIDPrimaryKeyMixin
 
 if TYPE_CHECKING:
@@ -36,7 +36,7 @@ class User(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     full_name: Mapped[str] = mapped_column(String(255), nullable=False)
     avatar_url: Mapped[str | None] = mapped_column(String(1024), nullable=True)
     role: Mapped[UserRole] = mapped_column(
-        ENUM(UserRole, name="user_role", create_type=True),
+        pg_enum(UserRole, name="user_role", create_type=True),
         default=UserRole.CANDIDATE,
         nullable=False,
     )

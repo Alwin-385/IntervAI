@@ -1,23 +1,50 @@
 import { apiClient } from "@/lib/api-client";
 
-import type { PaginatedResumes, Resume, ResumeUploadResponse } from "./types";
+import { normalizeResume, normalizeResumeList } from "./utils";
+import type {
+  PaginatedResumes,
+  Resume,
+  ResumeExtractionStatus,
+  ResumeUploadResponse,
+} from "./types";
 
 export async function fetchResumes(
   token: string,
   page = 1,
   pageSize = 20,
 ): Promise<PaginatedResumes> {
-  return apiClient<PaginatedResumes>("/api/v1/resumes", {
+  const data = await apiClient<PaginatedResumes>("/api/v1/resumes", {
     token,
     params: { page: String(page), page_size: String(pageSize) },
   });
+  return normalizeResumeList(data);
 }
 
 export async function fetchResume(
   token: string,
   resumeId: string,
 ): Promise<Resume> {
-  return apiClient<Resume>(`/api/v1/resumes/${resumeId}`, { token });
+  const resume = await apiClient<Resume>(`/api/v1/resumes/${resumeId}`, { token });
+  return normalizeResume(resume);
+}
+
+export async function fetchExtractionStatus(
+  token: string,
+  resumeId: string,
+): Promise<ResumeExtractionStatus> {
+  return apiClient<ResumeExtractionStatus>(`/api/v1/resumes/${resumeId}/extraction`, {
+    token,
+  });
+}
+
+export async function retryExtraction(
+  token: string,
+  resumeId: string,
+): Promise<ResumeExtractionStatus> {
+  return apiClient<ResumeExtractionStatus>(
+    `/api/v1/resumes/${resumeId}/extraction/retry`,
+    { method: "POST", token },
+  );
 }
 
 export function formatFileSize(bytes: number): string {

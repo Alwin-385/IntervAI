@@ -12,6 +12,7 @@ import {
 import { AnimatedCounter } from "@/components/motion/animated-counter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import type { DashboardStats } from "@/features/dashboard/types";
 
 interface StatItem {
   label: string;
@@ -20,48 +21,61 @@ interface StatItem {
   decimals?: number;
   icon: LucideIcon;
   change: string;
-  trend?: "up" | "neutral";
 }
 
-const stats: StatItem[] = [
-  {
-    label: "Mock interviews",
-    value: 0,
-    icon: Mic,
-    change: "Start your first session",
-    trend: "neutral",
-  },
-  {
-    label: "Resumes analyzed",
-    value: 0,
-    icon: FileText,
-    change: "Upload a resume",
-    trend: "neutral",
-  },
-  {
-    label: "Average score",
-    value: 0,
-    suffix: "%",
-    icon: TrendingUp,
-    change: "No sessions yet",
-    trend: "neutral",
-  },
-  {
-    label: "Practice hours",
-    value: 0,
-    suffix: "h",
-    decimals: 1,
-    icon: Calendar,
-    change: "This week",
-    trend: "up",
-  },
-];
+function buildStats(stats: DashboardStats): StatItem[] {
+  const resumeHint =
+    stats.resumes_total === 0
+      ? "Upload a resume"
+      : stats.resumes_processing > 0
+        ? `${stats.resumes_processing} processing now`
+        : `${stats.resumes_total} in your library`;
+
+  const interviewHint =
+    stats.mock_interviews === 0
+      ? "Start your first session"
+      : `${stats.mock_interviews} session${stats.mock_interviews === 1 ? "" : "s"} total`;
+
+  return [
+    {
+      label: "Mock interviews",
+      value: stats.mock_interviews,
+      icon: Mic,
+      change: interviewHint,
+    },
+    {
+      label: "Resumes analyzed",
+      value: stats.resumes_analyzed,
+      icon: FileText,
+      change: resumeHint,
+    },
+    {
+      label: "Average score",
+      value: stats.average_score ?? 0,
+      suffix: "%",
+      icon: TrendingUp,
+      change:
+        stats.average_score != null
+          ? "Across completed sessions"
+          : "No scored sessions yet",
+    },
+    {
+      label: "Practice hours",
+      value: stats.practice_hours,
+      suffix: "h",
+      decimals: 1,
+      icon: Calendar,
+      change: "Estimated from completed sessions",
+    },
+  ];
+}
 
 interface StatsGridProps {
+  stats?: DashboardStats;
   isLoading?: boolean;
 }
 
-export function StatsGrid({ isLoading }: StatsGridProps) {
+export function StatsGrid({ stats, isLoading }: StatsGridProps) {
   if (isLoading) {
     return (
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -80,9 +94,20 @@ export function StatsGrid({ isLoading }: StatsGridProps) {
     );
   }
 
+  const items = buildStats(
+    stats ?? {
+      mock_interviews: 0,
+      resumes_total: 0,
+      resumes_analyzed: 0,
+      resumes_processing: 0,
+      average_score: null,
+      practice_hours: 0,
+    },
+  );
+
   return (
     <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-      {stats.map((stat, index) => (
+      {items.map((stat, index) => (
         <motion.div
           key={stat.label}
           initial={{ opacity: 0, y: 16 }}

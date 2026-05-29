@@ -6,6 +6,7 @@ from pydantic import Field
 
 from app.models.enums import ResumeStatus
 from app.schemas.common import SchemaBase, TimestampSchema, UUIDSchema
+from app.schemas.resume_extraction import ExtractedResumeData, ResumeTextChunk
 
 
 class ResumeCreate(SchemaBase):
@@ -16,7 +17,7 @@ class ResumeCreate(SchemaBase):
     mime_type: str = "application/pdf"
     file_size_bytes: int = Field(ge=0)
     content_text: str | None = None
-    status: ResumeStatus = ResumeStatus.UPLOADED
+    status: ResumeStatus = ResumeStatus.QUEUED
 
 
 class ResumeUpdate(SchemaBase):
@@ -27,6 +28,10 @@ class ResumeUpdate(SchemaBase):
     mime_type: str | None = None
     file_size_bytes: int | None = Field(default=None, ge=0)
     content_text: str | None = None
+    cleaned_text: str | None = None
+    extracted_data: ExtractedResumeData | None = None
+    text_chunks: list[ResumeTextChunk] | None = None
+    extraction_error: str | None = None
     status: ResumeStatus | None = None
 
 
@@ -39,6 +44,10 @@ class ResumeResponse(UUIDSchema, TimestampSchema):
     mime_type: str
     file_size_bytes: int
     content_text: str | None
+    cleaned_text: str | None = None
+    extracted_data: ExtractedResumeData | None = None
+    text_chunks: list[ResumeTextChunk] | None = None
+    extraction_error: str | None = None
     status: ResumeStatus
 
 

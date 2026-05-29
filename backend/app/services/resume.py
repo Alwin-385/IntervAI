@@ -8,7 +8,9 @@ from app.repositories.resume import ResumeRepository
 from app.repositories.user import UserRepository
 from app.schemas.common import PaginatedResponse, PaginationQuery
 from app.schemas.resume import ResumeCreate, ResumeResponse, ResumeUpdate
+from app.schemas.resume_mapper import resume_to_response
 from app.services.base import BaseService
+from app.services.resume_stale_recovery import recover_stale_queued_resumes
 
 
 class ResumeService(BaseService[ResumeRepository, ResumeResponse]):
@@ -22,7 +24,7 @@ class ResumeService(BaseService[ResumeRepository, ResumeResponse]):
 
     @staticmethod
     def _to_response(resume: Resume) -> ResumeResponse:
-        return ResumeResponse.model_validate(resume)
+        return resume_to_response(resume)
 
     async def _ensure_user(self, user_id: UUID) -> None:
         if await self.user_repository.get_by_id(user_id) is None:
@@ -44,6 +46,7 @@ class ResumeService(BaseService[ResumeRepository, ResumeResponse]):
         user_id: UUID,
         pagination: PaginationQuery,
     ) -> PaginatedResponse[ResumeResponse]:
+        recover_stale_queued_resumes()
         await self._ensure_user(user_id)
         page, page_size = self.pagination_params(pagination)
         result = await self.repository.list_by_user(user_id, page=page, page_size=page_size)

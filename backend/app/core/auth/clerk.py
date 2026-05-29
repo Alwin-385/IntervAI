@@ -30,7 +30,11 @@ class ClerkTokenPayload:
         if not clerk_user_id:
             raise UnauthorizedError("Token missing subject (sub) claim")
 
-        email = _first_str(claims.get("email"))
+        email = (
+            _first_str(claims.get("email"))
+            or _first_str(claims.get("primary_email_address"))
+            or _email_from_nested_claims(claims)
+        )
         if not email and isinstance(claims.get("email_addresses"), list):
             for entry in claims["email_addresses"]:
                 if isinstance(entry, dict) and entry.get("email_address"):
@@ -56,6 +60,48 @@ class ClerkTokenPayload:
 
 def _first_str(value: object) -> str | None:
     return value if isinstance(value, str) and value.strip() else None
+
+
+def _email_from_nested_claims(claims: dict) -> str | None:
+    """Read email from Clerk custom / namespaced JWT claims."""
+    for key, value in claims.items():
+        if not isinstance(key, str) or not isinstance(value, str):
+            continue
+        key_lower = key.lower()
+        if key_lower in ("email", "email_address", "primary_email_address"):
+            return value.strip() or None
+        if key_lower.endswith("/email") or key_lower.endswith("/email_address"):
+            return value.strip() or None
+    return None
+
+
+async def enrich_payload_from_clerk_api(
+    payload: ClerkTokenPayload,
+    secret_key: str | None,
+) -> ClerkTokenPayload:
+    """Fill missing email/name from Clerk Backend API when JWT lacks them."""
+    if payload.email and payload.full_name:
+        return payload
+    if not secret_key:
+        return payload
+
+    from app.core.auth.clerk_api import fetch_clerk_user_profile
+
+    try:
+        email, full_name, image_url = await fetch_clerk_user_profile(
+            payload.clerk_user_id,
+            secret_key,
+        )
+    except Exception as exc:
+        logger.warning("clerk_api_profile_fetch_failed", error=str(exc))
+        return payload
+
+    return ClerkTokenPayload(
+        clerk_user_id=payload.clerk_user_id,
+        email=payload.email or email,
+        full_name=payload.full_name or full_name,
+        image_url=payload.image_url or image_url,
+    )
 
 
 @lru_cache

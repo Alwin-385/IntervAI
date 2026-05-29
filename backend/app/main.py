@@ -21,14 +21,37 @@ from app.core.config import Settings, get_settings
 from app.core.database import db_manager
 from app.core.exceptions import AppException, app_exception_handler
 from app.core.logging import get_logger, setup_logging
+from app.core.security import RateLimitMiddleware, SecureHeadersMiddleware
 
 settings = get_settings()
 setup_logging(settings)
 logger = get_logger(__name__)
 
 
+def _init_sentry() -> None:
+    if not settings.sentry_dsn:
+        return
+    try:
+        import sentry_sdk
+        from sentry_sdk.integrations.fastapi import FastApiIntegration
+        from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
+
+        sentry_sdk.init(
+            dsn=settings.sentry_dsn,
+            environment=settings.environment,
+            release=settings.app_version,
+            traces_sample_rate=settings.sentry_traces_sample_rate,
+            integrations=[FastApiIntegration(), SqlalchemyIntegration()],
+            send_default_pii=False,
+        )
+        logger.info("sentry_initialised", environment=settings.environment)
+    except ImportError:
+        logger.warning("sentry_sdk_not_installed")
+
+
 @asynccontextmanager
 async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
+    _init_sentry()
     db_manager.init(settings)
     logger.info(
         "application_startup",
@@ -52,6 +75,11 @@ def create_app() -> FastAPI:
     )
 
     application.add_exception_handler(AppException, app_exception_handler)
+
+    # Middleware is applied LIFO — outermost first in request path
+    application.add_middleware(SecureHeadersMiddleware)
+    if not settings.is_development:
+        application.add_middleware(RateLimitMiddleware)
 
     application.add_middleware(
         CORSMiddleware,

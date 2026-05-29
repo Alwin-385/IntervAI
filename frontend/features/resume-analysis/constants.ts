@@ -1,0 +1,17 @@
+export const POPULAR_TARGET_ROLES = [
+  "Software Engineer",
+  "Frontend Developer",
+  "Backend Developer",
+  "Full Stack Developer",
+  "Data Scientist",
+  "Machine Learning Engineer",
+  "DevOps Engineer",
+  "Cloud Engineer",
+  "Mobile Developer",
+  "QA Engineer",
+  "Product Manager",
+  "Business Analyst",
+  "UI/UX Designer",
+  "Cybersecurity Analyst",
+  "Database Administrator",
+] as const;

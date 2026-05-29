@@ -78,12 +78,18 @@ export function ResumeUploader({
           onProgress: setProgress,
         });
 
+        const uploaded = result.data as ResumeUploadResponse;
         setState("success");
         setProgress(100);
         toast.success(
-          replaceResume ? "Resume replaced successfully" : "Resume uploaded successfully",
+          replaceResume ? "Resume replaced — extraction started" : "Upload complete — extracting text",
         );
-        onSuccess?.(result.data as ResumeUploadResponse);
+        onSuccess?.(uploaded);
+        window.setTimeout(() => {
+          setState("idle");
+          setProgress(0);
+          setSelectedFile(null);
+        }, 2000);
       } catch (err) {
         const message =
           err instanceof UploadError
@@ -203,7 +209,7 @@ export function ResumeUploader({
               </motion.div>
               <p className="text-lg font-semibold">Upload complete</p>
               <p className="mt-1 text-sm text-muted-foreground">
-                Your resume is saved and ready for analysis.
+                Extraction has started — watch your resume card for progress.
               </p>
               <Button variant="outline" className="mt-6" onClick={reset}>
                 Upload another

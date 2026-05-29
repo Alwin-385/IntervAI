@@ -5,19 +5,16 @@ from pathlib import Path
 from uuid import UUID
 
 from app.core.config import Settings, get_settings
-from app.core.exceptions import NotFoundError, UnauthorizedError, ValidationAppError
+from app.core.exceptions import UnauthorizedError
 from app.core.logging import get_logger
 from app.models.enums import ResumeStatus
 from app.models.resume import Resume
 from app.repositories.resume import ResumeRepository
+from app.schemas.resume import ResumeUploadResponse
+from app.schemas.resume_mapper import resume_to_response
 from app.storage.base import StorageBackend
 from app.storage.factory import get_storage_backend
-from app.schemas.resume import ResumeResponse, ResumeUploadResponse
-from app.utils.file_validation import (
-    extract_pdf_text,
-    sanitize_filename,
-    validate_pdf_upload,
-)
+from app.utils.file_validation import sanitize_filename, validate_pdf_upload
 
 logger = get_logger(__name__)
 
@@ -35,7 +32,7 @@ class ResumeUploadService:
 
     @staticmethod
     def _to_response(resume: Resume, message: str | None = None) -> ResumeUploadResponse:
-        base = ResumeResponse.model_validate(resume)
+        base = resume_to_response(resume)
         return ResumeUploadResponse(
             **base.model_dump(),
             message=message or "Resume uploaded successfully",
@@ -67,7 +64,6 @@ class ResumeUploadService:
         mime_type = (content_type or "application/pdf").split(";")[0].strip()
 
         stored = await self.storage.save(storage_key, data, mime_type)
-        content_text = extract_pdf_text(data)
         display_title = (title or Path(safe_filename).stem).strip()[:255] or "My Resume"
 
         if replace_resume_id:
@@ -79,7 +75,6 @@ class ResumeUploadService:
                 stored_uri=stored.uri,
                 mime_type=mime_type,
                 file_size=stored.size_bytes,
-                content_text=content_text,
                 display_title=display_title,
             )
 
@@ -92,8 +87,12 @@ class ResumeUploadService:
                 "storage_key": storage_key,
                 "mime_type": mime_type,
                 "file_size_bytes": stored.size_bytes,
-                "content_text": content_text,
-                "status": ResumeStatus.UPLOADED,
+                "content_text": None,
+                "cleaned_text": None,
+                "extracted_data": None,
+                "text_chunks": None,
+                "extraction_error": None,
+                "status": ResumeStatus.QUEUED,
             }
         )
         logger.info(
@@ -102,7 +101,7 @@ class ResumeUploadService:
             resume_id=str(resume.id),
             size=stored.size_bytes,
         )
-        return self._to_response(resume)
+        return self._to_response(resume, message="Resume uploaded — extraction started")
 
     async def _replace_resume(
         self,
@@ -114,7 +113,6 @@ class ResumeUploadService:
         stored_uri: str,
         mime_type: str,
         file_size: int,
-        content_text: str | None,
         display_title: str,
     ) -> ResumeUploadResponse:
         existing = await self.repository.get_by_id_or_raise(
@@ -134,8 +132,12 @@ class ResumeUploadService:
                 "storage_key": storage_key,
                 "mime_type": mime_type,
                 "file_size_bytes": file_size,
-                "content_text": content_text,
-                "status": ResumeStatus.UPLOADED,
+                "content_text": None,
+                "cleaned_text": None,
+                "extracted_data": None,
+                "text_chunks": None,
+                "extraction_error": None,
+                "status": ResumeStatus.QUEUED,
             },
         )
         if old_key != storage_key:
@@ -145,4 +147,4 @@ class ResumeUploadService:
                 logger.warning("resume_storage_delete_failed", key=old_key, error=str(exc))
 
         logger.info("resume_replaced", resume_id=str(replace_resume_id))
-        return self._to_response(updated, message="Resume replaced successfully")
+        return self._to_response(updated, message="Resume replaced — extraction started")
