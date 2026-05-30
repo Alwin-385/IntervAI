@@ -12,6 +12,8 @@ build/
 .next/
 out/
 coverage/
+.coverage
+*.coverage
 storage/
 backend/storage/
 *.egg-info/
