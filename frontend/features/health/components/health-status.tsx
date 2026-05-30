@@ -5,13 +5,7 @@ import { motion } from "framer-motion";
 import { Activity, AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { fetchHealth } from "@/features/health/api";
 import { env } from "@/lib/env";
 import { logger } from "@/lib/logger";
@@ -35,9 +29,7 @@ export function HealthStatus() {
         </CardTitle>
         <CardDescription>
           Live status from{" "}
-          <code className="rounded bg-muted px-1.5 py-0.5 text-xs">
-            {env.apiUrl}/api/v1/health
-          </code>
+          <code className="rounded bg-muted px-1.5 py-0.5 text-xs">{env.apiUrl}/api/v1/health</code>
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -56,9 +48,7 @@ export function HealthStatus() {
           >
             <div className="flex items-start gap-2 text-destructive">
               <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
-              <span className="text-sm">
-                {(error as Error)?.message ?? "Backend unreachable"}
-              </span>
+              <span className="text-sm">{(error as Error)?.message ?? "Backend unreachable"}</span>
             </div>
             <button
               type="button"
@@ -88,9 +78,7 @@ export function HealthStatus() {
           </motion.div>
         )}
 
-        {isFetching && !isLoading && (
-          <p className="text-xs text-muted-foreground">Refreshing…</p>
-        )}
+        {isFetching && !isLoading && <p className="text-xs text-muted-foreground">Refreshing…</p>}
       </CardContent>
     </Card>
   );

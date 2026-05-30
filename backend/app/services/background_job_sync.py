@@ -26,7 +26,9 @@ def _snapshot(job: BackgroundJob) -> dict[str, Any]:
     }
 
 
-def sync_job_mark_running(job_id: UUID | str, *, step: str = "running", message: str | None = None) -> None:
+def sync_job_mark_running(
+    job_id: UUID | str, *, step: str = "running", message: str | None = None
+) -> None:
     jid = job_id if isinstance(job_id, UUID) else UUID(str(job_id))
     now = datetime.now(UTC)
     with sync_db_session() as session:

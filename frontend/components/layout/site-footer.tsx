@@ -31,8 +31,7 @@ export function SiteFooter() {
               IntervAI
             </Link>
             <p className="mt-4 max-w-sm text-sm text-muted-foreground">
-              {env.appName} — AI-powered interview preparation and evaluation for
-              modern hiring.
+              {env.appName} — AI-powered interview preparation and evaluation for modern hiring.
             </p>
             <div className="mt-6 flex gap-4 text-muted-foreground">
               <a href="#" aria-label="GitHub" className="hover:text-foreground">
@@ -67,7 +66,9 @@ export function SiteFooter() {
         </div>
 
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-border/60 pt-8 text-sm text-muted-foreground md:flex-row">
-          <p>© {new Date().getFullYear()} {env.appName}. All rights reserved.</p>
+          <p>
+            © {new Date().getFullYear()} {env.appName}. All rights reserved.
+          </p>
           <p>Built for candidates who interview with confidence.</p>
         </div>
       </div>

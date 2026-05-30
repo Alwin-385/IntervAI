@@ -221,7 +221,7 @@ def _weak_patterns(
             top = filler_stats[0] if filler_stats else None
             if top:
                 patterns.append(
-                    f'Filler words detected ({filler_count} total, {rate}% of words) — '
+                    f"Filler words detected ({filler_count} total, {rate}% of words) — "
                     f'"{top.word}" used {top.count} times.',
                 )
     top_filler = filler_stats[0] if filler_stats else None
@@ -255,7 +255,7 @@ def _communication_tips(
     if fluency_score < 75:
         tips.append("Pause for one beat between ideas instead of using filler sounds.")
     if confidence_score < 75:
-        tips.append('Replace hedging with specifics: numbers, outcomes, and “I” statements.')
+        tips.append("Replace hedging with specifics: numbers, outcomes, and “I” statements.")
     if wpm > 0 and wpm < WPM_MIN:
         tips.append(
             "Aim for ~130–150 words per minute — rehearse a 60-second version of your answer.",
@@ -314,9 +314,7 @@ def analyze_speech(
     confidence_score = _confidence_score(confidence_indicators, hedging_count)
 
     clarity_raw = _clamp_score(
-        100
-        - (filler_count / max(word_count, 1)) * 120
-        - hedging_count * 5,
+        100 - (filler_count / max(word_count, 1)) * 120 - hedging_count * 5,
     )
     communication_score = _clamp_score(
         fluency_score * 0.35

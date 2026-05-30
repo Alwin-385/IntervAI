@@ -138,7 +138,9 @@ export function AnswerEvaluationSections({ analysis }: AnswerEvaluationSectionsP
           icon={<Code2 className="h-4 w-4 text-primary" />}
           delay={0.25}
         >
-          <p className="text-sm leading-relaxed text-foreground/90">{analysis.technical_feedback}</p>
+          <p className="text-sm leading-relaxed text-foreground/90">
+            {analysis.technical_feedback}
+          </p>
         </SectionCard>
       )}
 
@@ -163,7 +165,9 @@ export function AnswerEvaluationSections({ analysis }: AnswerEvaluationSectionsP
               </div>
             ))}
           </div>
-          <p className="text-sm leading-relaxed text-foreground/90">{analysis.star_feedback.feedback}</p>
+          <p className="text-sm leading-relaxed text-foreground/90">
+            {analysis.star_feedback.feedback}
+          </p>
           {analysis.star_feedback.missing_elements.length > 0 && (
             <ul className="mt-3 space-y-1 text-sm text-muted-foreground">
               {analysis.star_feedback.missing_elements.map((el) => (
@@ -195,7 +199,9 @@ export function AnswerEvaluationSections({ analysis }: AnswerEvaluationSectionsP
               Optimality {Math.round(analysis.dsa_feedback.optimality_score)}%
             </Badge>
           </div>
-          <p className="text-sm leading-relaxed text-foreground/90">{analysis.dsa_feedback.feedback}</p>
+          <p className="text-sm leading-relaxed text-foreground/90">
+            {analysis.dsa_feedback.feedback}
+          </p>
           {analysis.dsa_feedback.suggested_improvements.length > 0 && (
             <ul className="mt-3 space-y-2 text-sm">
               {analysis.dsa_feedback.suggested_improvements.map((tip) => (

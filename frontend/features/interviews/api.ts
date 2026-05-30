@@ -41,10 +41,9 @@ export async function fetchInterviewQuestions(
   token: string,
   sessionId: string,
 ): Promise<InterviewQuestionDetail[]> {
-  return apiClient<InterviewQuestionDetail[]>(
-    `/api/v1/interviews/${sessionId}/questions`,
-    { token },
-  );
+  return apiClient<InterviewQuestionDetail[]>(`/api/v1/interviews/${sessionId}/questions`, {
+    token,
+  });
 }
 
 export async function deleteInterview(

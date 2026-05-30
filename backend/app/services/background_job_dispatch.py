@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 import threading
-from typing import Any, Callable
+from collections.abc import Callable
+from typing import Any
 from uuid import UUID
 
 from app.core.config import get_settings
@@ -158,6 +159,7 @@ class BackgroundJobDispatcher:
 
 # Thread runners (import lazily to avoid circular imports)
 
+
 def run_resume_extraction_job(job_id: UUID, payload: dict[str, Any]) -> dict[str, Any]:
     from app.services.resume_extraction_job import execute_resume_extraction
 
@@ -190,8 +192,8 @@ def run_transcription_job(job_id: UUID, payload: dict[str, Any]) -> dict[str, An
 
 
 def run_answer_evaluation_job(job_id: UUID, payload: dict[str, Any]) -> dict[str, Any]:
-    from app.services.background_job_sync import sync_job_update_progress
     from app.services.answer_evaluator_job import execute_session_evaluation_sync
+    from app.services.background_job_sync import sync_job_update_progress
 
     sync_job_update_progress(job_id, percent=10, step="evaluate", message="Evaluating answers…")
     return execute_session_evaluation_sync(payload)

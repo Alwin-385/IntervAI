@@ -36,8 +36,4 @@ export interface BackgroundJob {
   is_terminal: boolean;
 }
 
-export const TERMINAL_JOB_STATUSES: BackgroundJobStatus[] = [
-  "completed",
-  "failed",
-  "cancelled",
-];
+export const TERMINAL_JOB_STATUSES: BackgroundJobStatus[] = ["completed", "failed", "cancelled"];

@@ -15,7 +15,8 @@ export function StepCategory({ value, onChange }: StepCategoryProps) {
       <header>
         <h2 className="text-xl font-semibold">What kind of interview?</h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          Choose a focus area. Resume-Based pulls from your uploaded resume; Mixed blends all categories.
+          Choose a focus area. Resume-Based pulls from your uploaded resume; Mixed blends all
+          categories.
         </p>
       </header>
 

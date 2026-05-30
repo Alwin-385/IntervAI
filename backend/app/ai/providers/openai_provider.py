@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-import json
-
 from openai import OpenAI
 
 from app.core.config import Settings

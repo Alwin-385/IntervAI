@@ -41,10 +41,9 @@ export function useInterviewSession(sessionId: string) {
       const token = await getToken();
       if (!token) throw new Error("Not authenticated");
       try {
-        return await apiClient<InterviewSetupResponse>(
-          `/api/v1/interview-sessions/${sessionId}`,
-          { token },
-        );
+        return await apiClient<InterviewSetupResponse>(`/api/v1/interview-sessions/${sessionId}`, {
+          token,
+        });
       } catch (err) {
         if (err instanceof ApiError && err.status === 404) return null;
         throw err;

@@ -7,12 +7,12 @@ from uuid import UUID
 from app.agents.resume_analyzer.graph import run_resume_analyzer
 from app.core.config import get_settings
 from app.core.logging import get_logger
-from app.orchestration import AgentName, get_orchestration_service
 from app.core.sync_database import sync_db_session
 from app.models.enums import AnalysisStatus, WeakAreaSeverity
 from app.models.resume import Resume
 from app.models.resume_analysis import ResumeAnalysis
 from app.models.weak_area import WeakArea
+from app.orchestration import AgentName, get_orchestration_service
 from app.schemas.resume_analyzer import AnalysisProgress, StructuredResumeAnalysis
 from app.services.resume_analysis_progress import persist_analysis_progress
 from app.services.resume_text import is_ready_for_analysis, resolve_resume_text
@@ -104,7 +104,9 @@ def _read_context(analysis_id: UUID) -> dict | None:
         }
 
 
-def _sync_weak_areas(session, user_id: UUID, analysis_id: UUID, result: StructuredResumeAnalysis) -> None:
+def _sync_weak_areas(
+    session, user_id: UUID, analysis_id: UUID, result: StructuredResumeAnalysis
+) -> None:
     from sqlalchemy import delete
 
     session.execute(

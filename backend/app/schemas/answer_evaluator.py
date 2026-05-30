@@ -2,10 +2,8 @@
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Literal
 from uuid import UUID
-
-from typing import Literal
 
 from pydantic import Field
 

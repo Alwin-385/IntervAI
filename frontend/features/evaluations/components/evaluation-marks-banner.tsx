@@ -12,17 +12,19 @@ interface EvaluationMarksBannerProps {
 }
 
 export function EvaluationMarksBanner({ summary, className }: EvaluationMarksBannerProps) {
-  const { marks_display, correct_count, partially_correct_count, incorrect_count, total_questions } =
-    summary;
+  const {
+    marks_display,
+    correct_count,
+    partially_correct_count,
+    incorrect_count,
+    total_questions,
+  } = summary;
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      className={cn(
-        "rounded-2xl border border-primary/30 bg-primary/5 p-5 md:p-6",
-        className,
-      )}
+      className={cn("rounded-2xl border border-primary/30 bg-primary/5 p-5 md:p-6", className)}
     >
       <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
         Interview score

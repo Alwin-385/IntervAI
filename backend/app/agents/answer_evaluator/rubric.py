@@ -362,10 +362,7 @@ def apply_rubric_to_evaluation(
 
     s = evaluation.scores
     style_avg = (
-        s.communication_score
-        + s.clarity_score
-        + s.confidence_score
-        + s.professionalism_score
+        s.communication_score + s.clarity_score + s.confidence_score + s.professionalism_score
     ) / 4
     overall = _clamp(rubric_blended * 0.62 + style_avg * 0.38)
 

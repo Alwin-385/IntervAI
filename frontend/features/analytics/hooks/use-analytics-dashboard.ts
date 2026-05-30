@@ -20,9 +20,7 @@ export function useAnalyticsDashboard(params: AnalyticsDashboardParams) {
   });
 }
 
-export function useAnalyticsProgress(
-  params: Omit<AnalyticsDashboardParams, "page" | "page_size">,
-) {
+export function useAnalyticsProgress(params: Omit<AnalyticsDashboardParams, "page" | "page_size">) {
   const { getToken, isLoaded, isSignedIn } = useAuth();
   return useQuery({
     queryKey: ["analytics-progress", params],

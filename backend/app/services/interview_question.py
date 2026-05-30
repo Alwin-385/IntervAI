@@ -14,9 +14,7 @@ from app.schemas.interview_question import (
 from app.services.base import BaseService
 
 
-class InterviewQuestionService(
-    BaseService[InterviewQuestionRepository, InterviewQuestionResponse]
-):
+class InterviewQuestionService(BaseService[InterviewQuestionRepository, InterviewQuestionResponse]):
     def __init__(
         self,
         repository: InterviewQuestionRepository,
@@ -43,10 +41,7 @@ class InterviewQuestionService(
         return self._to_response(entity)
 
     async def list_for_session(self, session_id: UUID) -> list[InterviewQuestionResponse]:
-        return [
-            self._to_response(q)
-            for q in await self.repository.list_by_session(session_id)
-        ]
+        return [self._to_response(q) for q in await self.repository.list_by_session(session_id)]
 
     async def update(
         self,

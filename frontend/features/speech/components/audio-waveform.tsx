@@ -24,10 +24,7 @@ export function AudioWaveform({ levels, isActive, className }: AudioWaveformProp
       {bars.map((level, i) => (
         <motion.div
           key={i}
-          className={cn(
-            "w-1.5 rounded-full",
-            isActive ? "bg-primary" : "bg-muted-foreground/40",
-          )}
+          className={cn("w-1.5 rounded-full", isActive ? "bg-primary" : "bg-muted-foreground/40")}
           animate={{ height: `${Math.max(8, level * 72)}px` }}
           transition={{ duration: 0.08, ease: "easeOut" }}
         />

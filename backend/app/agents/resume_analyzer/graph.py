@@ -6,7 +6,11 @@ import json
 from typing import Any, TypedDict
 
 from app.agents.resume_analyzer.prompts import SYSTEM_PROMPT, USER_TEMPLATE
-from app.ai.providers.factory import build_heuristic_analysis, get_embedding_provider, get_llm_provider
+from app.ai.providers.factory import (
+    build_heuristic_analysis,
+    get_embedding_provider,
+    get_llm_provider,
+)
 from app.core.config import get_settings
 from app.core.logging import get_logger
 from app.schemas.resume_analyzer import AnalysisProgress, StructuredResumeAnalysis
@@ -39,14 +43,13 @@ def _analyze_step(state: AnalyzerState) -> AnalyzerState:
     if aid:
         persist_analysis_progress(
             aid,
-            AnalysisProgress(step="analysis", percent=60, message="Running recruiter-style review…"),
+            AnalysisProgress(
+                step="analysis", percent=60, message="Running recruiter-style review…"
+            ),
         )
 
     analysis: StructuredResumeAnalysis | None = None
-    use_llm = (
-        not settings.resume_analysis_heuristic_only
-        and bool(settings.openai_api_key)
-    )
+    use_llm = not settings.resume_analysis_heuristic_only and bool(settings.openai_api_key)
 
     if use_llm:
         llm = get_llm_provider(settings)

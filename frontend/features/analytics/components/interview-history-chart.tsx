@@ -1,14 +1,6 @@
 "use client";
 
-import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
+import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 import { ChartCard } from "@/features/analytics/components/chart-card";
 import type { InterviewHistoryItem } from "@/features/analytics/types";
@@ -38,11 +30,11 @@ export function InterviewHistoryChart({ history }: Props) {
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartData} margin={{ top: 8, right: 8, left: -8, bottom: 4 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-              <XAxis
-                dataKey="name"
+              <XAxis dataKey="name" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} />
+              <YAxis
+                domain={[0, 100]}
                 tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }}
               />
-              <YAxis domain={[0, 100]} tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} />
               <Tooltip
                 contentStyle={{
                   background: "hsl(var(--card))",
@@ -50,8 +42,20 @@ export function InterviewHistoryChart({ history }: Props) {
                   borderRadius: 8,
                 }}
               />
-              <Bar dataKey="score" name="Overall" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} animationDuration={800} />
-              <Bar dataKey="communication" name="Communication" fill="hsl(var(--accent))" radius={[4, 4, 0, 0]} animationDuration={800} />
+              <Bar
+                dataKey="score"
+                name="Overall"
+                fill="hsl(var(--primary))"
+                radius={[4, 4, 0, 0]}
+                animationDuration={800}
+              />
+              <Bar
+                dataKey="communication"
+                name="Communication"
+                fill="hsl(var(--accent))"
+                radius={[4, 4, 0, 0]}
+                animationDuration={800}
+              />
             </BarChart>
           </ResponsiveContainer>
         )}

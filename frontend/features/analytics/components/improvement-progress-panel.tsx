@@ -16,7 +16,7 @@ export function ImprovementProgressPanel({ snapshot, progress }: Props) {
       <ChartCard title="Improvement progress" subtitle="Roadmap + weak-area momentum">
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
-            <p className="text-xs text-muted-foreground mb-1">Roadmap completion</p>
+            <p className="mb-1 text-xs text-muted-foreground">Roadmap completion</p>
             <div className="flex items-center gap-2">
               <Progress value={snapshot.roadmap_completion_rate} className="h-2 flex-1" />
               <span className="text-sm font-semibold">{snapshot.roadmap_completion_rate}%</span>
@@ -26,7 +26,7 @@ export function ImprovementProgressPanel({ snapshot, progress }: Props) {
             </p>
           </div>
           <div>
-            <p className="text-xs text-muted-foreground mb-1">Overall improvement index</p>
+            <p className="mb-1 text-xs text-muted-foreground">Overall improvement index</p>
             <p className="text-2xl font-bold">
               {snapshot.overall_improvement_score != null
                 ? `${snapshot.overall_improvement_score}%`

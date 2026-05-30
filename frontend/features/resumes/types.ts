@@ -1,8 +1,4 @@
-export type ResumeStatus =
-  | "queued"
-  | "extracting_resume"
-  | "completed"
-  | "failed";
+export type ResumeStatus = "queued" | "extracting_resume" | "completed" | "failed";
 
 export interface ExtractedResumeData {
   name: string | null;
@@ -66,7 +62,4 @@ export interface PaginatedResumes {
   pages: number;
 }
 
-export const EXTRACTION_POLL_STATUSES: readonly ResumeStatus[] = [
-  "queued",
-  "extracting_resume",
-];
+export const EXTRACTION_POLL_STATUSES: readonly ResumeStatus[] = ["queued", "extracting_resume"];

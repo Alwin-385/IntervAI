@@ -12,8 +12,9 @@ pytestmark = pytest.mark.unit
 
 
 def _fake_resume(user_id=None):
-    from app.models.resume import Resume
     from app.models.enums import ResumeStatus
+    from app.models.resume import Resume
+
     r = MagicMock(spec=Resume)
     r.id = uuid.uuid4()
     r.user_id = user_id or uuid.uuid4()
@@ -32,6 +33,7 @@ def _fake_resume(user_id=None):
 
 def test_list_resumes_returns_200(client, auth_headers, mock_user):
     from app.services.resume import ResumeService
+
     with patch.object(ResumeService, "list_resumes", new_callable=AsyncMock) as mock_list:
         mock_list.return_value = ([], 0)
         response = client.get("/api/v1/resumes", headers=auth_headers)
@@ -64,6 +66,7 @@ def test_upload_resume_rejects_empty_file(client, auth_headers):
 
 def test_get_resume_not_found_returns_404(client, auth_headers, mock_db_session):
     from app.repositories.resume import ResumeRepository
+
     with patch.object(ResumeRepository, "get_by_id", new_callable=AsyncMock, return_value=None):
         fake_id = uuid.uuid4()
         response = client.get(f"/api/v1/resumes/{fake_id}", headers=auth_headers)
@@ -72,8 +75,11 @@ def test_get_resume_not_found_returns_404(client, auth_headers, mock_db_session)
 
 def test_delete_resume_unauthorized_returns_4xx(client, auth_headers, mock_user, mock_db_session):
     from app.repositories.resume import ResumeRepository
+
     # Resume belongs to a different user
     other_user_resume = _fake_resume(user_id=uuid.uuid4())
-    with patch.object(ResumeRepository, "get_by_id", new_callable=AsyncMock, return_value=other_user_resume):
+    with patch.object(
+        ResumeRepository, "get_by_id", new_callable=AsyncMock, return_value=other_user_resume
+    ):
         response = client.delete(f"/api/v1/resumes/{other_user_resume.id}", headers=auth_headers)
     assert response.status_code in (401, 403, 404)

@@ -22,8 +22,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: env.appName,
-  description:
-    "AI-powered interview preparation and evaluation platform for modern hiring.",
+  description: "AI-powered interview preparation and evaluation platform for modern hiring.",
 };
 
 export default function RootLayout({

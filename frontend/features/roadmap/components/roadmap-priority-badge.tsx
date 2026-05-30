@@ -12,7 +12,7 @@ export function RoadmapPriorityBadge({ priority }: { priority: RoadmapItemPriori
   const { label, className } = CONFIG[priority];
   return (
     <span
-      className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-semibold tracking-wide uppercase ${className}`}
+      className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${className}`}
     >
       {label}
     </span>

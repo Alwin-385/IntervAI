@@ -81,9 +81,8 @@ export function ResumesPage() {
 
   const primaryResume = data?.items[0];
   const processingCount =
-    data?.items.filter(
-      (r) => r.status === "queued" || r.status === "extracting_resume",
-    ).length ?? 0;
+    data?.items.filter((r) => r.status === "queued" || r.status === "extracting_resume").length ??
+    0;
 
   return (
     <div className="space-y-8 p-4 md:p-8">
@@ -94,9 +93,8 @@ export function ResumesPage() {
         </div>
         <h1 className="text-2xl font-bold tracking-tight md:text-3xl">Upload your resume</h1>
         <p className="mt-2 max-w-2xl text-muted-foreground">
-          After upload, your resume is queued, text is extracted in the background, and
-          structured sections appear on the card below (skills, experience, education, and
-          more).
+          After upload, your resume is queued, text is extracted in the background, and structured
+          sections appear on the card below (skills, experience, education, and more).
         </p>
       </div>
 
@@ -126,11 +124,7 @@ export function ResumesPage() {
         {isError && (
           <div className="rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
             <p>{(error as Error).message}</p>
-            <button
-              type="button"
-              className="mt-2 underline"
-              onClick={() => void refetch()}
-            >
+            <button type="button" className="mt-2 underline" onClick={() => void refetch()}>
               Retry
             </button>
           </div>
@@ -138,8 +132,8 @@ export function ResumesPage() {
 
         {!isLoading && !isError && data?.items.length === 0 && (
           <p className="rounded-xl border border-dashed border-border/60 py-12 text-center text-sm text-muted-foreground">
-            No resumes yet — upload your first PDF above. Your resume card will appear here
-            with live extraction status.
+            No resumes yet — upload your first PDF above. Your resume card will appear here with
+            live extraction status.
           </p>
         )}
 

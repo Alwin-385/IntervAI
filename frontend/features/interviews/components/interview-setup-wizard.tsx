@@ -52,12 +52,9 @@ export function InterviewSetupWizard() {
     }));
   const setDifficulty = (difficulty: InterviewDifficulty) =>
     setState((s) => ({ ...s, difficulty }));
-  const setQuestionCount = (n: number) =>
-    setState((s) => ({ ...s, question_count: n }));
-  const setAnswerMode = (mode: AnswerMode) =>
-    setState((s) => ({ ...s, answer_mode: mode }));
-  const setResumeId = (resumeId: string | null) =>
-    setState((s) => ({ ...s, resume_id: resumeId }));
+  const setQuestionCount = (n: number) => setState((s) => ({ ...s, question_count: n }));
+  const setAnswerMode = (mode: AnswerMode) => setState((s) => ({ ...s, answer_mode: mode }));
+  const setResumeId = (resumeId: string | null) => setState((s) => ({ ...s, resume_id: resumeId }));
 
   const validation = validateStep(step, state);
 
@@ -118,9 +115,7 @@ export function InterviewSetupWizard() {
             <Sparkles className="h-5 w-5" />
             <span className="text-sm font-medium">New interview</span>
           </div>
-          <h1 className="mt-1 text-2xl font-bold tracking-tight">
-            Set up your mock interview
-          </h1>
+          <h1 className="mt-1 text-2xl font-bold tracking-tight">Set up your mock interview</h1>
           <p className="mt-1 text-sm text-muted-foreground">
             Six quick steps. Configure once — practice anytime.
           </p>
@@ -146,35 +141,21 @@ export function InterviewSetupWizard() {
             transition={{ duration: 0.25, ease: "easeOut" }}
           >
             {step === 0 && (
-              <StepRole
-                value={state.target_role}
-                custom={state.custom_role}
-                onChange={setRole}
-              />
+              <StepRole value={state.target_role} custom={state.custom_role} onChange={setRole} />
             )}
             {step === 1 && (
               <div className="space-y-5">
                 <StepCategory value={state.category} onChange={setCategory} />
                 {state.category === "resume_based" && (
-                  <ResumePickerInline
-                    value={state.resume_id}
-                    onChange={setResumeId}
-                  />
+                  <ResumePickerInline value={state.resume_id} onChange={setResumeId} />
                 )}
               </div>
             )}
-            {step === 2 && (
-              <StepDifficulty value={state.difficulty} onChange={setDifficulty} />
-            )}
+            {step === 2 && <StepDifficulty value={state.difficulty} onChange={setDifficulty} />}
             {step === 3 && (
-              <StepQuestionCount
-                value={state.question_count}
-                onChange={setQuestionCount}
-              />
+              <StepQuestionCount value={state.question_count} onChange={setQuestionCount} />
             )}
-            {step === 4 && (
-              <StepAnswerMode value={state.answer_mode} onChange={setAnswerMode} />
-            )}
+            {step === 4 && <StepAnswerMode value={state.answer_mode} onChange={setAnswerMode} />}
             {step === 5 && (
               <StepReview
                 state={state}
@@ -225,10 +206,7 @@ export function InterviewSetupWizard() {
   );
 }
 
-function validateStep(
-  step: number,
-  state: InterviewWizardState,
-): { ok: boolean; message: string } {
+function validateStep(step: number, state: InterviewWizardState): { ok: boolean; message: string } {
   if (step === 0) {
     if (!state.target_role.trim()) {
       return { ok: false, message: "Pick or type a target role to continue" };
@@ -261,12 +239,7 @@ function validateStep(
     return { ok: false, message: "Pick an answer mode" };
   }
   if (step === 5) {
-    if (
-      !state.target_role.trim() ||
-      !state.category ||
-      !state.difficulty ||
-      !state.answer_mode
-    ) {
+    if (!state.target_role.trim() || !state.category || !state.difficulty || !state.answer_mode) {
       return { ok: false, message: "Some choices are missing — go back to complete them" };
     }
   }

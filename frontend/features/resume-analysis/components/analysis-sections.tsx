@@ -83,9 +83,7 @@ export function AnalysisSections({ analysis }: AnalysisSectionsProps) {
               </ul>
             </div>
             <div>
-              <p className="mb-2 text-xs font-semibold uppercase text-muted-foreground">
-                Projects
-              </p>
+              <p className="mb-2 text-xs font-semibold uppercase text-muted-foreground">Projects</p>
               <ul className="space-y-2 text-sm text-foreground/90">
                 {analysis.projects_summary.map((item, i) => (
                   <li key={i} className="rounded-md bg-muted/20 px-3 py-2 leading-snug">

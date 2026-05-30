@@ -28,9 +28,8 @@ export function InterviewResultsPage({ sessionId }: InterviewResultsPageProps) {
   }
 
   const answeredCount =
-    runtime?.questions.filter(
-      (q) => q.answer?.answer_text?.trim() || q.answer?.audio_storage_path,
-    ).length ?? 0;
+    runtime?.questions.filter((q) => q.answer?.answer_text?.trim() || q.answer?.audio_storage_path)
+      .length ?? 0;
   const total = runtime?.questions.length ?? 0;
 
   return (

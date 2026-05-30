@@ -67,9 +67,7 @@ export function WizardProgress({ currentStep, onStepClick }: WizardProgressProps
           <span className="font-medium text-foreground">
             Step {currentStep + 1} of {STEP_LABELS.length}
           </span>
-          <span className="text-muted-foreground">
-            {STEP_LABELS[currentStep]}
-          </span>
+          <span className="text-muted-foreground">{STEP_LABELS[currentStep]}</span>
         </div>
         <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
           <div

@@ -1,7 +1,5 @@
 """User API schemas."""
 
-from uuid import UUID
-
 from pydantic import EmailStr, Field
 
 from app.models.enums import UserRole

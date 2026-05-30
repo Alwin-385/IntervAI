@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 import asyncio
-from uuid import UUID
 from typing import Any
+from uuid import UUID
 
 from app.services.background_job_sync import sync_job_update_progress
 

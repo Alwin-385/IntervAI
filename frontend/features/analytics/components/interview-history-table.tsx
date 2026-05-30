@@ -17,7 +17,7 @@ interface Props {
 export function InterviewHistoryTable({ items, page, pages, total, onPageChange }: Props) {
   return (
     <div className="glass-card rounded-xl border border-border/50 p-4">
-      <div className="flex items-center justify-between mb-4">
+      <div className="mb-4 flex items-center justify-between">
         <div>
           <h3 className="text-sm font-semibold">Interview history</h3>
           <p className="text-xs text-muted-foreground">{total} session(s) total</p>

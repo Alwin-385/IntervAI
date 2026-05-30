@@ -11,7 +11,11 @@ function TrendBadge({ trend, delta }: { trend: TrendDirection; delta: number }) 
   }
   const up = trend === "improving";
   const Icon = up ? TrendingUp : trend === "declining" ? TrendingDown : TrendingUp;
-  const color = up ? "text-emerald-400" : trend === "declining" ? "text-red-400" : "text-yellow-400";
+  const color = up
+    ? "text-emerald-400"
+    : trend === "declining"
+      ? "text-red-400"
+      : "text-yellow-400";
   return (
     <span className={`inline-flex items-center gap-1 text-xs ${color}`}>
       <Icon className="h-3 w-3" />

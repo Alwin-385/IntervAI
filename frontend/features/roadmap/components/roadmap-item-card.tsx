@@ -28,7 +28,7 @@ export function RoadmapItemCard({ item, onToggle, isPending }: Props) {
   return (
     <Card
       className={`glass-card transition-all duration-200 ${
-        item.completed ? "opacity-60 border-border/30" : "border-border/50 hover:border-primary/40"
+        item.completed ? "border-border/30 opacity-60" : "border-border/50 hover:border-primary/40"
       }`}
     >
       <CardContent className="p-4">
@@ -38,7 +38,7 @@ export function RoadmapItemCard({ item, onToggle, isPending }: Props) {
           <button
             onClick={() => onToggle(item.id, !item.completed)}
             disabled={isPending}
-            className="mt-0.5 shrink-0 text-muted-foreground hover:text-primary transition-colors disabled:opacity-50"
+            className="mt-0.5 shrink-0 text-muted-foreground transition-colors hover:text-primary disabled:opacity-50"
             aria-label={item.completed ? "Mark incomplete" : "Mark complete"}
           >
             {item.completed ? (
@@ -49,10 +49,10 @@ export function RoadmapItemCard({ item, onToggle, isPending }: Props) {
           </button>
 
           {/* Title + badges */}
-          <div className="flex-1 min-w-0">
-            <div className="flex flex-wrap items-center gap-2 mb-1">
+          <div className="min-w-0 flex-1">
+            <div className="mb-1 flex flex-wrap items-center gap-2">
               <span
-                className={`text-sm font-semibold ${item.completed ? "line-through text-muted-foreground" : "text-foreground"}`}
+                className={`text-sm font-semibold ${item.completed ? "text-muted-foreground line-through" : "text-foreground"}`}
               >
                 {item.title}
               </span>
@@ -72,7 +72,7 @@ export function RoadmapItemCard({ item, onToggle, isPending }: Props) {
           {/* Expand toggle */}
           <button
             onClick={() => setExpanded((e) => !e)}
-            className="shrink-0 text-muted-foreground hover:text-foreground transition-colors"
+            className="shrink-0 text-muted-foreground transition-colors hover:text-foreground"
             aria-label="Toggle details"
           >
             <motion.div animate={{ rotate: expanded ? 180 : 0 }} transition={{ duration: 0.2 }}>
@@ -92,19 +92,21 @@ export function RoadmapItemCard({ item, onToggle, isPending }: Props) {
               className="overflow-hidden"
             >
               <div className="mt-4 space-y-3 pl-8 text-sm">
-                <p className="text-muted-foreground leading-relaxed">{item.description}</p>
+                <p className="leading-relaxed text-muted-foreground">{item.description}</p>
 
-                <div className="flex items-start gap-2 rounded-lg bg-primary/5 border border-primary/20 p-3">
-                  <Lightbulb className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                <div className="flex items-start gap-2 rounded-lg border border-primary/20 bg-primary/5 p-3">
+                  <Lightbulb className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
                   <div>
-                    <p className="text-xs font-semibold text-primary mb-1">Practice recommendation</p>
+                    <p className="mb-1 text-xs font-semibold text-primary">
+                      Practice recommendation
+                    </p>
                     <p className="text-xs text-muted-foreground">{item.practice_recommendation}</p>
                   </div>
                 </div>
 
                 {item.resources.length > 0 && (
                   <div>
-                    <p className="text-xs font-semibold text-muted-foreground mb-1.5 flex items-center gap-1.5">
+                    <p className="mb-1.5 flex items-center gap-1.5 text-xs font-semibold text-muted-foreground">
                       <BookOpen className="h-3 w-3" />
                       Resources
                     </p>

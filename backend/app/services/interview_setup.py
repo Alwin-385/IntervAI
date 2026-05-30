@@ -6,9 +6,6 @@ from uuid import UUID
 
 from app.core.exceptions import NotFoundError, ValidationAppError
 from app.models.enums import (
-    AnswerMode,
-    InterviewCategory,
-    InterviewDifficulty,
     InterviewSessionStatus,
 )
 from app.models.interview_session import InterviewSession
@@ -48,11 +45,14 @@ class InterviewSetupService:
             if resume.user_id != user_id:
                 raise NotFoundError("Resume", str(payload.resume_id))
 
-        title = (payload.title or default_title(
-            payload.target_role,
-            payload.category,
-            payload.difficulty,
-        )).strip()
+        title = (
+            payload.title
+            or default_title(
+                payload.target_role,
+                payload.category,
+                payload.difficulty,
+            )
+        ).strip()
 
         data = {
             "user_id": user_id,

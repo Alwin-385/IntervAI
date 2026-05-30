@@ -1,8 +1,8 @@
 """SQLAlchemy ORM models — import all models for Alembic metadata discovery."""
 
 from app.core.database import Base
-from app.models.background_job import BackgroundJob
 from app.models.answer_evaluation import AnswerEvaluation
+from app.models.background_job import BackgroundJob
 from app.models.interview_answer import InterviewAnswer
 from app.models.interview_question import InterviewQuestion
 from app.models.interview_session import InterviewSession

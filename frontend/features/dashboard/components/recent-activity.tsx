@@ -1,22 +1,9 @@
 "use client";
 
 import { motion } from "framer-motion";
-import {
-  AlertCircle,
-  Clock,
-  FileCheck,
-  FileText,
-  Inbox,
-  Loader2,
-} from "lucide-react";
+import { AlertCircle, Clock, FileCheck, FileText, Inbox, Loader2 } from "lucide-react";
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { DashboardActivityItem } from "@/features/dashboard/types";
 
@@ -87,9 +74,7 @@ export function RecentActivity({ items = [], isLoading }: RecentActivityProps) {
                   className="flex items-start gap-4 rounded-lg border border-border/50 bg-muted/10 px-4 py-3"
                 >
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
-                    <Icon
-                      className={`h-4 w-4 text-primary ${spinning ? "animate-spin" : ""}`}
-                    />
+                    <Icon className={`h-4 w-4 text-primary ${spinning ? "animate-spin" : ""}`} />
                   </div>
                   <div className="min-w-0 flex-1">
                     <p className="text-sm font-medium leading-snug">{item.title}</p>
@@ -122,9 +107,7 @@ export function RecentActivity({ items = [], isLoading }: RecentActivityProps) {
                   <Inbox className="h-4 w-4 text-muted-foreground" />
                 </div>
                 <div className="flex-1">
-                  <p className="text-sm font-medium text-muted-foreground">
-                    {placeholder.title}
-                  </p>
+                  <p className="text-sm font-medium text-muted-foreground">{placeholder.title}</p>
                   <p className="text-xs text-muted-foreground/70">{placeholder.time}</p>
                 </div>
               </motion.div>

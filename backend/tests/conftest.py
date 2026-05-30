@@ -3,10 +3,16 @@
 from __future__ import annotations
 
 import os
+import sys
 import uuid
+from pathlib import Path
+
+# Ensure backend package root is importable in CI and local pytest runs.
+BACKEND_ROOT = Path(__file__).resolve().parents[1]
+if str(BACKEND_ROOT) not in sys.path:
+    sys.path.insert(0, str(BACKEND_ROOT))
 from collections.abc import AsyncGenerator
-from typing import Any
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 from fastapi.testclient import TestClient
@@ -14,7 +20,9 @@ from httpx import ASGITransport, AsyncClient
 
 # Configure test environment BEFORE importing app modules
 os.environ.setdefault("ENVIRONMENT", "development")
-os.environ.setdefault("DATABASE_URL", "postgresql+asyncpg://postgres:postgres@localhost:5432/intervai_test")
+os.environ.setdefault(
+    "DATABASE_URL", "postgresql+asyncpg://postgres:postgres@localhost:5432/intervai_test"
+)
 os.environ.setdefault("CLERK_JWT_ISSUER", "https://test.clerk.accounts.dev")
 os.environ.setdefault("CLERK_SECRET_KEY", "sk_test_fake")
 os.environ.setdefault("REDIS_URL", "redis://localhost:6379/15")
@@ -31,13 +39,15 @@ os.environ.setdefault("SENTRY_DSN", "")
 @pytest.fixture(scope="session")
 def settings():
     from app.core.config import get_settings
+
     return get_settings()
 
 
 @pytest.fixture
 def mock_user():
-    from app.models.user import User
     from app.models.enums import UserRole
+    from app.models.user import User
+
     user = MagicMock(spec=User)
     user.id = uuid.uuid4()
     user.clerk_user_id = "user_test_123"
@@ -75,9 +85,9 @@ def mock_db_session():
 @pytest.fixture
 def app(mock_user, mock_db_session):
     """Return configured FastAPI test app with auth and DB mocked out."""
-    from app.main import create_app
     from app.core.auth.dependencies import get_current_user
     from app.core.database import get_db_session
+    from app.main import create_app
 
     application = create_app()
 

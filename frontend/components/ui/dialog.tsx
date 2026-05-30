@@ -14,14 +14,7 @@ interface DialogProps {
   className?: string;
 }
 
-export function Dialog({
-  open,
-  onClose,
-  title,
-  description,
-  children,
-  className,
-}: DialogProps) {
+export function Dialog({ open, onClose, title, description, children, className }: DialogProps) {
   React.useEffect(() => {
     if (!open) return;
     const prev = document.body.style.overflow;

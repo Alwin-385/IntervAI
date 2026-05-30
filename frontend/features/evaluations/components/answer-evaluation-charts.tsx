@@ -84,7 +84,10 @@ export function AnswerEvaluationCharts({
                 textAnchor="end"
                 height={50}
               />
-              <YAxis domain={[0, 100]} tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }} />
+              <YAxis
+                domain={[0, 100]}
+                tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }}
+              />
               <Tooltip />
               <Bar dataKey="value" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
             </BarChart>
@@ -109,11 +112,24 @@ export function AnswerEvaluationCharts({
               margin={{ left: 4, right: 8, bottom: 4 }}
             >
               <XAxis dataKey="name" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }} />
-              <YAxis domain={[0, 100]} tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }} />
+              <YAxis
+                domain={[0, 100]}
+                tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }}
+              />
               <Tooltip />
-              <Bar dataKey="overall" name="Overall" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+              <Bar
+                dataKey="overall"
+                name="Overall"
+                fill="hsl(var(--primary))"
+                radius={[4, 4, 0, 0]}
+              />
               {perQ && (
-                <Bar dataKey="technical" name="Technical" fill="hsl(var(--chart-2))" radius={[4, 4, 0, 0]} />
+                <Bar
+                  dataKey="technical"
+                  name="Technical"
+                  fill="hsl(var(--chart-2))"
+                  radius={[4, 4, 0, 0]}
+                />
               )}
             </BarChart>
           </ResponsiveContainer>

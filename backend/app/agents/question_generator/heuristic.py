@@ -78,7 +78,10 @@ def build_heuristic_questions(
     plan = _category_plan(session_category, count)
     pattern_plan = _pattern_plan(session_category, difficulty, count, rng, plan)
     anchor_plan = build_resume_anchor_plan(
-        count, extracted, rng, session_category=session_category,
+        count,
+        extracted,
+        rng,
+        session_category=session_category,
     )
     used_hashes: set[str] = {_norm_hash(t) for t in existing_texts}
     used_texts: set[str] = {t.strip().lower() for t in existing_texts if t.strip()}
@@ -94,7 +97,11 @@ def build_heuristic_questions(
 
     for idx, cat in enumerate(plan):
         slot_anchor, source_hint = _slot_from_plan(
-            anchor_plan, idx, projects, skills, session_category,
+            anchor_plan,
+            idx,
+            projects,
+            skills,
+            session_category,
         )
         q = _build_one(
             rng=rng,
@@ -112,8 +119,12 @@ def build_heuristic_questions(
             used_hashes=used_hashes,
             used_texts=used_texts,
             used_patterns=used_patterns,
-            variant=variant_base + idx + (
-                (anchor_plan[idx].slot_variant * 17) if idx < len(anchor_plan) and anchor_plan[idx] else 0
+            variant=variant_base
+            + idx
+            + (
+                (anchor_plan[idx].slot_variant * 17)
+                if idx < len(anchor_plan) and anchor_plan[idx]
+                else 0
             ),
             pattern=pattern_plan[idx],
             slot_anchor=slot_anchor,
@@ -184,7 +195,10 @@ def ensure_exact_question_count(
     plan = _category_plan(session_category, count)
     pattern_plan = _pattern_plan(session_category, difficulty, count, rng, plan)
     anchor_plan = build_resume_anchor_plan(
-        count, extracted, rng, session_category=session_category,
+        count,
+        extracted,
+        rng,
+        session_category=session_category,
     )
     used_hashes = {_norm_hash(q.question_text) for q in questions}
     used_texts = {_normalize_text_key(q.question_text) for q in questions}
@@ -381,7 +395,15 @@ def _build_one(
 
 
 def _question_type_for_pattern(pattern: str, category: InterviewCategory) -> QuestionType:
-    if pattern in ("star_story", "situational", "conflict_resolution", "leadership", "failure_lesson", "feedback", "prioritization"):
+    if pattern in (
+        "star_story",
+        "situational",
+        "conflict_resolution",
+        "leadership",
+        "failure_lesson",
+        "feedback",
+        "prioritization",
+    ):
         return QuestionType.BEHAVIORAL
     if pattern in ("motivation", "culture_fit", "career_goals", "strengths_gaps", "self_awareness"):
         return QuestionType.OPEN_ENDED
@@ -405,7 +427,7 @@ def _templates_for(
         base = [
             f"Why are you interested in this {role} position, and what would you bring in your first 90 days?",
             f"Walk me through your background and how it prepares you for {role}.",
-            f"Tell me about a time you received critical feedback. How did you respond?",
+            "Tell me about a time you received critical feedback. How did you respond?",
         ]
         if difficulty == InterviewDifficulty.ADVANCED:
             base.append(
@@ -415,9 +437,9 @@ def _templates_for(
 
     if category == InterviewCategory.BEHAVIORAL:
         base = [
-            f"Describe a conflict on a team project. What was your role, and what was the outcome?",
+            "Describe a conflict on a team project. What was your role, and what was the outcome?",
             f"Give an example of leading work without formal authority — relevant to {role}.",
-            f"Tell me about a failure. What did you learn and change afterward?",
+            "Tell me about a failure. What did you learn and change afterward?",
         ]
         if has_anchor:
             base.append(
@@ -429,12 +451,12 @@ def _templates_for(
         if difficulty == InterviewDifficulty.BEGINNER:
             return [
                 f"How would you explain time vs space complexity for a problem you'd solve as a {role}?",
-                f"Given an array of integers, how would you find duplicates? Walk through your approach.",
+                "Given an array of integers, how would you find duplicates? Walk through your approach.",
                 f"When would you use a hash map vs a sorted array for {role} interview problems?",
             ]
         if difficulty == InterviewDifficulty.ADVANCED:
             return [
-                f"Design an algorithm to merge k sorted streams efficiently. Discuss complexity and trade-offs.",
+                "Design an algorithm to merge k sorted streams efficiently. Discuss complexity and trade-offs.",
                 f"How would you optimize search in a large dataset used by a {role}? Compare structures.",
             ]
         return [
@@ -495,11 +517,22 @@ def _answer_points(
     ]
     if anchor and not _is_generic_anchor(anchor):
         base.append(f"References {anchor[:80]} with technical or business detail")
-    if pattern in ("coding_walkthrough", "trace_example", "complexity_deep_dive", "optimization_challenge"):
+    if pattern in (
+        "coding_walkthrough",
+        "trace_example",
+        "complexity_deep_dive",
+        "optimization_challenge",
+    ):
         base.extend(["States time/space complexity", "Covers edge cases and test strategy"])
     elif category == InterviewCategory.DSA:
         base.extend(["States time/space complexity", "Covers edge cases and test strategy"])
-    if pattern in ("star_story", "situational", "conflict_resolution", "leadership", "failure_lesson"):
+    if pattern in (
+        "star_story",
+        "situational",
+        "conflict_resolution",
+        "leadership",
+        "failure_lesson",
+    ):
         base.append("Uses STAR format with measurable outcome")
     elif category == InterviewCategory.BEHAVIORAL:
         base.append("Uses STAR format with measurable outcome")
@@ -527,7 +560,10 @@ def _eval_criteria(
         criteria.append("Technical accuracy and justified design choices")
     if pattern in ("motivation", "culture_fit", "career_goals") or category == InterviewCategory.HR:
         criteria.append("Authentic motivation and role alignment")
-    if pattern in ("star_story", "conflict_resolution", "feedback") or category == InterviewCategory.BEHAVIORAL:
+    if (
+        pattern in ("star_story", "conflict_resolution", "feedback")
+        or category == InterviewCategory.BEHAVIORAL
+    ):
         criteria.append("Ownership, reflection, and outcome metrics")
     if difficulty == InterviewDifficulty.ADVANCED:
         criteria.append("Anticipates follow-ups and edge cases")
@@ -638,7 +674,11 @@ def _finalize_unique_questions(
         slot = len(unique)
         cat = plan[slot % len(plan)]
         slot_anchor, source_hint = _slot_from_plan(
-            anchor_plan, slot, projects, skills, session_category,
+            anchor_plan,
+            slot,
+            projects,
+            skills,
+            session_category,
         )
         anchor_variant = 0
         resume_source = None
@@ -768,7 +808,8 @@ def _append_unique(
             evaluation_criteria=_eval_criteria(category, difficulty, None),
             time_limit_seconds=_TIME_BY_DIFFICULTY[difficulty],
             order_index=order_index,
-            source_hint=source_hint or (anchor[:200] if anchor and not _is_generic_anchor(anchor) else None),
+            source_hint=source_hint
+            or (anchor[:200] if anchor and not _is_generic_anchor(anchor) else None),
         )
         if _try_append_question(questions, q, used_hashes, used_texts):
             return True
@@ -786,18 +827,17 @@ def _last_resort_texts(
 ) -> list[str]:
     """Unique interviewer questions when primary and extra banks are exhausted."""
     role = target_role
-    v = variant_base + slot
 
     if category == InterviewCategory.DSA:
         if difficulty == InterviewDifficulty.BEGINNER:
             return [
                 f"Explain the difference between an array and a linked list. When would you pick each as a {role}?",
-                f"How would you find duplicate values in a list? Walk through steps and time complexity.",
-                f"Given a string, how would you check if it is a palindrome? Discuss edge cases.",
+                "How would you find duplicate values in a list? Walk through steps and time complexity.",
+                "Given a string, how would you check if it is a palindrome? Discuss edge cases.",
                 f"How would you merge two sorted arrays? Describe your approach for a {role} interview.",
                 f"When implementing {anchor}, how would you decide between a hash map and a set?",
                 f"Describe how you would test UI state logic related to {skill} without flaky tests.",
-                f"What is the time complexity of searching in a balanced binary search tree? Give an example.",
+                "What is the time complexity of searching in a balanced binary search tree? Give an example.",
                 f"How would you handle {anchor} if input size could grow to millions of items?",
             ]
         return [

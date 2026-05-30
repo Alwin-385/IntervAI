@@ -7,11 +7,7 @@ import { ChevronDown, Clock, Target } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import type { InterviewQuestionDetail } from "@/features/interviews/types";
-import {
-  categoryLabel,
-  difficultyLabel,
-  formatTimeLimit,
-} from "@/features/interviews/utils";
+import { categoryLabel, difficultyLabel, formatTimeLimit } from "@/features/interviews/utils";
 
 interface QuestionCardProps {
   question: InterviewQuestionDetail;

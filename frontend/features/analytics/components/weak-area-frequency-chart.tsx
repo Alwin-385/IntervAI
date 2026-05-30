@@ -1,14 +1,6 @@
 "use client";
 
-import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
+import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 import { ChartCard } from "@/features/analytics/components/chart-card";
 import type { WeakAreaFrequencyItem } from "@/features/analytics/types";
@@ -25,7 +17,10 @@ export function WeakAreaFrequencyChart({ data }: Props) {
   }));
 
   return (
-    <ChartCard title="Weak-area frequency" subtitle="How often each weakness appears in your history">
+    <ChartCard
+      title="Weak-area frequency"
+      subtitle="How often each weakness appears in your history"
+    >
       <div className="h-64">
         {chartData.length === 0 ? (
           <p className="flex h-full items-center justify-center text-sm text-muted-foreground">
@@ -35,7 +30,11 @@ export function WeakAreaFrequencyChart({ data }: Props) {
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartData} layout="vertical" margin={{ left: 8, right: 16 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" horizontal={false} />
-              <XAxis type="number" domain={[0, 100]} tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} />
+              <XAxis
+                type="number"
+                domain={[0, 100]}
+                tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }}
+              />
               <YAxis
                 type="category"
                 dataKey="name"

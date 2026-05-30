@@ -38,7 +38,9 @@ def _build_heuristic_report(payload: dict) -> FeedbackReport:
             1,
         )
 
-    target_role = session_summary.get("target_role") or payload.get("target_role") or "your target role"
+    target_role = (
+        session_summary.get("target_role") or payload.get("target_role") or "your target role"
+    )
     marks = session_summary.get("marks_display") or ""
 
     executive = (
@@ -94,9 +96,10 @@ def _execute(state: AgentWorkflowState) -> AgentWorkflowState:
     report = _build_heuristic_report(payload)
 
     # Optional LLM polish when enabled
-    from app.core.config import get_settings
-    from app.ai.providers.factory import get_llm_provider
     import json
+
+    from app.ai.providers.factory import get_llm_provider
+    from app.core.config import get_settings
 
     settings = get_settings()
     if not settings.orchestration_feedback_llm and not (

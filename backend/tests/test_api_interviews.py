@@ -11,8 +11,14 @@ pytestmark = pytest.mark.unit
 
 
 def _fake_session(user_id=None):
+    from app.models.enums import (
+        AnswerMode,
+        InterviewCategory,
+        InterviewDifficulty,
+        InterviewSessionStatus,
+    )
     from app.models.interview_session import InterviewSession
-    from app.models.enums import InterviewSessionStatus, InterviewCategory, InterviewDifficulty, AnswerMode
+
     s = MagicMock(spec=InterviewSession)
     s.id = uuid.uuid4()
     s.user_id = user_id or uuid.uuid4()
@@ -32,7 +38,10 @@ def _fake_session(user_id=None):
 
 def test_list_sessions_returns_200(client, auth_headers):
     from app.repositories.interview_session import InterviewSessionRepository
-    with patch.object(InterviewSessionRepository, "list_by_user", new_callable=AsyncMock, return_value=([], 0)):
+
+    with patch.object(
+        InterviewSessionRepository, "list_by_user", new_callable=AsyncMock, return_value=([], 0)
+    ):
         response = client.get("/api/v1/interview-sessions/me", headers=auth_headers)
     assert response.status_code in (200, 422, 500)
 
@@ -65,6 +74,9 @@ def test_create_session_valid_payload(client, auth_headers, mock_user):
 
 def test_get_session_not_found(client, auth_headers):
     from app.repositories.interview_session import InterviewSessionRepository
-    with patch.object(InterviewSessionRepository, "get_by_id", new_callable=AsyncMock, return_value=None):
+
+    with patch.object(
+        InterviewSessionRepository, "get_by_id", new_callable=AsyncMock, return_value=None
+    ):
         response = client.get(f"/api/v1/interview-sessions/{uuid.uuid4()}", headers=auth_headers)
     assert response.status_code == 404

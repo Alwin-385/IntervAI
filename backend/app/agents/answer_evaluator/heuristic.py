@@ -82,7 +82,9 @@ def build_heuristic_evaluation(ctx: AnswerEvaluationContext) -> StructuredAnswer
     completeness = _clamp((criteria_cov * 0.45 + points_cov * 0.55) * 100)
 
     relevance = _clamp(55 + points_cov * 40 + (10 if word_count > 25 else -15))
-    clarity = _clamp(_word_score(word_count, ctx.difficulty) * 0.35 + 40 + min(word_count, 120) * 0.35)
+    clarity = _clamp(
+        _word_score(word_count, ctx.difficulty) * 0.35 + 40 + min(word_count, 120) * 0.35
+    )
     if len(words) > 8:
         avg_len = sum(len(w) for w in words) / len(words)
         if avg_len > 12:
@@ -93,8 +95,12 @@ def build_heuristic_evaluation(ctx: AnswerEvaluationContext) -> StructuredAnswer
 
     category = ctx.interview_category.lower()
     technical = 50.0
-    professionalism = _clamp(50 + len(_tokens(answer) & _tokens("team stakeholder communicate professional respect")) * 8)
-    confidence = _clamp(45 + min(word_count, 90) * 0.45 + (12 if re.search(r"\b(i|we)\b", answer, re.I) else -8))
+    professionalism = _clamp(
+        50 + len(_tokens(answer) & _tokens("team stakeholder communicate professional respect")) * 8
+    )
+    confidence = _clamp(
+        45 + min(word_count, 90) * 0.45 + (12 if re.search(r"\b(i|we)\b", answer, re.I) else -8)
+    )
     role_alignment = _clamp(50 + _coverage(answer_tokens, [ctx.target_role]) * 45)
 
     technical_accuracy = technical
@@ -102,7 +108,11 @@ def build_heuristic_evaluation(ctx: AnswerEvaluationContext) -> StructuredAnswer
     star_feedback: StarMethodFeedback | None = None
     dsa_feedback: DsaComplexityFeedback | None = None
 
-    if category in (InterviewCategory.TECHNICAL.value, InterviewCategory.DSA.value, InterviewCategory.MIXED.value):
+    if category in (
+        InterviewCategory.TECHNICAL.value,
+        InterviewCategory.DSA.value,
+        InterviewCategory.MIXED.value,
+    ):
         tech_terms = _tokens(
             "api database algorithm system design latency cache deploy test debug architecture "
             "complexity stack queue hash tree graph",
@@ -153,9 +163,15 @@ def build_heuristic_evaluation(ctx: AnswerEvaluationContext) -> StructuredAnswer
 
     if category == InterviewCategory.DSA.value:
         has_complexity = bool(_COMPLEXITY.search(answer))
-        time_c = "O(n)" if "linear" in answer.lower() else ("Discussed" if has_complexity else "Not stated")
-        space_c = "O(1)" if re.search(r"\bconstant\s+space\b|O\s*\(\s*1\s*\)", answer, re.I) else (
-            "Not stated" if not has_complexity else "Discussed"
+        time_c = (
+            "O(n)"
+            if "linear" in answer.lower()
+            else ("Discussed" if has_complexity else "Not stated")
+        )
+        space_c = (
+            "O(1)"
+            if re.search(r"\bconstant\s+space\b|O\s*\(\s*1\s*\)", answer, re.I)
+            else ("Not stated" if not has_complexity else "Discussed")
         )
         correctness = _clamp(50 + points_cov * 35 + (15 if has_complexity else -10))
         optimality = _clamp(correctness - (10 if not has_complexity else 0))
@@ -239,7 +255,9 @@ def build_heuristic_evaluation(ctx: AnswerEvaluationContext) -> StructuredAnswer
     if star_feedback and star_feedback.overall_star_score < 70:
         suggestions.insert(0, "Reframe using STAR with a quantified result in the final sentence.")
     if dsa_feedback and dsa_feedback.optimality_score < 65:
-        suggestions.insert(0, "State brute-force and optimal complexity before describing the algorithm.")
+        suggestions.insert(
+            0, "State brute-force and optimal complexity before describing the algorithm."
+        )
 
     summary = (
         f"For a {ctx.difficulty} {ctx.interview_category} question targeting {ctx.target_role}, "

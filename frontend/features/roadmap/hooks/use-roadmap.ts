@@ -5,11 +5,7 @@ import { useAuth } from "@clerk/nextjs";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { useBackgroundJob } from "@/features/jobs/hooks/use-background-job";
-import {
-  fetchRoadmap,
-  generateRoadmap,
-  updateRoadmapItem,
-} from "@/features/roadmap/api";
+import { fetchRoadmap, generateRoadmap, updateRoadmapItem } from "@/features/roadmap/api";
 
 const QUERY_KEY = ["roadmap"];
 

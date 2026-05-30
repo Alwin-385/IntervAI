@@ -5,10 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import { fetchSessionAnswerEvaluations } from "@/features/evaluations/api";
 
-export function useEvaluationSessionResults(
-  sessionId: string,
-  options?: { enabled?: boolean },
-) {
+export function useEvaluationSessionResults(sessionId: string, options?: { enabled?: boolean }) {
   const { getToken, isLoaded, isSignedIn } = useAuth();
   const extraEnabled = options?.enabled ?? true;
 

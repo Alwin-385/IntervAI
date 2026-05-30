@@ -39,8 +39,11 @@ interface InterviewDetailPageProps {
 
 export function InterviewDetailPage({ sessionId }: InterviewDetailPageProps) {
   const { data: session, isLoading: sessionLoading } = useInterviewSession(sessionId);
-  const { data: questions, isLoading: questionsLoading, refetch } =
-    useInterviewQuestions(sessionId);
+  const {
+    data: questions,
+    isLoading: questionsLoading,
+    refetch,
+  } = useInterviewQuestions(sessionId);
   const generate = useGenerateQuestions(sessionId);
 
   const handleGenerate = () => {
@@ -127,10 +130,7 @@ export function InterviewDetailPage({ sessionId }: InterviewDetailPageProps) {
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <Badge className={statusTone(session.status)}>{statusLabel(session.status)}</Badge>
-            <DeleteInterviewDialog
-              sessionId={sessionId}
-              sessionTitle={session.title}
-            />
+            <DeleteInterviewDialog sessionId={sessionId} sessionTitle={session.title} />
           </div>
         </div>
       </div>
@@ -181,11 +181,7 @@ export function InterviewDetailPage({ sessionId }: InterviewDetailPageProps) {
               </Link>
             </Button>
           )}
-          <Button
-            onClick={handleGenerate}
-            disabled={generate.isGenerating}
-            className="gap-2"
-          >
+          <Button onClick={handleGenerate} disabled={generate.isGenerating} className="gap-2">
             {generate.isGenerating ? (
               <>
                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -237,8 +233,7 @@ export function InterviewDetailPage({ sessionId }: InterviewDetailPageProps) {
               Building your {plannedCount} question{plannedCount === 1 ? "" : "s"}…
             </p>
             <p className="text-sm text-muted-foreground">
-              Personalizing to your role, resume, and difficulty — this usually takes a few
-              seconds.
+              Personalizing to your role, resume, and difficulty — this usually takes a few seconds.
             </p>
           </div>
         </div>

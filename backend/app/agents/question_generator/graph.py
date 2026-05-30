@@ -173,7 +173,7 @@ def _generate_with_llm(
     payload = json.loads(raw)
     items = payload.get("questions") or []
     out: list[GeneratedQuestion] = []
-    for idx, item in enumerate(items[: count * 2]):
+    for _idx, item in enumerate(items[: count * 2]):
         try:
             item = dict(item)
             item["order_index"] = len(out)
@@ -206,9 +206,7 @@ def _mix_instruction(category: InterviewCategory, count: int) -> str:
     if category != InterviewCategory.MIXED:
         return f"All questions should focus on {category.value} style."
     per = max(1, count // 5)
-    return (
-        f"Distribute ~{per} each across HR, technical, behavioral, DSA, and resume-based angles."
-    )
+    return f"Distribute ~{per} each across HR, technical, behavioral, DSA, and resume-based angles."
 
 
 def _build_graph():

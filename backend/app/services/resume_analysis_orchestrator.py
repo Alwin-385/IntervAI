@@ -8,10 +8,14 @@ from app.core.config import get_settings
 from app.core.exceptions import NotFoundError, ValidationAppError
 from app.models.enums import AnalysisStatus, BackgroundJobType
 from app.models.resume import Resume
+from app.repositories.background_job import BackgroundJobRepository
 from app.repositories.resume import ResumeRepository
 from app.repositories.resume_analysis import ResumeAnalysisRepository
-from app.schemas.resume_analyzer import AnalysisProgress, ResumeAnalyzeRequest, ResumeAnalysisDetailResponse
-from app.repositories.background_job import BackgroundJobRepository
+from app.schemas.resume_analyzer import (
+    AnalysisProgress,
+    ResumeAnalysisDetailResponse,
+    ResumeAnalyzeRequest,
+)
 from app.services.background_job_dispatch import BackgroundJobDispatcher, run_resume_analysis_job
 from app.services.background_job_service import BackgroundJobService
 from app.services.resume_analysis_job import execute_resume_analysis

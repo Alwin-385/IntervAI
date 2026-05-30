@@ -11,7 +11,10 @@ interface SectionProps {
 }
 
 function FormattedEntry({ text, compact }: { text: string; compact?: boolean }) {
-  const lines = text.split("\n").map((l) => l.trim()).filter(Boolean);
+  const lines = text
+    .split("\n")
+    .map((l) => l.trim())
+    .filter(Boolean);
   if (!lines.length) return null;
 
   const title = lines[0].replace(/^[-•]\s*/, "");
@@ -49,9 +52,7 @@ function DetailSection({ title, items, compact, maxItems = 5 }: SectionProps) {
   const shown = items.slice(0, limit);
   return (
     <section className="min-w-0 rounded-xl border border-border/40 bg-muted/10 p-3.5">
-      <h4 className="mb-3 text-xs font-semibold uppercase tracking-wide text-primary">
-        {title}
-      </h4>
+      <h4 className="mb-3 text-xs font-semibold uppercase tracking-wide text-primary">{title}</h4>
       <div className="space-y-4">
         {shown.map((item, i) => (
           <div
@@ -81,9 +82,7 @@ function ContactSection({
 
   return (
     <section className="rounded-xl border border-primary/20 bg-primary/5 p-3.5 sm:col-span-2">
-      <h4 className="mb-3 text-xs font-semibold uppercase tracking-wide text-primary">
-        Contact
-      </h4>
+      <h4 className="mb-3 text-xs font-semibold uppercase tracking-wide text-primary">Contact</h4>
       <dl
         className={
           compact ? "grid gap-2 sm:grid-cols-2" : "grid gap-3 sm:grid-cols-2 lg:grid-cols-3"
@@ -97,7 +96,7 @@ function ContactSection({
             <dt className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
               {label}
             </dt>
-            <dd className="mt-1 text-sm leading-snug break-all text-foreground">{value}</dd>
+            <dd className="mt-1 break-all text-sm leading-snug text-foreground">{value}</dd>
           </div>
         ))}
       </dl>
@@ -114,15 +113,13 @@ export function ExtractedDetails({ data, compact }: ExtractedDetailsProps) {
   if (!hasExtractedContent(data)) {
     return (
       <p className="text-xs text-muted-foreground">
-        Extraction finished. No structured sections were detected — open full extraction
-        for raw text.
+        Extraction finished. No structured sections were detected — open full extraction for raw
+        text.
       </p>
     );
   }
 
-  const layoutClass = compact
-    ? "grid grid-cols-1 gap-3 sm:grid-cols-2"
-    : "flex flex-col gap-4";
+  const layoutClass = compact ? "grid grid-cols-1 gap-3 sm:grid-cols-2" : "flex flex-col gap-4";
 
   return (
     <div className={layoutClass}>

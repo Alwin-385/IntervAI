@@ -63,9 +63,7 @@ export function SelectionCard({
         </div>
         <div className="flex-1">
           <p className="text-sm font-semibold leading-tight">{label}</p>
-          {blurb && (
-            <p className="mt-1 text-xs text-muted-foreground">{blurb}</p>
-          )}
+          {blurb && <p className="mt-1 text-xs text-muted-foreground">{blurb}</p>}
         </div>
       </div>
     </motion.button>

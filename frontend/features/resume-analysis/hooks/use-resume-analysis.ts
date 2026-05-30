@@ -3,10 +3,7 @@
 import { useAuth } from "@clerk/nextjs";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import {
-  fetchResumeAnalysis,
-  startResumeAnalysis,
-} from "@/features/resume-analysis/api";
+import { fetchResumeAnalysis, startResumeAnalysis } from "@/features/resume-analysis/api";
 import type { ResumeAnalyzeRequest } from "@/features/resume-analysis/types";
 
 export function analysisQueryKey(resumeId: string) {

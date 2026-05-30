@@ -55,14 +55,11 @@ export async function updateRoadmapItem(
   itemId: string,
   completed: boolean,
 ): Promise<GeneratedRoadmap> {
-  const res = await fetch(
-    `${getApiBaseUrl()}/api/v1/roadmap/${roadmapId}/items/${itemId}`,
-    {
-      method: "PATCH",
-      headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
-      body: JSON.stringify({ completed }),
-    },
-  );
+  const res = await fetch(`${getApiBaseUrl()}/api/v1/roadmap/${roadmapId}/items/${itemId}`, {
+    method: "PATCH",
+    headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+    body: JSON.stringify({ completed }),
+  });
   return handleResponse<GeneratedRoadmap>(res);
 }
 

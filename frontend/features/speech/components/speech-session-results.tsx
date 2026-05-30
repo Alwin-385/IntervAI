@@ -75,7 +75,7 @@ export function SpeechSessionResults({ sessionId, className }: SpeechSessionResu
             });
             return (
               <div key={item.question_id} className="space-y-2">
-                <p className="text-sm font-medium text-foreground line-clamp-2">
+                <p className="line-clamp-2 text-sm font-medium text-foreground">
                   {item.question_text}
                 </p>
                 <SpeechAnalysisResults analysis={structured} />

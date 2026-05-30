@@ -14,7 +14,9 @@ interface TrendIndicatorProps {
 export function TrendIndicator({ trend, delta, className }: TrendIndicatorProps) {
   if (trend === "insufficient_data") {
     return (
-      <span className={cn("inline-flex items-center gap-1 text-xs text-muted-foreground", className)}>
+      <span
+        className={cn("inline-flex items-center gap-1 text-xs text-muted-foreground", className)}
+      >
         <Minus className="h-3.5 w-3.5" />
         Not enough data
       </span>
@@ -35,7 +37,10 @@ export function TrendIndicator({ trend, delta, className }: TrendIndicatorProps)
       <Icon className="h-3.5 w-3.5" />
       {label}
       {delta != null && Math.abs(delta) >= 0.05 && (
-        <span className="text-muted-foreground">({delta > 0 ? "+" : ""}{(delta * 100).toFixed(0)}%)</span>
+        <span className="text-muted-foreground">
+          ({delta > 0 ? "+" : ""}
+          {(delta * 100).toFixed(0)}%)
+        </span>
       )}
     </span>
   );

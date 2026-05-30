@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  BarChart3,
-  Brain,
-  FileSearch,
-  Mic,
-  Shield,
-  Sparkles,
-} from "lucide-react";
+import { BarChart3, Brain, FileSearch, Mic, Shield, Sparkles } from "lucide-react";
 
 import { SectionReveal } from "@/components/motion/section-reveal";
 import { SectionHeader } from "@/components/shared/section-header";
@@ -59,10 +52,7 @@ const features = [
 
 export function FeaturesSection() {
   return (
-    <SectionReveal
-      id="features"
-      className="section-padding border-t border-border/40 bg-muted/10"
-    >
+    <SectionReveal id="features" className="section-padding border-t border-border/40 bg-muted/10">
       <div className="mx-auto max-w-6xl">
         <SectionHeader
           badge="Platform"
@@ -74,7 +64,7 @@ export function FeaturesSection() {
           {features.map((feature, index) => (
             <div
               key={feature.title}
-              className="group glass-card rounded-2xl p-6 transition-all duration-300 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/5"
+              className="glass-card group rounded-2xl p-6 transition-all duration-300 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/5"
               style={{ animationDelay: `${index * 50}ms` }}
             >
               <div

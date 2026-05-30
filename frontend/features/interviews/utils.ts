@@ -1,8 +1,4 @@
-import {
-  ANSWER_MODES,
-  CATEGORIES,
-  DIFFICULTIES,
-} from "@/features/interviews/constants";
+import { ANSWER_MODES, CATEGORIES, DIFFICULTIES } from "@/features/interviews/constants";
 import type {
   AnswerMode,
   InterviewCategory,

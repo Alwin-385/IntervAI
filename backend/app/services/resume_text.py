@@ -35,9 +35,7 @@ def resolve_resume_text(resume: Resume) -> str:
         return text_from_extracted(resume.extracted_data)
     if resume.text_chunks:
         joined = "\n\n".join(
-            c.get("text", "") if isinstance(c, dict) else str(c)
-            for c in resume.text_chunks
-            if c
+            c.get("text", "") if isinstance(c, dict) else str(c) for c in resume.text_chunks if c
         ).strip()
         if joined:
             return joined

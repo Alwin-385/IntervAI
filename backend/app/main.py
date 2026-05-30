@@ -1,8 +1,7 @@
 """FastAPI application entrypoint."""
 
-from contextlib import asynccontextmanager
 from collections.abc import AsyncIterator
-
+from contextlib import asynccontextmanager
 from typing import Annotated
 
 from fastapi import Depends, FastAPI
@@ -12,16 +11,16 @@ from app import __version__
 from app.api.v1.endpoints import resumes as resumes_endpoints
 from app.api.v1.endpoints.me import get_current_user_profile
 from app.api.v1.router import api_router
-from app.schemas.common import PaginatedResponse
-from app.schemas.resume import ResumeResponse, ResumeUploadResponse
 from app.core.auth.dependencies import get_current_user
-from app.models.user import User
-from app.schemas.user import MeResponse
-from app.core.config import Settings, get_settings
+from app.core.config import get_settings
 from app.core.database import db_manager
 from app.core.exceptions import AppException, app_exception_handler
 from app.core.logging import get_logger, setup_logging
 from app.core.security import RateLimitMiddleware, SecureHeadersMiddleware
+from app.models.user import User
+from app.schemas.common import PaginatedResponse
+from app.schemas.resume import ResumeResponse, ResumeUploadResponse
+from app.schemas.user import MeResponse
 
 settings = get_settings()
 setup_logging(settings)

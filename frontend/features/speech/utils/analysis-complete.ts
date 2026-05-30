@@ -9,8 +9,6 @@ export function isSpeechAnalysisComplete(
     return true;
   }
   const wordCount =
-    typeof analysis.metrics?.word_count === "number"
-      ? (analysis.metrics.word_count as number)
-      : 0;
+    typeof analysis.metrics?.word_count === "number" ? (analysis.metrics.word_count as number) : 0;
   return analysis.communication_score > 0 && wordCount > 0;
 }

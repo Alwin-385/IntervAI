@@ -20,12 +20,7 @@ interface Props {
   color?: string;
 }
 
-export function MetricTrendChart({
-  title,
-  subtitle,
-  data,
-  color = "hsl(var(--accent))",
-}: Props) {
+export function MetricTrendChart({ title, subtitle, data, color = "hsl(var(--accent))" }: Props) {
   const chartData = data.map((d) => ({ name: d.label, value: d.value }));
 
   return (
@@ -39,11 +34,11 @@ export function MetricTrendChart({
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={chartData} margin={{ top: 8, right: 8, left: -8, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-              <XAxis
-                dataKey="name"
+              <XAxis dataKey="name" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} />
+              <YAxis
+                domain={[0, 100]}
                 tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }}
               />
-              <YAxis domain={[0, 100]} tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} />
               <Tooltip
                 contentStyle={{
                   background: "hsl(var(--card))",

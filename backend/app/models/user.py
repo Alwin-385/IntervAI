@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import uuid
 from typing import TYPE_CHECKING
 
 from sqlalchemy import Boolean, Index, String, UniqueConstraint
@@ -10,8 +9,8 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base
 from app.models.enums import UserRole
-from app.models.pg_enum import pg_enum
 from app.models.mixins import TimestampMixin, UUIDPrimaryKeyMixin
+from app.models.pg_enum import pg_enum
 
 if TYPE_CHECKING:
     from app.models.interview_session import InterviewSession

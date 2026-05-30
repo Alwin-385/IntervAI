@@ -20,10 +20,7 @@ export async function fetchResumes(
   return normalizeResumeList(data);
 }
 
-export async function fetchResume(
-  token: string,
-  resumeId: string,
-): Promise<Resume> {
+export async function fetchResume(token: string, resumeId: string): Promise<Resume> {
   const resume = await apiClient<Resume>(`/api/v1/resumes/${resumeId}`, { token });
   return normalizeResume(resume);
 }
@@ -41,10 +38,10 @@ export async function retryExtraction(
   token: string,
   resumeId: string,
 ): Promise<ResumeExtractionStatus> {
-  return apiClient<ResumeExtractionStatus>(
-    `/api/v1/resumes/${resumeId}/extraction/retry`,
-    { method: "POST", token },
-  );
+  return apiClient<ResumeExtractionStatus>(`/api/v1/resumes/${resumeId}/extraction/retry`, {
+    method: "POST",
+    token,
+  });
 }
 
 export function formatFileSize(bytes: number): string {

@@ -1,8 +1,5 @@
 import { apiClient, ApiError } from "@/lib/api-client";
-import type {
-  ResumeAnalysisDetail,
-  ResumeAnalyzeRequest,
-} from "@/features/resume-analysis/types";
+import type { ResumeAnalysisDetail, ResumeAnalyzeRequest } from "@/features/resume-analysis/types";
 
 export async function startResumeAnalysis(
   token: string,

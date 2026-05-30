@@ -81,8 +81,12 @@ class WeakAreaDetectionEngineService:
         by_name = {e.area_name.lower(): e for e in existing_page.items}
 
         for item in detected:
-            desc = item.description + "\n\nTop tips:\n- " + "\n- ".join(
-                item.improvement_suggestions[:3],
+            desc = (
+                item.description
+                + "\n\nTop tips:\n- "
+                + "\n- ".join(
+                    item.improvement_suggestions[:3],
+                )
             )
             payload = WeakAreaCreate(
                 area_name=item.area_name,

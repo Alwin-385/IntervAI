@@ -29,9 +29,7 @@ export function InterviewsListPage() {
             <Mic className="h-5 w-5" />
             <span className="text-sm font-medium">Interviews</span>
           </div>
-          <h1 className="mt-1 text-2xl font-bold tracking-tight">
-            Mock interview sessions
-          </h1>
+          <h1 className="mt-1 text-2xl font-bold tracking-tight">Mock interview sessions</h1>
           <p className="mt-1 text-sm text-muted-foreground">
             Set up role-targeted interviews with custom difficulty and question count.
           </p>
@@ -96,32 +94,30 @@ export function InterviewsListPage() {
                 />
               </div>
               <Link href={`/dashboard/interviews/${s.id}`} className="block pr-8">
-              <div className="flex items-start justify-between gap-2">
-                <h3 className="line-clamp-2 text-sm font-semibold leading-snug">
-                  {s.title}
-                </h3>
-                <Badge variant="secondary" className={`shrink-0 ${statusTone(s.status)}`}>
-                  {statusLabel(s.status)}
-                </Badge>
-              </div>
-              <p className="mt-1 text-xs text-muted-foreground">{s.target_role}</p>
-              <div className="mt-3 flex flex-wrap gap-1.5 text-[11px]">
-                <Badge variant="outline" className="border-border/60">
-                  {categoryLabel(s.category)}
-                </Badge>
-                <Badge variant="outline" className="border-border/60">
-                  {difficultyLabel(s.difficulty)}
-                </Badge>
-                <Badge variant="outline" className="border-border/60">
-                  {s.question_count} Qs
-                </Badge>
-                <Badge variant="outline" className="border-border/60">
-                  {answerModeLabel(s.answer_mode)}
-                </Badge>
-              </div>
-              <p className="mt-3 text-[11px] text-muted-foreground">
-                Created {formatRelativeTime(s.created_at)}
-              </p>
+                <div className="flex items-start justify-between gap-2">
+                  <h3 className="line-clamp-2 text-sm font-semibold leading-snug">{s.title}</h3>
+                  <Badge variant="secondary" className={`shrink-0 ${statusTone(s.status)}`}>
+                    {statusLabel(s.status)}
+                  </Badge>
+                </div>
+                <p className="mt-1 text-xs text-muted-foreground">{s.target_role}</p>
+                <div className="mt-3 flex flex-wrap gap-1.5 text-[11px]">
+                  <Badge variant="outline" className="border-border/60">
+                    {categoryLabel(s.category)}
+                  </Badge>
+                  <Badge variant="outline" className="border-border/60">
+                    {difficultyLabel(s.difficulty)}
+                  </Badge>
+                  <Badge variant="outline" className="border-border/60">
+                    {s.question_count} Qs
+                  </Badge>
+                  <Badge variant="outline" className="border-border/60">
+                    {answerModeLabel(s.answer_mode)}
+                  </Badge>
+                </div>
+                <p className="mt-3 text-[11px] text-muted-foreground">
+                  Created {formatRelativeTime(s.created_at)}
+                </p>
               </Link>
             </div>
           ))}

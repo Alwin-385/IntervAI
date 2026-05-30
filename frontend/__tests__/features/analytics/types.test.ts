@@ -16,7 +16,7 @@ describe("AnalyticsSummary shape", () => {
     average_score: 0.72,
     average_communication: 0.68,
     average_confidence: 0.75,
-    average_technical: 0.70,
+    average_technical: 0.7,
     improvement_score: 0.15,
     score_trend: "improving",
     score_trend_delta: 0.12,

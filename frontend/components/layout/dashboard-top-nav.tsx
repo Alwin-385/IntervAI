@@ -48,9 +48,7 @@ export function DashboardTopNav({ onMenuClick, title = "Overview" }: DashboardTo
         {isLoading ? (
           <Skeleton className="h-9 w-28" />
         ) : (
-          <span className="hidden text-sm text-muted-foreground sm:inline">
-            {user?.email}
-          </span>
+          <span className="hidden text-sm text-muted-foreground sm:inline">{user?.email}</span>
         )}
         <UserNav />
       </div>

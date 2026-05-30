@@ -3,8 +3,7 @@
 from __future__ import annotations
 
 import uuid
-from datetime import datetime, UTC
-from unittest.mock import MagicMock
+from datetime import UTC, datetime
 
 import pytest
 
@@ -19,6 +18,7 @@ def _make_answer_item(
 ):
     """Scores are 0–100 as the detector expects."""
     from app.analytics.weak_area_detector import AnswerHistoryItem
+
     return AnswerHistoryItem(
         session_id=uuid.uuid4(),
         answer_id=uuid.uuid4(),
@@ -47,6 +47,7 @@ def _make_speech_item(
     wpm: float = 140.0,
 ):
     from app.analytics.weak_area_detector import SpeechHistoryItem
+
     return SpeechHistoryItem(
         session_id=uuid.uuid4(),
         answer_id=uuid.uuid4(),
@@ -62,7 +63,8 @@ def _make_speech_item(
 
 class TestWeakAreaDefinitions:
     def test_all_kinds_have_definitions(self):
-        from app.analytics.weak_area_types import WEAK_AREA_DEFINITIONS, WeakAreaKind
+        from app.analytics.weak_area_types import WEAK_AREA_DEFINITIONS
+
         expected_kinds = {
             "communication_issues",
             "confidence_problems",
@@ -76,6 +78,7 @@ class TestWeakAreaDefinitions:
 
     def test_each_definition_has_required_fields(self):
         from app.analytics.weak_area_types import WEAK_AREA_DEFINITIONS
+
         for kind, defn in WEAK_AREA_DEFINITIONS.items():
             assert defn.area_name
             assert defn.category
@@ -88,8 +91,14 @@ class TestWeakAreaDetector:
         from app.analytics.weak_area_detector import detect_weak_areas
 
         # Scores above all thresholds (62+ for communication, 58+ for technical)
-        answers = [_make_answer_item(rubric_score=90.0, technical_score=90.0, communication_score=90.0) for _ in range(5)]
-        speech = [_make_speech_item(communication_score=90.0, confidence_score=90.0, filler_count=0) for _ in range(5)]
+        answers = [
+            _make_answer_item(rubric_score=90.0, technical_score=90.0, communication_score=90.0)
+            for _ in range(5)
+        ]
+        speech = [
+            _make_speech_item(communication_score=90.0, confidence_score=90.0, filler_count=0)
+            for _ in range(5)
+        ]
         result = detect_weak_areas(answers, speech)
         high_severity = [w for w in result if w.priority == "high"]
         assert len(high_severity) == 0
@@ -113,12 +122,13 @@ class TestWeakAreaDetector:
         assert "filler_word_overuse" in kinds
 
     def test_returns_list_of_detected_weak_areas(self):
-        from app.analytics.weak_area_detector import detect_weak_areas, DetectedWeakArea
+        from app.analytics.weak_area_detector import detect_weak_areas
 
         result = detect_weak_areas([], [])
         assert isinstance(result, list)
 
     def test_empty_history_returns_empty(self):
         from app.analytics.weak_area_detector import detect_weak_areas
+
         result = detect_weak_areas([], [])
         assert result == []

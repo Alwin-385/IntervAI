@@ -1,13 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import {
-  Calendar,
-  FileText,
-  Mic,
-  TrendingUp,
-  type LucideIcon,
-} from "lucide-react";
+import { Calendar, FileText, Mic, TrendingUp, type LucideIcon } from "lucide-react";
 
 import { AnimatedCounter } from "@/components/motion/animated-counter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -54,10 +48,7 @@ function buildStats(stats: DashboardStats): StatItem[] {
       value: stats.average_score ?? 0,
       suffix: "%",
       icon: TrendingUp,
-      change:
-        stats.average_score != null
-          ? "Across completed sessions"
-          : "No scored sessions yet",
+      change: stats.average_score != null ? "Across completed sessions" : "No scored sessions yet",
     },
     {
       label: "Practice hours",

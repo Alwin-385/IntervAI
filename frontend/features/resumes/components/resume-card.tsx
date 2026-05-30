@@ -21,13 +21,7 @@ import { toast } from "sonner";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ResumeCardSummary } from "@/features/resumes/components/resume-card-summary";
 import { DASHBOARD_QUERY_KEY } from "@/features/dashboard/hooks/use-dashboard-overview";
 import { ExtractionProgress } from "@/features/resumes/components/extraction-progress";
@@ -50,22 +44,14 @@ const statusLabels: Record<ResumeStatus, string> = {
   failed: "Failed",
 };
 
-const statusVariant: Record<
-  ResumeStatus,
-  "default" | "secondary" | "success" | "warning"
-> = {
+const statusVariant: Record<ResumeStatus, "default" | "secondary" | "success" | "warning"> = {
   queued: "secondary",
   extracting_resume: "warning",
   completed: "success",
   failed: "default",
 };
 
-export function ResumeCard({
-  resume,
-  onReplace,
-  onDelete,
-  isPrimary,
-}: ResumeCardProps) {
+export function ResumeCard({ resume, onReplace, onDelete, isPrimary }: ResumeCardProps) {
   const { getToken } = useAuth();
   const queryClient = useQueryClient();
   const [detailsOpen, setDetailsOpen] = useState(false);
@@ -100,11 +86,7 @@ export function ResumeCard({
 
   return (
     <>
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        layout
-      >
+      <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} layout>
         <Card
           className={`glass-card border-border/50 ${isPrimary ? "ring-1 ring-primary/40" : ""}`}
         >
@@ -114,12 +96,8 @@ export function ResumeCard({
                 <FileText className="h-6 w-6 text-red-400" />
               </div>
               <div>
-                <CardTitle className="text-lg">
-                  {extracted?.name ?? resume.title}
-                </CardTitle>
-                <CardDescription className="mt-1 line-clamp-1">
-                  {resume.file_name}
-                </CardDescription>
+                <CardTitle className="text-lg">{extracted?.name ?? resume.title}</CardTitle>
+                <CardDescription className="mt-1 line-clamp-1">{resume.file_name}</CardDescription>
               </div>
             </div>
             <Badge variant={statusVariant[status]} className="shrink-0 gap-1 capitalize">

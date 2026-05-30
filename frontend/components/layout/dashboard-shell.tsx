@@ -22,18 +22,10 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="flex min-h-screen bg-background">
-      <DashboardSidebar
-        mobileOpen={mobileNavOpen}
-        onClose={() => setMobileNavOpen(false)}
-      />
+      <DashboardSidebar mobileOpen={mobileNavOpen} onClose={() => setMobileNavOpen(false)} />
       <div className="flex min-w-0 flex-1 flex-col">
-        <DashboardTopNav
-          title={title}
-          onMenuClick={() => setMobileNavOpen(true)}
-        />
-        <div className="flex-1 bg-gradient-to-b from-muted/10 to-background">
-          {children}
-        </div>
+        <DashboardTopNav title={title} onMenuClick={() => setMobileNavOpen(true)} />
+        <div className="flex-1 bg-gradient-to-b from-muted/10 to-background">{children}</div>
       </div>
     </div>
   );

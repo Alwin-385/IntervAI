@@ -8,7 +8,6 @@ from uuid import UUID
 
 from sqlalchemy import select
 
-from app.agents.question_generator.graph import run_question_generator
 from app.core.config import get_settings
 from app.core.exceptions import NotFoundError, ValidationAppError
 from app.core.logging import get_logger
@@ -19,8 +18,8 @@ from app.models.weak_area import WeakArea
 from app.repositories.interview_question import InterviewQuestionRepository
 from app.repositories.interview_session import InterviewSessionRepository
 from app.schemas.interview_questions_gen import (
-    GenerateQuestionsResponse,
     GeneratedQuestion,
+    GenerateQuestionsResponse,
     InterviewQuestionDetail,
     QuestionGenerationResult,
 )
@@ -141,7 +140,7 @@ class InterviewQuestionGeneratorService:
                 asyncio.to_thread(_run_question_generator, initial),
                 timeout=GENERATION_TIMEOUT_SECONDS,
             )
-        except asyncio.TimeoutError as exc:
+        except TimeoutError as exc:
             raise ValidationAppError(
                 f"Question generation timed out after {GENERATION_TIMEOUT_SECONDS}s.",
             ) from exc

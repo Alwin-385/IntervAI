@@ -50,9 +50,9 @@ export function normalizeExtractedData(
   };
 }
 
-export function normalizeResume<T extends { status: string; extracted_data?: ExtractedResumeData | null }>(
-  resume: T,
-): T & { status: ResumeStatus; extracted_data: ExtractedResumeData | null } {
+export function normalizeResume<
+  T extends { status: string; extracted_data?: ExtractedResumeData | null },
+>(resume: T): T & { status: ResumeStatus; extracted_data: ExtractedResumeData | null } {
   return {
     ...resume,
     status: normalizeResumeStatus(resume.status),

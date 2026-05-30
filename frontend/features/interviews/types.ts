@@ -10,11 +10,7 @@ export type InterviewDifficulty = "beginner" | "intermediate" | "advanced";
 
 export type AnswerMode = "text" | "voice";
 
-export type InterviewSessionStatus =
-  | "scheduled"
-  | "in_progress"
-  | "completed"
-  | "cancelled";
+export type InterviewSessionStatus = "scheduled" | "in_progress" | "completed" | "cancelled";
 
 export interface InterviewCreateRequest {
   target_role: string;

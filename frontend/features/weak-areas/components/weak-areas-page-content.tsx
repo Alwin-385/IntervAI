@@ -21,8 +21,7 @@ export function WeakAreasPageContent() {
   }
 
   if (isError || !data) {
-    const message =
-      error instanceof Error ? error.message : "Failed to load weak areas";
+    const message = error instanceof Error ? error.message : "Failed to load weak areas";
     return (
       <div className="space-y-3 rounded-xl border border-destructive/30 bg-destructive/10 p-4 text-sm">
         <p>{message}</p>

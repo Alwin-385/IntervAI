@@ -91,7 +91,9 @@ def _severity_enum(priority: PriorityLevel) -> WeakAreaSeverity:
     return WeakAreaSeverity.LOW
 
 
-def _trend(recent_hits: int, recent_n: int, older_hits: int, older_n: int) -> tuple[TrendDirection, float]:
+def _trend(
+    recent_hits: int, recent_n: int, older_hits: int, older_n: int
+) -> tuple[TrendDirection, float]:
     if recent_n < 1 and older_n < 1:
         return "insufficient_data", 0.0
     recent_rate = recent_hits / recent_n if recent_n else 0.0
@@ -161,7 +163,10 @@ def _signals_for_speech(item: SpeechHistoryItem) -> list[WeakAreaSignal]:
         signals.append(WeakAreaSignal("filler_word_overuse", True, 0.5))
     if any("filler" in p.lower() for p in item.weak_patterns):
         signals.append(WeakAreaSignal("filler_word_overuse", True, 1.0))
-    if any("pace" in p.lower() or "slow" in p.lower() or "fast" in p.lower() for p in item.weak_patterns):
+    if any(
+        "pace" in p.lower() or "slow" in p.lower() or "fast" in p.lower()
+        for p in item.weak_patterns
+    ):
         signals.append(WeakAreaSignal("communication_issues", True, 0.5))
     if item.fluency_score < 60:
         signals.append(WeakAreaSignal("communication_issues", True, 0.6))
@@ -182,7 +187,7 @@ _SUGGESTIONS: dict[WeakAreaKind, tuple[list[str], list[str]]] = {
     ),
     "confidence_problems": (
         [
-            "Replace hedging (\"I think\", \"maybe\") with definitive statements.",
+            'Replace hedging ("I think", "maybe") with definitive statements.',
             "Practice power poses + 60s outline before each recorded answer.",
             "End answers with a clear takeaway tied to the role.",
         ],
@@ -205,7 +210,7 @@ _SUGGESTIONS: dict[WeakAreaKind, tuple[list[str], list[str]]] = {
     "poor_behavioral_storytelling": (
         [
             "Use STAR: Situation, Task, Action, Result with one metric in Result.",
-            "Use \"I\" for your actions, not only \"we\".",
+            'Use "I" for your actions, not only "we".',
             "Keep stories under 2 minutes with one clear conflict.",
         ],
         [
@@ -237,7 +242,7 @@ _SUGGESTIONS: dict[WeakAreaKind, tuple[list[str], list[str]]] = {
     ),
     "lack_of_structure": (
         [
-            "Template: \"Short answer → context → steps you took → measurable result.\"",
+            'Template: "Short answer → context → steps you took → measurable result."',
             "Signpost with First / Then / Finally.",
             "Hit each expected rubric bullet explicitly.",
         ],
@@ -303,7 +308,13 @@ def detect_weak_areas(
         for sig in _dedupe_signals(_signals_for_speech(s)):
             if sig.hit:
                 note = f"Speech: {s.filler_word_count} fillers · conf {s.confidence_score:.0f}%"
-                record(sig.kind, s.recorded_at, f"speech:{s.answer_id}", 100 - s.communication_score, note)
+                record(
+                    sig.kind,
+                    s.recorded_at,
+                    f"speech:{s.answer_id}",
+                    100 - s.communication_score,
+                    note,
+                )
 
     opportunities = max(len(answers) + len(speeches), 1)
 

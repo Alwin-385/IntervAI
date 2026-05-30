@@ -40,7 +40,12 @@ export function AnswerEvaluationScoreHeader({ analysis }: AnswerEvaluationScoreH
     <div className="space-y-3">
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <ScoreCard label="Overall" value={scores.overall_score} delay={0} highlight />
-        <ScoreCard label="Communication" value={scores.communication_score} delay={0.05} highlight />
+        <ScoreCard
+          label="Communication"
+          value={scores.communication_score}
+          delay={0.05}
+          highlight
+        />
         <ScoreCard label="Technical" value={scores.technical_score} delay={0.1} highlight />
         <ScoreCard label="Completeness" value={scores.completeness_score} delay={0.15} highlight />
       </div>

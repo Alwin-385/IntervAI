@@ -9,9 +9,9 @@ from pydantic import BaseModel, ValidationError
 from app.orchestration.types import AgentName
 from app.schemas.answer_evaluator import StructuredAnswerEvaluation
 from app.schemas.interview_questions_gen import GeneratedQuestion
+from app.schemas.orchestration import FeedbackReport, WeakAreaDetectionOutput
 from app.schemas.resume_analyzer import StructuredResumeAnalysis
 from app.schemas.resume_extraction import ExtractedResumeData, ResumeTextChunk
-from app.schemas.orchestration import FeedbackReport, WeakAreaDetectionOutput
 
 
 class ValidationResult(BaseModel):
@@ -69,9 +69,7 @@ def _validate_for_agent(agent: AgentName, output: dict[str, Any]) -> dict[str, A
         return WeakAreaDetectionOutput.model_validate(output).model_dump()
 
     if agent == AgentName.FEEDBACK_REPORT:
-        return FeedbackReport.model_validate(
-            output.get("report") or output
-        ).model_dump()
+        return FeedbackReport.model_validate(output.get("report") or output).model_dump()
 
     if agent == AgentName.ROADMAP:
         phases = output.get("phases") or []

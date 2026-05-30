@@ -29,8 +29,8 @@ export function CtaSection() {
             Ready to impress your next interviewer?
           </h2>
           <p className="relative mx-auto mt-4 max-w-xl text-muted-foreground">
-            Join candidates using AI-powered prep to land offers at top companies.
-            Start free — no credit card required.
+            Join candidates using AI-powered prep to land offers at top companies. Start free — no
+            credit card required.
           </p>
           <div className="relative mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <HeroCta />

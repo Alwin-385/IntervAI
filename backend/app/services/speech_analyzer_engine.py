@@ -4,7 +4,9 @@ from __future__ import annotations
 
 from uuid import UUID
 
+from app.core.config import get_settings
 from app.core.exceptions import NotFoundError, UnauthorizedError, ValidationAppError
+from app.orchestration import AgentName, get_orchestration_service
 from app.repositories.interview_answer import InterviewAnswerRepository
 from app.repositories.interview_question import InterviewQuestionRepository
 from app.repositories.interview_session import InterviewSessionRepository
@@ -18,8 +20,6 @@ from app.schemas.speech_analyze import (
     SpeechAnalyzeSessionRequest,
     SpeechSessionResultsResponse,
 )
-from app.core.config import get_settings
-from app.orchestration import AgentName, get_orchestration_service
 from app.speech.analysis_utils import is_phase12_analysis_complete
 from app.speech.analyzer import SpeechAnalysisResult, analyze_speech
 

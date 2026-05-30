@@ -32,12 +32,17 @@ export function ScoreGauge({ label, value, suffix, className }: ScoreGaugeProps)
         <span className="text-xs font-medium text-muted-foreground">{label}</span>
         <span className={cn("text-lg font-semibold tabular-nums", scoreTone(clamped))}>
           {Math.round(clamped)}
-          {suffix ? <span className="ml-0.5 text-xs font-normal text-muted-foreground">{suffix}</span> : null}
+          {suffix ? (
+            <span className="ml-0.5 text-xs font-normal text-muted-foreground">{suffix}</span>
+          ) : null}
         </span>
       </div>
       <div className="h-2 overflow-hidden rounded-full bg-muted/50">
         <div
-          className={cn("h-full rounded-full transition-all duration-700 ease-out", barTone(clamped))}
+          className={cn(
+            "h-full rounded-full transition-all duration-700 ease-out",
+            barTone(clamped),
+          )}
           style={{ width: `${clamped}%` }}
         />
       </div>

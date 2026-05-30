@@ -39,7 +39,7 @@ export function AnalyticsFilters({
   onChange,
 }: Props) {
   return (
-    <div className="glass-card rounded-xl border border-border/50 p-4 space-y-4">
+    <div className="glass-card space-y-4 rounded-xl border border-border/50 p-4">
       <p className="text-sm font-semibold">Filters</p>
 
       <div className="flex flex-wrap gap-2">

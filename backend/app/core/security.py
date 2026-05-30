@@ -5,7 +5,6 @@ from __future__ import annotations
 import re
 import time
 from collections import defaultdict
-from typing import Callable
 
 from fastapi import Request, Response
 from fastapi.responses import JSONResponse
@@ -41,6 +40,7 @@ class SecureHeadersMiddleware(BaseHTTPMiddleware):
 # In-process rate limiter (per IP, sliding window)
 # ---------------------------------------------------------------------------
 
+
 class _RateLimiter:
     def __init__(self, max_requests: int, window_seconds: int) -> None:
         self.max_requests = max_requests
@@ -63,6 +63,7 @@ class _RateLimiter:
 def _build_limiters() -> tuple[_RateLimiter, _RateLimiter, _RateLimiter]:
     try:
         from app.core.config import get_settings
+
         s = get_settings()
         return (
             _RateLimiter(s.rate_limit_default_rpm, 60),
@@ -167,7 +168,10 @@ def sanitize_user_input(text: str, *, field_name: str = "input") -> str:
 # ---------------------------------------------------------------------------
 
 _OUTPUT_STRIP_PATTERNS = [
-    re.compile(r"<\s*(system|assistant|human)\s*>.*?<\s*/\s*(system|assistant|human)\s*>", re.IGNORECASE | re.DOTALL),
+    re.compile(
+        r"<\s*(system|assistant|human)\s*>.*?<\s*/\s*(system|assistant|human)\s*>",
+        re.IGNORECASE | re.DOTALL,
+    ),
     re.compile(r"\[\s*(INST|/INST|SYS|/SYS)\s*\]", re.IGNORECASE),
     re.compile(r"###\s*(Instruction|System|Human|Assistant)\s*:", re.IGNORECASE),
 ]

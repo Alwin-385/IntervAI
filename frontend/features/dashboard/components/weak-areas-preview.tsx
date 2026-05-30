@@ -6,13 +6,7 @@ import { AlertTriangle, Loader2, Target } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useWeakAreasAnalytics } from "@/features/weak-areas/hooks/use-weak-areas-analytics";
 
 const priorityStyles = {

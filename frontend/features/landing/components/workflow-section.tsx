@@ -54,7 +54,7 @@ export function WorkflowSection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.12 }}
-                className="relative glass-card rounded-2xl p-8"
+                className="glass-card relative rounded-2xl p-8"
               >
                 <span className="text-5xl font-bold text-muted/30">{item.step}</span>
                 <div className="mt-4 inline-flex rounded-lg bg-primary/15 p-2.5">

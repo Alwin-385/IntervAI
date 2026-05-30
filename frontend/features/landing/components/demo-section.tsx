@@ -25,12 +25,11 @@ export function DemoSection() {
             AI interview demo
           </Badge>
           <h2 className="text-3xl font-bold tracking-tight md:text-4xl">
-            See how candidates get{" "}
-            <span className="text-gradient">actionable feedback</span>
+            See how candidates get <span className="text-gradient">actionable feedback</span>
           </h2>
           <p className="mt-4 text-muted-foreground">
-            Every answer is evaluated across multiple dimensions. Speech metrics
-            and structured scores help you improve faster than practicing alone.
+            Every answer is evaluated across multiple dimensions. Speech metrics and structured
+            scores help you improve faster than practicing alone.
           </p>
           <ul className="mt-8 space-y-3">
             {[
@@ -62,7 +61,7 @@ export function DemoSection() {
 
           <div className="mt-6 flex items-baseline gap-2">
             <span className="text-sm text-muted-foreground">Overall score</span>
-            <span className="text-4xl font-bold text-gradient">
+            <span className="text-gradient text-4xl font-bold">
               <AnimatedCounter value={85} suffix="%" />
             </span>
           </div>

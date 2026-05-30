@@ -12,8 +12,7 @@ pytestmark = pytest.mark.unit
 
 
 def _make_job(job_type="resume_extraction", status="pending"):
-    from app.models.background_job import BackgroundJob
-    from app.models.enums import BackgroundJobType, BackgroundJobStatus
+    from app.models.enums import BackgroundJobStatus, BackgroundJobType
 
     # Use MagicMock WITHOUT spec so attribute access doesn't return AsyncMock
     job = MagicMock()
@@ -51,6 +50,7 @@ class TestBackgroundJobService:
     @pytest.fixture
     def service(self, repo):
         from app.services.background_job_service import BackgroundJobService
+
         return BackgroundJobService(repo)
 
     @pytest.mark.asyncio
@@ -63,6 +63,7 @@ class TestBackgroundJobService:
     @pytest.mark.asyncio
     async def test_get_job_not_found_raises(self, service, repo):
         from app.core.exceptions import NotFoundError
+
         repo.get_for_user = AsyncMock(return_value=None)
         with pytest.raises(NotFoundError):
             await service.get_job(uuid.uuid4(), uuid.uuid4())
@@ -70,6 +71,7 @@ class TestBackgroundJobService:
     @pytest.mark.asyncio
     async def test_create_job(self, service, repo):
         from app.models.enums import BackgroundJobType
+
         job = _make_job()
         repo.create.return_value = job
         result = await service.create_job(
@@ -86,15 +88,24 @@ class TestBackgroundJobService:
 class TestJobsApiEndpoint:
     def test_get_job_returns_200(self, client, auth_headers, mock_user):
         from app.services.background_job_service import BackgroundJobService
+
         job = _make_job()
         job.user_id = mock_user.id
-        with patch.object(BackgroundJobService, "get_job", new_callable=AsyncMock, return_value=job):
+        with patch.object(
+            BackgroundJobService, "get_job", new_callable=AsyncMock, return_value=job
+        ):
             response = client.get(f"/api/v1/jobs/{job.id}", headers=auth_headers)
         assert response.status_code == 200
 
     def test_get_job_not_found_returns_404(self, client, auth_headers):
-        from app.services.background_job_service import BackgroundJobService
         from app.core.exceptions import NotFoundError
-        with patch.object(BackgroundJobService, "get_job", new_callable=AsyncMock, side_effect=NotFoundError("Job not found")):
+        from app.services.background_job_service import BackgroundJobService
+
+        with patch.object(
+            BackgroundJobService,
+            "get_job",
+            new_callable=AsyncMock,
+            side_effect=NotFoundError("Job not found"),
+        ):
             response = client.get(f"/api/v1/jobs/{uuid.uuid4()}", headers=auth_headers)
         assert response.status_code == 404

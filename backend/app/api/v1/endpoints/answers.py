@@ -12,13 +12,13 @@ from app.core.dependencies import (
     get_background_job_dispatcher,
 )
 from app.models.enums import BackgroundJobType
-from app.schemas.answer_evaluator import SessionEvaluationSummary
 from app.models.user import User
 from app.schemas.answer_evaluator import (
     AnswerEvaluationDetailResponse,
     EvaluateAnswerRequest,
     EvaluateSessionRequest,
     SessionAnswerEvaluationResponse,
+    SessionEvaluationSummary,
 )
 from app.services.answer_evaluator_engine import AnswerEvaluatorEngineService
 from app.services.background_job_dispatch import BackgroundJobDispatcher

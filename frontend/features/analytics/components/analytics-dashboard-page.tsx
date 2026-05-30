@@ -4,7 +4,10 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { BarChart3, Loader2 } from "lucide-react";
 
-import { AnalyticsFilters, type AnalyticsFilterState } from "@/features/analytics/components/analytics-filters";
+import {
+  AnalyticsFilters,
+  type AnalyticsFilterState,
+} from "@/features/analytics/components/analytics-filters";
 import { AnalyticsSummaryCards } from "@/features/analytics/components/analytics-summary-cards";
 import { ImprovementProgressPanel } from "@/features/analytics/components/improvement-progress-panel";
 import { InterviewHistoryChart } from "@/features/analytics/components/interview-history-chart";
@@ -77,7 +80,7 @@ export function AnalyticsDashboardPage() {
           />
         </div>
 
-        <div className="lg:col-span-3 space-y-6">
+        <div className="space-y-6 lg:col-span-3">
           <AnalyticsSummaryCards summary={data.summary} />
 
           <ScoreTrendChart data={data.score_over_time} />
@@ -110,10 +113,7 @@ export function AnalyticsDashboardPage() {
 
           <RoleReadinessPanel items={data.role_readiness} />
 
-          <ImprovementProgressPanel
-            snapshot={data.improvement_progress}
-            progress={progress}
-          />
+          <ImprovementProgressPanel snapshot={data.improvement_progress} progress={progress} />
 
           <InterviewHistoryTable
             items={data.interview_history}

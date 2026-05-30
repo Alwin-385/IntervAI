@@ -5,7 +5,7 @@ from uuid import UUID
 from sqlalchemy import select
 
 from app.models.background_job import BackgroundJob
-from app.models.enums import BackgroundJobStatus, BackgroundJobType
+from app.models.enums import BackgroundJobType
 from app.repositories.base import BaseRepository
 
 

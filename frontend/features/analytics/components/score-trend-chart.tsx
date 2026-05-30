@@ -40,11 +40,11 @@ export function ScoreTrendChart({ data }: Props) {
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-              <XAxis
-                dataKey="name"
+              <XAxis dataKey="name" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }} />
+              <YAxis
+                domain={[0, 100]}
                 tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }}
               />
-              <YAxis domain={[0, 100]} tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }} />
               <Tooltip
                 contentStyle={{
                   background: "hsl(var(--card))",

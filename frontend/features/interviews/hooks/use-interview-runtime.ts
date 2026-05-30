@@ -40,9 +40,7 @@ function mergeSubmitResponse(
     ...previous,
     progress: response.progress,
     questions: previous.questions.map((item) =>
-      item.question.id === body.question_id
-        ? { ...item, answer: response.answer }
-        : item,
+      item.question.id === body.question_id ? { ...item, answer: response.answer } : item,
     ),
   };
 }

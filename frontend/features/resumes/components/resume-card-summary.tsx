@@ -11,7 +11,11 @@ import { contactEntries } from "@/features/resumes/utils";
 const SKILL_PREVIEW = 5;
 
 function entryHeadline(text: string, maxLen = 110): string {
-  const line = text.split("\n").map((l) => l.trim()).find(Boolean) ?? "";
+  const line =
+    text
+      .split("\n")
+      .map((l) => l.trim())
+      .find(Boolean) ?? "";
   const headline = line.replace(/^[-•]\s*/, "").trim();
   if (headline.length <= maxLen) return headline;
   return `${headline.slice(0, maxLen).trim()}…`;

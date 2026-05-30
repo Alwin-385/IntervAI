@@ -65,17 +65,30 @@ export function AnswerEvaluationResults({
         </motion.p>
       )}
 
-      <motion.div custom={1} variants={reveal} initial="hidden" animate="show" className="space-y-4">
+      <motion.div
+        custom={1}
+        variants={reveal}
+        initial="hidden"
+        animate="show"
+        className="space-y-4"
+      >
         <div className="flex flex-wrap items-center gap-3">
           <CorrectnessBadge verdict={analysis.correctness_verdict} />
           <span className="text-sm text-muted-foreground">
-            Rubric match: <span className="font-medium text-foreground">{Math.round(analysis.rubric_score)}%</span>
+            Rubric match:{" "}
+            <span className="font-medium text-foreground">
+              {Math.round(analysis.rubric_score)}%
+            </span>
           </span>
         </div>
         {analysis.correctness_explanation && (
-          <p className="text-sm leading-relaxed text-muted-foreground">{analysis.correctness_explanation}</p>
+          <p className="text-sm leading-relaxed text-muted-foreground">
+            {analysis.correctness_explanation}
+          </p>
         )}
-        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Score overview</p>
+        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+          Score overview
+        </p>
         <AnswerEvaluationScoreHeader analysis={analysis} />
       </motion.div>
 

@@ -77,10 +77,7 @@ export function VoiceRecorder({
   }, [phase]);
 
   const rebuildClipTranscript = useCallback((collapse = false) => {
-    const parts = [
-      ...utterancesRef.current,
-      currentSessionRef.current.trim(),
-    ].filter(Boolean);
+    const parts = [...utterancesRef.current, currentSessionRef.current.trim()].filter(Boolean);
     const joined = parts.reduce((acc, p) => appendUtterance(acc, p), "");
     return collapse ? collapseRepeatedPhrases(joined) : joined;
   }, []);
@@ -200,7 +197,9 @@ export function VoiceRecorder({
         recognitionRef.current = recognition;
         recognition.start();
       } else {
-        toast.warning("Live captions need Chrome or Edge. You can still record audio and type below.");
+        toast.warning(
+          "Live captions need Chrome or Edge. You can still record audio and type below.",
+        );
       }
     } catch {
       toast.error("Microphone access denied or unavailable.");
@@ -264,12 +263,17 @@ export function VoiceRecorder({
       setPhase("ready");
       if (!merged && result.audio_storage_path) {
         toast.success("Recording saved — add or edit your answer text below.");
-      } else if (merged.length < sessionBrowserTranscript.length * 0.5 && sessionBrowserTranscript.length > 40) {
+      } else if (
+        merged.length < sessionBrowserTranscript.length * 0.5 &&
+        sessionBrowserTranscript.length > 40
+      ) {
         onTranscriptChange(sessionBrowserTranscript);
         toast.warning("Used browser transcript — server merge was shorter than expected.");
       } else {
         toast.success(
-          merged.length > 0 ? `Transcript saved (${merged.split(/\s+/).length} words)` : "Transcript saved",
+          merged.length > 0
+            ? `Transcript saved (${merged.split(/\s+/).length} words)`
+            : "Transcript saved",
         );
       }
     } catch (err) {
@@ -312,7 +316,8 @@ export function VoiceRecorder({
           <span className="text-sm text-muted-foreground">
             {phase === "recording" && (
               <>
-                Recording <span className="font-mono text-foreground">{formatRecTime(recordingSeconds)}</span>
+                Recording{" "}
+                <span className="font-mono text-foreground">{formatRecTime(recordingSeconds)}</span>
               </>
             )}
             {phase === "uploading" && "Saving recording…"}
@@ -379,7 +384,8 @@ export function VoiceRecorder({
           {capabilities?.transcription_mode === "whisper"
             ? "Whisper mode: browser captions used as fallback."
             : "Long answers supported — Chrome restarts the mic about every minute; we keep appending. Speak in Chrome or Edge."}
-          {!speechSupported && " Use Chrome or Edge for live captions, or type your answer manually."}
+          {!speechSupported &&
+            " Use Chrome or Edge for live captions, or type your answer manually."}
         </p>
       </div>
 

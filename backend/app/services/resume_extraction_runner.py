@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import asyncio
 import threading
-from uuid import UUID, uuid4
+from uuid import UUID
 
 from app.core.config import get_settings
 from app.core.database import db_manager
@@ -58,7 +58,9 @@ def _start_legacy_thread(resume_id: UUID) -> None:
         try:
             execute_resume_extraction(resume_id)
         except Exception as exc:
-            logger.exception("resume_extract_thread_failed", resume_id=str(resume_id), error=str(exc))
+            logger.exception(
+                "resume_extract_thread_failed", resume_id=str(resume_id), error=str(exc)
+            )
 
     threading.Thread(
         target=_run,

@@ -13,9 +13,8 @@ from app.core.config import get_settings
 
 
 def sync_database_url(async_url: str) -> str:
-    return (
-        async_url.replace("postgresql+asyncpg://", "postgresql+psycopg2://")
-        .replace("postgres+asyncpg://", "postgresql+psycopg2://")
+    return async_url.replace("postgresql+asyncpg://", "postgresql+psycopg2://").replace(
+        "postgres+asyncpg://", "postgresql+psycopg2://"
     )
 
 

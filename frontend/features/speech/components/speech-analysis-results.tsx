@@ -21,10 +21,7 @@ interface SpeechAnalysisResultsProps {
   perQuestionScores?: { name: string; communication: number; fluency: number }[];
 }
 
-export function SpeechAnalysisResults({
-  analysis,
-  perQuestionScores,
-}: SpeechAnalysisResultsProps) {
+export function SpeechAnalysisResults({ analysis, perQuestionScores }: SpeechAnalysisResultsProps) {
   return (
     <div className="space-y-8">
       {(analysis.role_target || analysis.question_label) && (
@@ -37,11 +34,13 @@ export function SpeechAnalysisResults({
         >
           {analysis.question_label ? (
             <>
-              Question <span className="font-medium text-foreground">{analysis.question_label}</span>
+              Question{" "}
+              <span className="font-medium text-foreground">{analysis.question_label}</span>
               {analysis.role_target ? (
                 <>
                   {" "}
-                  · Role: <span className="font-medium text-foreground">{analysis.role_target}</span>
+                  · Role:{" "}
+                  <span className="font-medium text-foreground">{analysis.role_target}</span>
                 </>
               ) : null}
             </>
@@ -65,10 +64,7 @@ export function SpeechAnalysisResults({
         <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
           Visual breakdown
         </p>
-        <SpeechAnalysisCharts
-          analysis={analysis}
-          perQuestionScores={perQuestionScores}
-        />
+        <SpeechAnalysisCharts analysis={analysis} perQuestionScores={perQuestionScores} />
       </motion.div>
 
       <motion.div custom={3} variants={reveal} initial="hidden" animate="show">

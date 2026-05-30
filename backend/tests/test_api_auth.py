@@ -1,15 +1,14 @@
 """Tests for authentication flow: missing token, invalid token, valid session."""
 
 import pytest
-from unittest.mock import patch
 
 pytestmark = pytest.mark.unit
 
 
 def test_resumes_requires_auth(app):
     from fastapi.testclient import TestClient
+
     from app.core.auth.dependencies import get_current_user
-    from app.core.database import get_db_session
 
     # Remove auth override to test real auth path
     clean_app = app
@@ -29,6 +28,7 @@ def test_me_endpoint_exists(client, mock_user, auth_headers):
 
 def test_missing_token_returns_401_or_403(app):
     from fastapi.testclient import TestClient
+
     from app.core.auth.dependencies import get_current_user
 
     # Remove auth override

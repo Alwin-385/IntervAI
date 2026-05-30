@@ -50,7 +50,9 @@ export function SpeechAnalysisSections({ analysis }: SpeechAnalysisSectionsProps
           <ul className="space-y-3 text-sm">
             <li className="flex justify-between rounded-md bg-muted/20 px-3 py-2">
               <span className="text-muted-foreground">Words per minute</span>
-              <span className="font-medium tabular-nums">{Math.round(analysis.delivery.words_per_minute)}</span>
+              <span className="font-medium tabular-nums">
+                {Math.round(analysis.delivery.words_per_minute)}
+              </span>
             </li>
             <li className="flex justify-between rounded-md bg-muted/20 px-3 py-2">
               <span className="text-muted-foreground">Pace</span>
@@ -73,7 +75,9 @@ export function SpeechAnalysisSections({ analysis }: SpeechAnalysisSectionsProps
           </ul>
           {analysis.filler_breakdown.length > 0 && (
             <div className="mt-4">
-              <p className="mb-2 text-xs font-semibold uppercase text-muted-foreground">Filler words</p>
+              <p className="mb-2 text-xs font-semibold uppercase text-muted-foreground">
+                Filler words
+              </p>
               <div className="flex flex-wrap gap-1.5">
                 {analysis.filler_breakdown.map((f) => (
                   <Badge key={f.word} variant="outline" className="text-xs font-normal">

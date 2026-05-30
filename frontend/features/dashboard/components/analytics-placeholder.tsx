@@ -3,13 +3,7 @@
 import { motion } from "framer-motion";
 import { BarChart3, TrendingUp } from "lucide-react";
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 const barHeights = [40, 65, 45, 80, 55, 72, 48, 90, 60, 75, 52, 85];
 

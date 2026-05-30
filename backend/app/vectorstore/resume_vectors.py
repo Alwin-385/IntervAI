@@ -133,9 +133,7 @@ def index_resume_chunks(
 def _resume_filter(resume_id: str):
     from qdrant_client.models import FieldCondition, Filter, MatchValue
 
-    return Filter(
-        must=[FieldCondition(key="resume_id", match=MatchValue(value=resume_id))]
-    )
+    return Filter(must=[FieldCondition(key="resume_id", match=MatchValue(value=resume_id))])
 
 
 def search_resume_chunks_safe(

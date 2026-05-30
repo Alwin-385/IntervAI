@@ -11,8 +11,8 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base
 from app.models.enums import RoadmapStatus
-from app.models.pg_enum import pg_enum
 from app.models.mixins import TimestampMixin, UUIDPrimaryKeyMixin
+from app.models.pg_enum import pg_enum
 
 if TYPE_CHECKING:
     from app.models.user import User

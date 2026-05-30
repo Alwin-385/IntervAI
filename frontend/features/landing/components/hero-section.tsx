@@ -38,8 +38,7 @@ export function HeroSection() {
           transition={{ duration: 0.6, delay: 0.1 }}
           className="max-w-4xl text-center text-4xl font-bold leading-[1.1] tracking-tight md:text-6xl lg:text-7xl"
         >
-          Hire-ready interviews,{" "}
-          <span className="text-gradient">powered by intelligence</span>
+          Hire-ready interviews, <span className="text-gradient">powered by intelligence</span>
         </motion.h1>
 
         <motion.p
@@ -48,8 +47,8 @@ export function HeroSection() {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="mt-6 max-w-2xl text-center text-lg text-muted-foreground md:text-xl"
         >
-          Practice role-specific mock interviews, get scored feedback, and track
-          weak areas — the modern stack recruiters expect from top candidates.
+          Practice role-specific mock interviews, get scored feedback, and track weak areas — the
+          modern stack recruiters expect from top candidates.
         </motion.p>
 
         <motion.div
@@ -72,9 +71,7 @@ export function HeroSection() {
                 <span className="h-3 w-3 rounded-full bg-red-500/80" />
                 <span className="h-3 w-3 rounded-full bg-amber-500/80" />
                 <span className="h-3 w-3 rounded-full bg-emerald-500/80" />
-                <span className="ml-2 text-xs text-muted-foreground">
-                  Live interview preview
-                </span>
+                <span className="ml-2 text-xs text-muted-foreground">Live interview preview</span>
               </div>
               <div className="mt-6 space-y-4">
                 <div className="flex gap-3">
@@ -82,8 +79,7 @@ export function HeroSection() {
                     <Zap className="h-4 w-4 text-primary" />
                   </div>
                   <div className="rounded-lg rounded-tl-none border border-border/60 bg-muted/30 px-4 py-3 text-sm">
-                    Tell me about a time you led a cross-functional project under
-                    tight deadlines.
+                    Tell me about a time you led a cross-functional project under tight deadlines.
                   </div>
                 </div>
                 <div className="flex justify-end gap-3">

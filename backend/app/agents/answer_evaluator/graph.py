@@ -6,8 +6,8 @@ import json
 from typing import Any, TypedDict
 
 from app.agents.answer_evaluator.heuristic import build_heuristic_evaluation
-from app.agents.answer_evaluator.rubric import apply_rubric_to_evaluation
 from app.agents.answer_evaluator.prompts import SYSTEM_PROMPT, USER_TEMPLATE
+from app.agents.answer_evaluator.rubric import apply_rubric_to_evaluation
 from app.ai.providers.factory import get_llm_provider
 from app.core.config import get_settings
 from app.core.logging import get_logger
@@ -31,7 +31,11 @@ def _speech_block(ctx: AnswerEvaluationContext) -> str:
         parts.append(f"wpm={sc.words_per_minute:.0f}")
     if not parts:
         return "Speech delivery analysis: not available."
-    return "Speech delivery (Phase 12): " + ", ".join(parts) + ". Factor delivery into communication/confidence scores."
+    return (
+        "Speech delivery (Phase 12): "
+        + ", ".join(parts)
+        + ". Factor delivery into communication/confidence scores."
+    )
 
 
 class EvaluatorState(TypedDict, total=False):
@@ -44,15 +48,14 @@ def _evaluate_step(state: EvaluatorState) -> EvaluatorState:
     settings = get_settings()
     evaluation: StructuredAnswerEvaluation | None = None
 
-    use_llm = (
-        not settings.answer_evaluation_heuristic_only
-        and bool(settings.openai_api_key)
-    )
+    use_llm = not settings.answer_evaluation_heuristic_only and bool(settings.openai_api_key)
 
     if use_llm:
         llm = get_llm_provider(settings)
         try:
-            criteria_block = "\n".join(f"- {c}" for c in ctx.evaluation_criteria) or "- General quality"
+            criteria_block = (
+                "\n".join(f"- {c}" for c in ctx.evaluation_criteria) or "- General quality"
+            )
             points_block = "\n".join(f"- {p}" for p in ctx.expected_answer_points) or "- N/A"
             speech_block = _speech_block(ctx)
             user_msg = USER_TEMPLATE.format(
@@ -82,7 +85,9 @@ def _evaluate_step(state: EvaluatorState) -> EvaluatorState:
             evaluation = apply_rubric_to_evaluation(evaluation, ctx)
             logger.info("answer_evaluation_llm_ok", answer_id=str(ctx.answer_id))
         except Exception as exc:
-            logger.warning("answer_evaluation_llm_failed", error=str(exc), answer_id=str(ctx.answer_id))
+            logger.warning(
+                "answer_evaluation_llm_failed", error=str(exc), answer_id=str(ctx.answer_id)
+            )
 
     if evaluation is None:
         evaluation = build_heuristic_evaluation(ctx)

@@ -14,7 +14,12 @@ def _execute(state: AgentWorkflowState) -> AgentWorkflowState:
         raise ValueError("Question generator produced no questions")
     memory = merge_memory(
         state,
-        {"question_generation": {"count": len(questions), "rag_chunks": len(payload.get("rag_snippets") or [])}},
+        {
+            "question_generation": {
+                "count": len(questions),
+                "rag_chunks": len(payload.get("rag_snippets") or []),
+            }
+        },
     )
     return {
         **state,

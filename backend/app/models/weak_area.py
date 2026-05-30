@@ -11,8 +11,8 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base
 from app.models.enums import WeakAreaSeverity
-from app.models.pg_enum import pg_enum
 from app.models.mixins import TimestampMixin, UUIDPrimaryKeyMixin
+from app.models.pg_enum import pg_enum
 
 if TYPE_CHECKING:
     from app.models.resume_analysis import ResumeAnalysis

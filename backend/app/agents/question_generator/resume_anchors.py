@@ -20,7 +20,9 @@ DSA_PROJECT_RATIO = 0.20
 class ResumeAnchor:
     """One resume line item used to personalize a question."""
 
-    source: str  # project | experience | skill | education | certification | achievement | internship
+    source: (
+        str  # project | experience | skill | education | certification | achievement | internship
+    )
     text: str
     display: str  # shown in UI source_hint
     slot_variant: int = 0  # disambiguates template rotation when anchors must repeat
@@ -97,9 +99,7 @@ def build_resume_anchor_plan(
     if not use_resume or (not projects and not others):
         return [None] * count
 
-    project_anchors = [
-        ResumeAnchor("project", t, f"Project: {t[:70]}") for t in projects
-    ]
+    project_anchors = [ResumeAnchor("project", t, f"Project: {t[:70]}") for t in projects]
     project_slots = 0
     if project_anchors:
         project_slots = max(1, min(len(project_anchors), round(count * ratio)))

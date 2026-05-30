@@ -24,7 +24,10 @@ export function TargetRolePicker({ value, onChange, disabled }: TargetRolePicker
 
   return (
     <div className="w-full min-w-[220px] max-w-md">
-      <label className="mb-1 flex items-center gap-1.5 text-xs text-muted-foreground" htmlFor="target-role">
+      <label
+        className="mb-1 flex items-center gap-1.5 text-xs text-muted-foreground"
+        htmlFor="target-role"
+      >
         <Briefcase className="h-3 w-3" />
         Target role
       </label>

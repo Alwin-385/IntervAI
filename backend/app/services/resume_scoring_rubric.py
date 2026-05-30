@@ -11,15 +11,35 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass, field
 
-from app.schemas.resume_analyzer import ATSBreakdown, AnalysisScores, StructuredResumeAnalysis
+from app.schemas.resume_analyzer import AnalysisScores, ATSBreakdown, StructuredResumeAnalysis
 from app.schemas.resume_extraction import ExtractedResumeData
 
 ACTION_VERBS = frozenset(
     {
-        "built", "developed", "designed", "implemented", "led", "managed", "improved",
-        "reduced", "increased", "delivered", "launched", "optimized", "automated",
-        "created", "engineered", "deployed", "migrated", "scaled", "achieved",
-        "collaborated", "mentored", "analyzed", "researched", "maintained",
+        "built",
+        "developed",
+        "designed",
+        "implemented",
+        "led",
+        "managed",
+        "improved",
+        "reduced",
+        "increased",
+        "delivered",
+        "launched",
+        "optimized",
+        "automated",
+        "created",
+        "engineered",
+        "deployed",
+        "migrated",
+        "scaled",
+        "achieved",
+        "collaborated",
+        "mentored",
+        "analyzed",
+        "researched",
+        "maintained",
     }
 )
 
@@ -28,11 +48,46 @@ STANDARD_SECTIONS = frozenset(
 )
 
 TECH_CATALOG = [
-    "Python", "Java", "JavaScript", "TypeScript", "React", "Next.js", "Node.js", "SQL",
-    "Docker", "Kubernetes", "AWS", "Azure", "GCP", "Git", "CI/CD", "C++", "C#", "Go",
-    "Rust", "HTML", "CSS", "Tailwind", "FastAPI", "Django", "Flask", "Spring",
-    "PostgreSQL", "MySQL", "MongoDB", "Redis", "Kafka", "Spark", "TensorFlow",
-    "PyTorch", "Pandas", "NumPy", "Scikit-learn", "Figma", "Selenium", "Jest",
+    "Python",
+    "Java",
+    "JavaScript",
+    "TypeScript",
+    "React",
+    "Next.js",
+    "Node.js",
+    "SQL",
+    "Docker",
+    "Kubernetes",
+    "AWS",
+    "Azure",
+    "GCP",
+    "Git",
+    "CI/CD",
+    "C++",
+    "C#",
+    "Go",
+    "Rust",
+    "HTML",
+    "CSS",
+    "Tailwind",
+    "FastAPI",
+    "Django",
+    "Flask",
+    "Spring",
+    "PostgreSQL",
+    "MySQL",
+    "MongoDB",
+    "Redis",
+    "Kafka",
+    "Spark",
+    "TensorFlow",
+    "PyTorch",
+    "Pandas",
+    "NumPy",
+    "Scikit-learn",
+    "Figma",
+    "Selenium",
+    "Jest",
 ]
 
 
@@ -479,7 +534,9 @@ def _strengths(audit: ResumeAudit, scores: AnalysisScores) -> list[str]:
             f"Quantified outcomes appear in {audit.bullets_with_metrics} bullets — recruiters value measurable impact.",
         )
     if len(audit.skills) >= 8:
-        out.append(f"Skills inventory ({len(audit.skills)} items) supports technical screening for {audit.role}.")
+        out.append(
+            f"Skills inventory ({len(audit.skills)} items) supports technical screening for {audit.role}."
+        )
     if audit.projects and scores.project_strength_score >= 65:
         out.append("Projects section shows applied work beyond coursework or job titles alone.")
     if audit.experience or audit.internships:
@@ -494,22 +551,36 @@ def _strengths(audit: ResumeAudit, scores: AnalysisScores) -> list[str]:
 def _weaknesses(audit: ResumeAudit, scores: AnalysisScores) -> list[str]:
     out: list[str] = []
     if scores.ats_score < 60:
-        out.append("ATS compatibility is weak — headings, keywords, or contact may block automated parsing.")
+        out.append(
+            "ATS compatibility is weak — headings, keywords, or contact may block automated parsing."
+        )
     if audit.keyword_misses:
         out.append(
             f"Target-role keywords missing or buried: {', '.join(_title(kw) for kw in audit.keyword_misses[:4])}.",
         )
     if audit.tech_misses:
-        out.append(f"Stack gaps vs typical {audit.role} postings: {', '.join(audit.tech_misses[:4])}.")
+        out.append(
+            f"Stack gaps vs typical {audit.role} postings: {', '.join(audit.tech_misses[:4])}."
+        )
     if not audit.experience and not audit.internships:
-        out.append("No employment or internship narrative — readiness score is capped without work history.")
+        out.append(
+            "No employment or internship narrative — readiness score is capped without work history."
+        )
     if audit.bullets_total and audit.bullets_with_metrics / audit.bullets_total < 0.3:
-        out.append("Most bullets lack numbers (%, scale, latency, revenue) — hard to justify seniority or impact.")
+        out.append(
+            "Most bullets lack numbers (%, scale, latency, revenue) — hard to justify seniority or impact."
+        )
     if len(audit.skills) >= 8 and _skills_evidenced_in_work(audit) < 3:
-        out.append("Several listed skills are not reinforced in experience or project bullets (credibility risk).")
+        out.append(
+            "Several listed skills are not reinforced in experience or project bullets (credibility risk)."
+        )
     if scores.project_strength_score < 50 and audit.role.lower().find("engineer") >= 0:
-        out.append("Project depth is below typical bar for engineering roles — expand tech + outcome per project.")
-    return out[:6] or ["Review section order and mirror language from job descriptions for your target role."]
+        out.append(
+            "Project depth is below typical bar for engineering roles — expand tech + outcome per project."
+        )
+    return out[:6] or [
+        "Review section order and mirror language from job descriptions for your target role."
+    ]
 
 
 def _recommendations(audit: ResumeAudit, scores: AnalysisScores) -> list[str]:
@@ -524,12 +595,18 @@ def _recommendations(audit: ResumeAudit, scores: AnalysisScores) -> list[str]:
             f"If you have exposure to {audit.tech_misses[0]}, add one bullet with context; otherwise build a small demo project.",
         )
     if audit.bullets_with_metrics < 3:
-        recs.append("Rewrite 3–5 bullets as: Action verb + task + metric (e.g. reduced latency 40%, 10k users).")
+        recs.append(
+            "Rewrite 3–5 bullets as: Action verb + task + metric (e.g. reduced latency 40%, 10k users)."
+        )
     if scores.ats_score < 70:
-        recs.append("Use standard headings (Experience, Education, Skills, Projects) and a single-column layout for ATS.")
+        recs.append(
+            "Use standard headings (Experience, Education, Skills, Projects) and a single-column layout for ATS."
+        )
     if not audit.contact.get("linkedin") and "engineer" in audit.role.lower():
         recs.append("Add LinkedIn and GitHub links near contact — expected for technical roles.")
-    recs.append(f"Customize a version of this resume for each posting; emphasize {audit.profile.emphasis}.")
+    recs.append(
+        f"Customize a version of this resume for each posting; emphasize {audit.profile.emphasis}."
+    )
     return recs[:7]
 
 
@@ -662,9 +739,13 @@ def _detect_sections(text_lower: str, extracted: ExtractedResumeData) -> set[str
 def _formatting_issues(text: str, sections: set[str]) -> list[str]:
     issues: list[str] = []
     if len(text) > 14000:
-        issues.append("Resume text is very long — tighten to 1–2 pages for ATS and recruiter skim time.")
+        issues.append(
+            "Resume text is very long — tighten to 1–2 pages for ATS and recruiter skim time."
+        )
     if len(sections) < 3:
-        issues.append("Standard section headings (Experience, Education, Skills) may be missing for ATS parsers.")
+        issues.append(
+            "Standard section headings (Experience, Education, Skills) may be missing for ATS parsers."
+        )
     caps_words = len(re.findall(r"\b[A-Z]{4,}\b", text))
     if caps_words > 12:
         issues.append("Excessive ALL CAPS can reduce ATS parsing quality.")

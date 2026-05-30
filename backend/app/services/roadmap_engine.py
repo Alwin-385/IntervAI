@@ -488,14 +488,16 @@ class RoadmapEngineService:
             if old.status == RoadmapStatus.ACTIVE:
                 await self.roadmap_repo.update(old, {"status": RoadmapStatus.ARCHIVED})
 
-        entity = await self.roadmap_repo.create({
-            "user_id": user_id,
-            "title": title,
-            "description": summary,
-            "status": RoadmapStatus.ACTIVE,
-            "target_role": target_role,
-            "milestones": milestones,
-        })
+        entity = await self.roadmap_repo.create(
+            {
+                "user_id": user_id,
+                "title": title,
+                "description": summary,
+                "status": RoadmapStatus.ACTIVE,
+                "target_role": target_role,
+                "milestones": milestones,
+            }
+        )
 
         return _entity_to_response(entity, phases, summary)
 
@@ -523,7 +525,7 @@ class RoadmapEngineService:
         item_id: str,
         completed: bool,
     ) -> GeneratedRoadmapResponse:
-        from app.core.exceptions import NotFoundError, UnauthorizedError
+        from app.core.exceptions import UnauthorizedError
 
         entity = await self.roadmap_repo.get_by_id_or_raise(roadmap_id, resource="Roadmap")
         if entity.user_id != user_id:
@@ -544,6 +546,7 @@ class RoadmapEngineService:
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
+
 
 def _map_answer_row(row) -> AnswerHistoryItem | None:
     ev, ans, question, session = row
@@ -605,9 +608,13 @@ def _milestones_to_phases(milestones: list[dict]) -> list[RoadmapPhase]:
     return phases
 
 
-def _entity_to_response(entity, phases: list[RoadmapPhase], summary: str) -> GeneratedRoadmapResponse:
+def _entity_to_response(
+    entity, phases: list[RoadmapPhase], summary: str
+) -> GeneratedRoadmapResponse:
     total = sum(len(p.items) for p in phases)
-    addressed = list({item.weak_area_kind for p in phases for item in p.items if item.weak_area_kind})
+    addressed = list(
+        {item.weak_area_kind for p in phases for item in p.items if item.weak_area_kind}
+    )
     return GeneratedRoadmapResponse(
         id=entity.id,
         created_at=entity.created_at,

@@ -119,11 +119,7 @@ export function InterviewSessionPlayer({ sessionId, runtime }: InterviewSessionP
   }, [runtime.started_at]);
 
   const saveCurrentAnswer = useCallback(
-    async (opts: {
-      autosave: boolean;
-      advance: boolean;
-      resumeIndex?: number;
-    }) => {
+    async (opts: { autosave: boolean; advance: boolean; resumeIndex?: number }) => {
       const idx = activeIndexRef.current;
       const item = runtime.questions[clampIndex(idx, total)];
       if (!item || savingRef.current) return;
@@ -374,13 +370,7 @@ export function InterviewSessionPlayer({ sessionId, runtime }: InterviewSessionP
                       ? `Question ${idx + 1}, submitted`
                       : `Question ${idx + 1}`
                 }
-                title={
-                  isDraftOnly
-                    ? "Draft saved"
-                    : isSubmitted
-                      ? "Submitted"
-                      : undefined
-                }
+                title={isDraftOnly ? "Draft saved" : isSubmitted ? "Submitted" : undefined}
                 aria-current={isActive ? "step" : undefined}
               >
                 {idx + 1}

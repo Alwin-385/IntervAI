@@ -117,9 +117,7 @@ export function collapseRepeatedPhrases(text: string, minBlockWords = 12): strin
 }
 
 export function joinSpeechSegments(segments: string[]): string {
-  return collapseRepeatedPhrases(
-    segments.reduce((acc, seg) => appendUtterance(acc, seg), ""),
-  );
+  return collapseRepeatedPhrases(segments.reduce((acc, seg) => appendUtterance(acc, seg), ""));
 }
 
 export function pickBestTranscript(...candidates: (string | undefined | null)[]): string {

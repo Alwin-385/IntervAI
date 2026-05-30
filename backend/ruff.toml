@@ -6,8 +6,11 @@ select = ["E", "W", "F", "I", "B", "C4", "UP"]
 ignore = [
     "E501",
     "B008",  # FastAPI Depends() in defaults
+    "UP042",  # str+Enum enums used with SQLAlchemy/pg_enum
+    "UP046",  # Generic subclass style
+    "UP047",  # Generic function type parameters
 ]
-per-file-ignores = { "tests/**" = ["S", "ANN"] }
+per-file-ignores = { "tests/**" = ["S", "ANN", "E402"] }
 
 [format]
 quote-style = "double"

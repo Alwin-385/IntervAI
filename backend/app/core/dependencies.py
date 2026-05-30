@@ -7,8 +7,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db_session
 from app.repositories.analytics_queries import AnalyticsQueryRepository
-from app.repositories.background_job import BackgroundJobRepository
 from app.repositories.answer_evaluation import AnswerEvaluationRepository
+from app.repositories.background_job import BackgroundJobRepository
 from app.repositories.interview_answer import InterviewAnswerRepository
 from app.repositories.interview_question import InterviewQuestionRepository
 from app.repositories.interview_session import InterviewSessionRepository
@@ -19,11 +19,11 @@ from app.repositories.speech_analysis import SpeechAnalysisRepository
 from app.repositories.user import UserRepository
 from app.repositories.weak_area import WeakAreaRepository
 from app.schemas.common import PaginationQuery
+from app.services.analytics_dashboard_engine import AnalyticsDashboardEngineService
 from app.services.answer_evaluation import AnswerEvaluationService
+from app.services.answer_evaluator_engine import AnswerEvaluatorEngineService
 from app.services.background_job_dispatch import BackgroundJobDispatcher
 from app.services.background_job_service import BackgroundJobService
-from app.services.analytics_dashboard_engine import AnalyticsDashboardEngineService
-from app.services.answer_evaluator_engine import AnswerEvaluatorEngineService
 from app.services.dashboard import DashboardService
 from app.services.interview_answer import InterviewAnswerService
 from app.services.interview_question import InterviewQuestionService
@@ -261,7 +261,9 @@ async def get_answer_evaluator_engine_service(
     eval_repo: Annotated[AnswerEvaluationRepository, Depends(get_answer_evaluation_repository)],
     speech_repo: Annotated[SpeechAnalysisRepository, Depends(get_speech_analysis_repository)],
 ) -> AnswerEvaluatorEngineService:
-    return AnswerEvaluatorEngineService(session_repo, question_repo, answer_repo, eval_repo, speech_repo)
+    return AnswerEvaluatorEngineService(
+        session_repo, question_repo, answer_repo, eval_repo, speech_repo
+    )
 
 
 async def get_weak_area_service(

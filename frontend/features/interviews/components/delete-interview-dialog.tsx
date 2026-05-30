@@ -54,7 +54,12 @@ export function DeleteInterviewDialog({
           {trigger}
         </span>
       ) : (
-        <Button variant="outline" size="sm" className="gap-2 text-destructive" onClick={() => setOpen(true)}>
+        <Button
+          variant="outline"
+          size="sm"
+          className="gap-2 text-destructive"
+          onClick={() => setOpen(true)}
+        >
           <Trash2 className="h-4 w-4" />
           Delete
         </Button>

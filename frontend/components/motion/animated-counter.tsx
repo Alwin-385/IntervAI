@@ -48,10 +48,7 @@ export function AnimatedCounter({
     requestAnimationFrame(tick);
   }, [isInView, value, duration, delay]);
 
-  const formatted =
-    decimals > 0
-      ? display.toFixed(decimals)
-      : Math.round(display).toLocaleString();
+  const formatted = decimals > 0 ? display.toFixed(decimals) : Math.round(display).toLocaleString();
 
   return (
     <span ref={ref} className={className}>

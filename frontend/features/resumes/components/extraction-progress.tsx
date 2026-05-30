@@ -34,7 +34,7 @@ export function ExtractionProgress({ status }: ExtractionProgressProps) {
               className={cn(
                 "flex items-center gap-2 text-xs",
                 done && "text-emerald-400",
-                active && "text-amber-400 font-medium",
+                active && "font-medium text-amber-400",
                 !done && !active && "text-muted-foreground",
               )}
             >

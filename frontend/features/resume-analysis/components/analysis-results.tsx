@@ -31,8 +31,7 @@ export function AnalysisResults({ analysis }: AnalysisResultsProps) {
           animate="show"
           className="text-sm text-muted-foreground"
         >
-          Evaluated for:{" "}
-          <span className="font-medium text-foreground">{analysis.role_target}</span>
+          Evaluated for: <span className="font-medium text-foreground">{analysis.role_target}</span>
         </motion.p>
       )}
 

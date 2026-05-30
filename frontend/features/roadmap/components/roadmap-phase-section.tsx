@@ -53,18 +53,18 @@ export function RoadmapPhaseSection({ phase, roadmapId, onToggle, pendingItemId,
       transition={{ delay: index * 0.1 }}
     >
       {/* Phase header */}
-      <div className="flex items-start gap-4 mb-4">
+      <div className="mb-4 flex items-start gap-4">
         <div
           className={`relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 bg-background ${config.borderColor}`}
         >
           <Icon className={`h-5 w-5 ${config.color}`} />
           {/* Timeline connector dot */}
           <span
-            className={`absolute -bottom-[calc(100%+4px)] left-1/2 -translate-x-1/2 h-full w-0.5 ${config.dotColor}/30`}
+            className={`absolute -bottom-[calc(100%+4px)] left-1/2 h-full w-0.5 -translate-x-1/2 ${config.dotColor}/30`}
           />
         </div>
         <div className="flex-1 pt-1">
-          <div className="flex items-center gap-3 flex-wrap">
+          <div className="flex flex-wrap items-center gap-3">
             <h3 className={`text-base font-bold ${config.color}`}>{phase.title}</h3>
             <span className="rounded-full border border-border/40 bg-muted/30 px-2.5 py-0.5 text-xs text-muted-foreground">
               {phase.estimated_duration}
@@ -73,9 +73,9 @@ export function RoadmapPhaseSection({ phase, roadmapId, onToggle, pendingItemId,
               {completed}/{total} done
             </span>
           </div>
-          <p className="text-sm text-muted-foreground mt-0.5">{phase.subtitle}</p>
+          <p className="mt-0.5 text-sm text-muted-foreground">{phase.subtitle}</p>
           <div className="mt-2 flex items-center gap-2">
-            <Progress value={progressPct} className="h-1.5 flex-1 max-w-xs" />
+            <Progress value={progressPct} className="h-1.5 max-w-xs flex-1" />
             <span className="text-xs text-muted-foreground">{progressPct}%</span>
           </div>
         </div>

@@ -2,13 +2,7 @@
 
 import { useAuth } from "@clerk/nextjs";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  CheckCircle2,
-  FileUp,
-  Loader2,
-  Upload,
-  XCircle,
-} from "lucide-react";
+import { CheckCircle2, FileUp, Loader2, Upload, XCircle } from "lucide-react";
 import { useCallback, useRef, useState } from "react";
 import { toast } from "sonner";
 
@@ -29,11 +23,7 @@ interface ResumeUploaderProps {
   onCancelReplace?: () => void;
 }
 
-export function ResumeUploader({
-  replaceResume,
-  onSuccess,
-  onCancelReplace,
-}: ResumeUploaderProps) {
+export function ResumeUploader({ replaceResume, onSuccess, onCancelReplace }: ResumeUploaderProps) {
   const { getToken } = useAuth();
   const inputRef = useRef<HTMLInputElement>(null);
   const [state, setState] = useState<UploadState>("idle");
@@ -82,7 +72,9 @@ export function ResumeUploader({
         setState("success");
         setProgress(100);
         toast.success(
-          replaceResume ? "Resume replaced — extraction started" : "Upload complete — extracting text",
+          replaceResume
+            ? "Resume replaced — extraction started"
+            : "Upload complete — extracting text",
         );
         onSuccess?.(uploaded);
         window.setTimeout(() => {
@@ -249,10 +241,7 @@ export function ResumeUploader({
               <p className="mt-2 max-w-sm text-sm text-muted-foreground">
                 PDF only · max {MAX_SIZE_MB} MB · secure validation on upload
               </p>
-              <Button
-                className="mt-6 gap-2"
-                onClick={() => inputRef.current?.click()}
-              >
+              <Button className="mt-6 gap-2" onClick={() => inputRef.current?.click()}>
                 <FileUp className="h-4 w-4" />
                 Browse files
               </Button>

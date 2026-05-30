@@ -16,9 +16,7 @@ from app.schemas.interview_session import (
 from app.services.base import BaseService
 
 
-class InterviewSessionService(
-    BaseService[InterviewSessionRepository, InterviewSessionResponse]
-):
+class InterviewSessionService(BaseService[InterviewSessionRepository, InterviewSessionResponse]):
     def __init__(
         self,
         repository: InterviewSessionRepository,

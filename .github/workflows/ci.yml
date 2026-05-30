@@ -87,6 +87,7 @@ jobs:
 
       - name: Run pytest (unit tests only)
         env:
+          PYTHONPATH: .
           ENVIRONMENT: development
           DATABASE_URL: postgresql+asyncpg://postgres:postgres@localhost:5432/intervai_test
           REDIS_URL: redis://localhost:6379/15

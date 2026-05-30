@@ -18,12 +18,7 @@ interface SectionRevealProps {
   id?: string;
 }
 
-export function SectionReveal({
-  children,
-  className,
-  delay = 0,
-  id,
-}: SectionRevealProps) {
+export function SectionReveal({ children, className, delay = 0, id }: SectionRevealProps) {
   return (
     <motion.section
       id={id}

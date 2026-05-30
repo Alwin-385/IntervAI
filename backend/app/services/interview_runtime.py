@@ -104,9 +104,7 @@ class InterviewRuntimeService:
 
         answers = self._answers_by_question(await self.answer_repo.list_by_session(session_id))
         answered_count = sum(
-            1
-            for q in questions
-            if answers.get(q.id) and _has_answer_content(answers[q.id])
+            1 for q in questions if answers.get(q.id) and _has_answer_content(answers[q.id])
         )
 
         states = [
@@ -201,9 +199,7 @@ class InterviewRuntimeService:
 
         all_answers = self._answers_by_question(await self.answer_repo.list_by_session(session_id))
         answered_count = sum(
-            1
-            for q in questions
-            if all_answers.get(q.id) and _has_answer_content(all_answers[q.id])
+            1 for q in questions if all_answers.get(q.id) and _has_answer_content(all_answers[q.id])
         )
 
         return SubmitAnswerResponse(
@@ -255,9 +251,7 @@ class InterviewRuntimeService:
 
         all_answers = self._answers_by_question(await self.answer_repo.list_by_session(session_id))
         answered_count = sum(
-            1
-            for q in questions
-            if all_answers.get(q.id) and _has_answer_content(all_answers[q.id])
+            1 for q in questions if all_answers.get(q.id) and _has_answer_content(all_answers[q.id])
         )
 
         return CompleteInterviewResponse(

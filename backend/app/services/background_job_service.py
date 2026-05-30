@@ -2,23 +2,23 @@
 
 from __future__ import annotations
 
-from datetime import UTC, datetime
 from typing import Any
 from uuid import UUID
 
-from app.core.exceptions import NotFoundError, UnauthorizedError
+from app.core.exceptions import NotFoundError
 from app.models.background_job import BackgroundJob
 from app.models.enums import BackgroundJobStatus, BackgroundJobType
 from app.repositories.background_job import BackgroundJobRepository
 from app.schemas.background_job import BackgroundJobListResponse, BackgroundJobResponse
 from app.services.background_job_cache import cache_job_snapshot, get_cached_job
 
-
-_TERMINAL = frozenset({
-    BackgroundJobStatus.COMPLETED,
-    BackgroundJobStatus.FAILED,
-    BackgroundJobStatus.CANCELLED,
-})
+_TERMINAL = frozenset(
+    {
+        BackgroundJobStatus.COMPLETED,
+        BackgroundJobStatus.FAILED,
+        BackgroundJobStatus.CANCELLED,
+    }
+)
 
 
 class BackgroundJobService:
@@ -121,14 +121,17 @@ class BackgroundJobService:
         data: dict[str, Any],
     ) -> BackgroundJob:
         updated = await self.repository.update(job, data)
-        cache_job_snapshot(updated.id, {
-            "id": str(updated.id),
-            "status": updated.status.value,
-            "job_type": updated.job_type.value,
-            "progress_percent": updated.progress_percent,
-            "progress_step": updated.progress_step,
-            "progress_message": updated.progress_message,
-            "error_message": updated.error_message,
-            "result": updated.result,
-        })
+        cache_job_snapshot(
+            updated.id,
+            {
+                "id": str(updated.id),
+                "status": updated.status.value,
+                "job_type": updated.job_type.value,
+                "progress_percent": updated.progress_percent,
+                "progress_step": updated.progress_step,
+                "progress_message": updated.progress_message,
+                "error_message": updated.error_message,
+                "result": updated.result,
+            },
+        )
         return updated

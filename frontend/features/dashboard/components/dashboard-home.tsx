@@ -63,10 +63,7 @@ export function DashboardHome() {
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
-        <RecentActivity
-          items={overview?.recent_activity}
-          isLoading={isLoading}
-        />
+        <RecentActivity items={overview?.recent_activity} isLoading={isLoading} />
         <WeakAreasPreview />
       </div>
     </div>

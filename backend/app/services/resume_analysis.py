@@ -15,9 +15,7 @@ from app.schemas.resume_analysis import (
 from app.services.base import BaseService
 
 
-class ResumeAnalysisService(
-    BaseService[ResumeAnalysisRepository, ResumeAnalysisResponse]
-):
+class ResumeAnalysisService(BaseService[ResumeAnalysisRepository, ResumeAnalysisResponse]):
     def __init__(
         self,
         repository: ResumeAnalysisRepository,

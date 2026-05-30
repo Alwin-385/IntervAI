@@ -42,7 +42,10 @@ export function AnalysisCharts({ analysis }: AnalysisChartsProps) {
           <ResponsiveContainer width="100%" height="100%">
             <RadarChart data={radarData}>
               <PolarGrid stroke="hsl(var(--border))" />
-              <PolarAngleAxis dataKey="subject" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }} />
+              <PolarAngleAxis
+                dataKey="subject"
+                tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }}
+              />
               <Radar
                 name="Score"
                 dataKey="score"

@@ -3,11 +3,7 @@
 import { useMemo } from "react";
 import { Briefcase, FileText, Layers, Mic, Pencil, Target } from "lucide-react";
 
-import {
-  ANSWER_MODES,
-  CATEGORIES,
-  DIFFICULTIES,
-} from "@/features/interviews/constants";
+import { ANSWER_MODES, CATEGORIES, DIFFICULTIES } from "@/features/interviews/constants";
 import type { InterviewWizardState } from "@/features/interviews/types";
 
 interface StepReviewProps {
@@ -73,10 +69,7 @@ export function StepReview({ state, resumeTitle }: StepReviewProps) {
       <div className="overflow-hidden rounded-2xl border border-border/60 bg-card/60">
         <ul className="divide-y divide-border/50">
           {rows.map(({ icon: Icon, label, value }) => (
-            <li
-              key={label}
-              className="flex items-center gap-4 px-5 py-3.5 text-sm"
-            >
+            <li key={label} className="flex items-center gap-4 px-5 py-3.5 text-sm">
               <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
                 <Icon className="h-4 w-4" />
               </div>

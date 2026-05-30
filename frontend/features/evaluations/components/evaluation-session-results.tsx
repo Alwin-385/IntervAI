@@ -68,9 +68,7 @@ export function EvaluationSessionResults({ sessionId, className }: EvaluationSes
 
   return (
     <div className={cn("space-y-12", className)}>
-      {data.summary.total_questions > 0 && (
-        <EvaluationMarksBanner summary={data.summary} />
-      )}
+      {data.summary.total_questions > 0 && <EvaluationMarksBanner summary={data.summary} />}
 
       <AnswerEvaluationResults
         analysis={sessionAnalysis}
@@ -89,7 +87,10 @@ export function EvaluationSessionResults({ sessionId, className }: EvaluationSes
               question_label: String(item.order_index + 1),
             });
             return (
-              <div key={item.question_id} className="space-y-3 rounded-xl border border-border/40 p-4">
+              <div
+                key={item.question_id}
+                className="space-y-3 rounded-xl border border-border/40 p-4"
+              >
                 <p className="line-clamp-2 text-sm font-medium text-foreground">
                   Q{item.order_index + 1}: {item.question_text}
                 </p>

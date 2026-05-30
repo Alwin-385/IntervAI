@@ -5,13 +5,7 @@ import { motion } from "framer-motion";
 import { ArrowRight, FileUp, Mic, Target } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 const actions = [
   {
@@ -61,9 +55,7 @@ export function QuickActions() {
                 <action.icon className="h-5 w-5 shrink-0" />
                 <span className="flex flex-1 flex-col items-start text-left">
                   <span className="font-medium">{action.title}</span>
-                  <span className="text-xs font-normal opacity-80">
-                    {action.description}
-                  </span>
+                  <span className="text-xs font-normal opacity-80">{action.description}</span>
                 </span>
                 <ArrowRight className="h-4 w-4 shrink-0 opacity-60" />
               </Link>

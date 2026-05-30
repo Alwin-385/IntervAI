@@ -83,7 +83,12 @@ def _execute(state: AgentWorkflowState) -> AgentWorkflowState:
     }
     memory = merge_memory(
         state,
-        {"weak_area_detection": {"count": len(items), "high_priority": summary.high_priority_count}},
+        {
+            "weak_area_detection": {
+                "count": len(items),
+                "high_priority": summary.high_priority_count,
+            }
+        },
     )
     return {
         **state,

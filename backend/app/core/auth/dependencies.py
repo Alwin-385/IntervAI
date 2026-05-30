@@ -5,8 +5,8 @@ from typing import Annotated
 from fastapi import Depends
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
-from app.core.config import get_settings
 from app.core.auth.clerk import ClerkTokenPayload, enrich_payload_from_clerk_api, verify_clerk_token
+from app.core.config import get_settings
 from app.core.dependencies import get_user_repository
 from app.core.exceptions import UnauthorizedError
 from app.models.user import User

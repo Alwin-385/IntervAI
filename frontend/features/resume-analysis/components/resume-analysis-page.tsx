@@ -43,8 +43,13 @@ function hasAnalyzableText(resume: {
 export function ResumeAnalysisPage({ resumeId }: ResumeAnalysisPageProps) {
   const [targetRole, setTargetRole] = useState("Software Engineer");
   const { data: resume, isLoading: resumeLoading, refetch: refetchResume } = useResume(resumeId);
-  const { data: analysis, isLoading: analysisLoading, isError, error, refetch } =
-    useResumeAnalysis(resumeId);
+  const {
+    data: analysis,
+    isLoading: analysisLoading,
+    isError,
+    error,
+    refetch,
+  } = useResumeAnalysis(resumeId);
   const startAnalysis = useStartResumeAnalysis(resumeId);
 
   const status = resume ? normalizeResumeStatus(resume.status) : null;
@@ -52,8 +57,7 @@ export function ResumeAnalysisPage({ resumeId }: ResumeAnalysisPageProps) {
   const textReady = resume ? hasAnalyzableText(resume) : false;
   const canAnalyze = extractionReady && textReady;
 
-  const isProcessing =
-    analysis?.status === "pending" || analysis?.status === "processing";
+  const isProcessing = analysis?.status === "pending" || analysis?.status === "processing";
   const isComplete = analysis?.status === "completed" && analysis.analysis;
   const isFailed = analysis?.status === "failed";
 
@@ -127,15 +131,19 @@ export function ResumeAnalysisPage({ resumeId }: ResumeAnalysisPageProps) {
               onChange={setTargetRole}
               disabled={startAnalysis.isPending}
             />
-          <Button
-            onClick={handleAnalyze}
-            disabled={startAnalysis.isPending || !canAnalyze}
-            className="h-10 shrink-0 gap-2 sm:mt-6"
-            size="default"
-          >
-            <Sparkles className={`h-4 w-4 ${startAnalysis.isPending ? "animate-spin" : ""}`} />
-            {startAnalysis.isPending ? "Analyzing…" : isProcessing ? "Analyzing…" : "Analyze resume"}
-          </Button>
+            <Button
+              onClick={handleAnalyze}
+              disabled={startAnalysis.isPending || !canAnalyze}
+              className="h-10 shrink-0 gap-2 sm:mt-6"
+              size="default"
+            >
+              <Sparkles className={`h-4 w-4 ${startAnalysis.isPending ? "animate-spin" : ""}`} />
+              {startAnalysis.isPending
+                ? "Analyzing…"
+                : isProcessing
+                  ? "Analyzing…"
+                  : "Analyze resume"}
+            </Button>
           </div>
         </div>
       </div>
@@ -175,8 +183,8 @@ export function ResumeAnalysisPage({ resumeId }: ResumeAnalysisPageProps) {
           <Sparkles className="mx-auto mb-4 h-10 w-10 text-primary" />
           <p className="text-lg font-medium">Ready for AI analysis</p>
           <p className="mt-2 text-sm text-muted-foreground">
-            Click <strong>Analyze resume</strong> for ATS scoring, role readiness, and recruiter-style
-            feedback.
+            Click <strong>Analyze resume</strong> for ATS scoring, role readiness, and
+            recruiter-style feedback.
           </p>
         </div>
       )}
@@ -203,16 +211,19 @@ export function ResumeAnalysisPage({ resumeId }: ResumeAnalysisPageProps) {
           <p className="rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
             {analysis?.error_message ?? "Analysis failed. Try again."}
           </p>
-          <Button variant="default" onClick={handleForceRetry} disabled={!canAnalyze} className="gap-2">
+          <Button
+            variant="default"
+            onClick={handleForceRetry}
+            disabled={!canAnalyze}
+            className="gap-2"
+          >
             <Sparkles className="h-4 w-4" />
             Analyze resume again
           </Button>
         </div>
       )}
 
-      {isComplete && analysis.analysis && (
-        <AnalysisResults analysis={analysis.analysis} />
-      )}
+      {isComplete && analysis.analysis && <AnalysisResults analysis={analysis.analysis} />}
     </div>
   );
 }

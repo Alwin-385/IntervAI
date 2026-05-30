@@ -19,7 +19,7 @@ from app.models.resume import Resume
 from app.models.user import User
 from app.schemas.common import MessageResponse, PaginatedResponse, PaginationQuery
 from app.schemas.resume import ResumeResponse, ResumeUpdate, ResumeUploadResponse
-from app.schemas.resume_analyzer import ResumeAnalyzeRequest, ResumeAnalysisDetailResponse
+from app.schemas.resume_analyzer import ResumeAnalysisDetailResponse, ResumeAnalyzeRequest
 from app.schemas.resume_extraction import ResumeExtractionStatusResponse
 from app.services.resume import ResumeService
 from app.services.resume_analysis_orchestrator import ResumeAnalysisOrchestrator

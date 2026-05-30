@@ -1,9 +1,6 @@
 /** Web Speech API — free, runs in the browser (Chrome / Edge recommended). */
 
-import {
-  absorbSessionFinal,
-  appendUtterance,
-} from "@/features/speech/utils/merge-transcript";
+import { absorbSessionFinal, appendUtterance } from "@/features/speech/utils/merge-transcript";
 
 type SpeechRecognitionCtor = new () => SpeechRecognitionInstance;
 
@@ -56,7 +53,9 @@ export interface BrowserSpeechCallbacks {
 /**
  * Long recordings: Chrome restarts recognition periodically; we track each session separately.
  */
-export function createBrowserSpeechRecognizer(callbacks: BrowserSpeechCallbacks): BrowserSpeechRecognizer | null {
+export function createBrowserSpeechRecognizer(
+  callbacks: BrowserSpeechCallbacks,
+): BrowserSpeechRecognizer | null {
   const { onPhrase, onSessionBreak, shouldKeepListening } = callbacks;
   const Ctor = getSpeechRecognition();
   if (!Ctor) return null;

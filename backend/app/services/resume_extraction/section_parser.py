@@ -30,6 +30,8 @@ _EMAIL_RE = re.compile(r"[\w.+-]+@[\w.-]+\.\w{2,}")
 _PHONE_RE = re.compile(r"(\+?\d[\d\s().-]{7,}\d)")
 _LINKEDIN_RE = re.compile(r"linkedin\.com", re.IGNORECASE)
 _GITHUB_RE = re.compile(r"github\.com", re.IGNORECASE)
+
+
 def parse_structured_resume(text: str) -> ExtractedResumeData:
     sections = _split_sections(text)
     preamble = sections.pop("preamble", "")

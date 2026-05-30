@@ -75,7 +75,10 @@ export function SpeechAnalysisCharts({ analysis, perQuestionScores }: SpeechAnal
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={fillerData} margin={{ left: 4, right: 8, bottom: 4 }}>
               <XAxis dataKey="word" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }} />
-              <YAxis allowDecimals={false} tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }} />
+              <YAxis
+                allowDecimals={false}
+                tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }}
+              />
               <Tooltip />
               <Bar dataKey="count" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
             </BarChart>
@@ -133,8 +136,18 @@ export function SpeechAnalysisCharts({ analysis, perQuestionScores }: SpeechAnal
                 <XAxis dataKey="name" tick={{ fontSize: 11 }} />
                 <YAxis domain={[0, 100]} tick={{ fontSize: 11 }} />
                 <Tooltip />
-                <Bar dataKey="communication" fill="hsl(var(--primary))" name="Communication" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="fluency" fill="hsl(220 70% 50%)" name="Fluency" radius={[4, 4, 0, 0]} />
+                <Bar
+                  dataKey="communication"
+                  fill="hsl(var(--primary))"
+                  name="Communication"
+                  radius={[4, 4, 0, 0]}
+                />
+                <Bar
+                  dataKey="fluency"
+                  fill="hsl(220 70% 50%)"
+                  name="Fluency"
+                  radius={[4, 4, 0, 0]}
+                />
               </BarChart>
             </ResponsiveContainer>
           </div>

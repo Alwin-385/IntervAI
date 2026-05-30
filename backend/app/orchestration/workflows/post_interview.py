@@ -28,7 +28,9 @@ def run_post_interview_workflow(
     completed: list[str] = []
     memory: dict[str, Any] = {"session": session_summary}
 
-    with trace_workflow(workflow_id=wf_id, agent="workflow", step=WorkflowName.POST_INTERVIEW.value):
+    with trace_workflow(
+        workflow_id=wf_id, agent="workflow", step=WorkflowName.POST_INTERVIEW.value
+    ):
         if run_weak_areas and answers_history is not None:
             weak_result = runner.run_agent_graph(
                 AgentName.WEAK_AREA_DETECTION,

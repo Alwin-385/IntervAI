@@ -12,7 +12,7 @@ from app.analytics.weak_area_detector import (
     SpeechHistoryItem,
     detect_weak_areas,
 )
-from app.models.enums import InterviewCategory, InterviewSessionStatus
+from app.models.enums import InterviewCategory
 from app.repositories.analytics_queries import AnalyticsQueryRepository
 from app.repositories.interview_session import InterviewSessionRepository
 from app.repositories.roadmap import RoadmapRepository
@@ -30,6 +30,8 @@ from app.schemas.analytics_dashboard import (
 )
 from app.services.weak_area_detection_engine import (
     _build_summary as build_weak_summary,
+)
+from app.services.weak_area_detection_engine import (
     _map_answer_row,
     _map_speech_row,
     _to_api_item,
@@ -175,12 +177,8 @@ class AnalyticsDashboardEngineService:
             answer_rows = [r for r in answer_rows if r[3].target_role == filters.target_role]
             speech_rows = [r for r in speech_rows if r[1].target_role == filters.target_role]
         if filters.category:
-            answer_rows = [
-                r for r in answer_rows if r[3].category.value == filters.category
-            ]
-            speech_rows = [
-                r for r in speech_rows if r[1].category.value == filters.category
-            ]
+            answer_rows = [r for r in answer_rows if r[3].category.value == filters.category]
+            speech_rows = [r for r in speech_rows if r[1].category.value == filters.category]
 
         answers: list[AnswerHistoryItem] = []
         for row in answer_rows:
@@ -205,15 +203,9 @@ class AnalyticsDashboardEngineService:
             session_role_map.setdefault(session.id, session.target_role)
             session_category_map.setdefault(session.id, session.category.value)
 
-        all_sessions_page = await self.session_repo.list_by_user(
-            user_id, page=1, page_size=500
-        )
-        available_roles = sorted(
-            {s.target_role for s in all_sessions_page.items if s.target_role}
-        )
-        available_categories = sorted(
-            {s.category.value for s in all_sessions_page.items}
-        )
+        all_sessions_page = await self.session_repo.list_by_user(user_id, page=1, page_size=500)
+        available_roles = sorted({s.target_role for s in all_sessions_page.items if s.target_role})
+        available_categories = sorted({s.category.value for s in all_sessions_page.items})
 
         min_freq = 1 if len(answers) + len(speeches) < 6 else 2
         detected = detect_weak_areas(answers, speeches, min_frequency=min_freq)
@@ -286,7 +278,7 @@ def _aggregate_session_metrics(
 
     # answered count from rows
     session_answered: dict[UUID, int] = defaultdict(int)
-    for _ev, ans, _q, session in answer_rows:
+    for _ev, _ans, _q, session in answer_rows:
         session_answered[session.id] += 1
     for sid, count in session_answered.items():
         by_session[sid]["answered_count"] = count
@@ -327,9 +319,7 @@ def _build_summary(ctx: dict) -> AnalyticsSummary:
         return AnalyticsSummary()
 
     all_scores = [a.rubric_score for a in answers if a.rubric_score is not None]
-    comm = [a.communication_score for a in answers] + [
-        s.communication_score for s in speeches
-    ]
+    comm = [a.communication_score for a in answers] + [s.communication_score for s in speeches]
     conf = [s.confidence_score for s in speeches]
     tech = [a.technical_score for a in answers]
 
@@ -343,11 +333,7 @@ def _build_summary(ctx: dict) -> AnalyticsSummary:
         items=weak_items,
     )
 
-    completed = sum(
-        1
-        for sid, m in ctx["session_metrics"].items()
-        if m.get("scores")
-    )
+    completed = sum(1 for sid, m in ctx["session_metrics"].items() if m.get("scores"))
 
     return AnalyticsSummary(
         total_interviews=len(ctx["session_ids"]),
@@ -538,9 +524,9 @@ def _bucket_correctness(
         [
             (
                 a.recorded_at,
-                100.0 if a.correctness_verdict == "correct" else (
-                    50.0 if a.correctness_verdict == "partially_correct" else 0.0
-                ),
+                100.0
+                if a.correctness_verdict == "correct"
+                else (50.0 if a.correctness_verdict == "partially_correct" else 0.0),
             )
             for a in answers
         ],
@@ -553,11 +539,7 @@ def _roadmap_completion_series(
     snapshots: list[tuple[datetime, float]],
     days: int | None,
 ) -> list[MetricTrendPoint]:
-    filtered = [
-        (dt, rate)
-        for dt, rate in snapshots
-        if _within_days(dt, days)
-    ]
+    filtered = [(dt, rate) for dt, rate in snapshots if _within_days(dt, days)]
     filtered.sort(key=lambda x: x[0])
     return [
         MetricTrendPoint(

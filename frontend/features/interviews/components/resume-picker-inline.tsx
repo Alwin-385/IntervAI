@@ -26,8 +26,8 @@ export function ResumePickerInline({ value, onChange }: ResumePickerInlineProps)
         <div>
           <p className="font-medium">No completed resume yet</p>
           <p className="mt-1 text-xs text-amber-200/80">
-            Upload a resume from the Resumes page and wait for it to finish extraction, then return here.
-            Or pick another category to continue.
+            Upload a resume from the Resumes page and wait for it to finish extraction, then return
+            here. Or pick another category to continue.
           </p>
         </div>
       </div>
@@ -65,9 +65,7 @@ export function ResumePickerInline({ value, onChange }: ResumePickerInlineProps)
                   {resume.title ?? resume.file_name ?? "Resume"}
                 </p>
                 {resume.file_name && resume.file_name !== resume.title && (
-                  <p className="truncate text-xs text-muted-foreground">
-                    {resume.file_name}
-                  </p>
+                  <p className="truncate text-xs text-muted-foreground">{resume.file_name}</p>
                 )}
               </div>
             </button>

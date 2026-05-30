@@ -14,9 +14,7 @@ from app.schemas.answer_evaluation import (
 from app.services.base import BaseService
 
 
-class AnswerEvaluationService(
-    BaseService[AnswerEvaluationRepository, AnswerEvaluationResponse]
-):
+class AnswerEvaluationService(BaseService[AnswerEvaluationRepository, AnswerEvaluationResponse]):
     def __init__(
         self,
         repository: AnswerEvaluationRepository,

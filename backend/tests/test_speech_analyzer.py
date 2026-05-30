@@ -1,7 +1,7 @@
 """Unit tests for transcript speech analyzer."""
 
-from app.speech.analyzer import analyze_speech
 from app.services.speech_transcription import _merge_transcripts
+from app.speech.analyzer import analyze_speech
 
 
 def test_analyze_detects_fillers_and_scores():
@@ -30,5 +30,7 @@ def test_merge_long_transcript_chunks():
 
 
 def test_analyze_empty_duration_estimates_wpm():
-    result = analyze_speech("One two three four five six seven eight nine ten.", duration_seconds=None)
+    result = analyze_speech(
+        "One two three four five six seven eight nine ten.", duration_seconds=None
+    )
     assert result.words_per_minute > 0

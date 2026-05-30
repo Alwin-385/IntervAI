@@ -7,9 +7,9 @@ from uuid import UUID
 
 from app.agents.answer_evaluator.graph import run_answer_evaluator
 from app.core.config import get_settings
-from app.orchestration import AgentName, get_orchestration_service
 from app.core.exceptions import NotFoundError, UnauthorizedError, ValidationAppError
 from app.models.answer_evaluation import AnswerEvaluation
+from app.orchestration import AgentName, get_orchestration_service
 from app.repositories.answer_evaluation import AnswerEvaluationRepository
 from app.repositories.interview_answer import InterviewAnswerRepository
 from app.repositories.interview_question import InterviewQuestionRepository
@@ -20,7 +20,6 @@ from app.schemas.answer_evaluator import (
     AnswerEvaluationDetailResponse,
     AnswerScoreBreakdown,
     DsaComplexityFeedback,
-    EvaluateAnswerRequest,
     EvaluateSessionRequest,
     QuestionAnswerEvaluation,
     SessionAnswerEvaluationResponse,
@@ -100,12 +99,12 @@ class AnswerEvaluatorEngineService:
             question_text=question.question_text,
             answer_text=(answer.answer_text or "").strip(),
             target_role=session.target_role or "Software Engineer",
-            interview_category=(
-                meta.get("category") or session.category.value
-            ),
+            interview_category=(meta.get("category") or session.category.value),
             difficulty=meta.get("difficulty") or session.difficulty.value,
             question_type=question.question_type.value,
-            evaluation_criteria=list(detail.evaluation_criteria or meta.get("evaluation_criteria") or []),
+            evaluation_criteria=list(
+                detail.evaluation_criteria or meta.get("evaluation_criteria") or []
+            ),
             expected_answer_points=list(
                 detail.expected_answer_points or meta.get("expected_answer_points") or [],
             ),
@@ -206,7 +205,11 @@ class AnswerEvaluatorEngineService:
                 ),
             )
 
-        answered = sum(1 for q in questions if latest_by_question.get(q.id) and (latest_by_question[q.id].answer_text or "").strip())
+        answered = sum(
+            1
+            for q in questions
+            if latest_by_question.get(q.id) and (latest_by_question[q.id].answer_text or "").strip()
+        )
         summary = _build_session_summary(
             details,
             evaluated,

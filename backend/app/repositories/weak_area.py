@@ -19,8 +19,6 @@ class WeakAreaRepository(BaseRepository[WeakArea]):
         page_size: int = 20,
     ):
         stmt = (
-            select(WeakArea)
-            .where(WeakArea.user_id == user_id)
-            .order_by(WeakArea.created_at.desc())
+            select(WeakArea).where(WeakArea.user_id == user_id).order_by(WeakArea.created_at.desc())
         )
         return await self.list(page=page, page_size=page_size, stmt=stmt)

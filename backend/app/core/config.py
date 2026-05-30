@@ -141,7 +141,9 @@ class Settings(BaseSettings):
         default=True,
         description="Enable IP-based rate limiting (auto-disabled in development)",
     )
-    rate_limit_default_rpm: int = Field(default=120, description="Default requests per minute per IP")
+    rate_limit_default_rpm: int = Field(
+        default=120, description="Default requests per minute per IP"
+    )
     rate_limit_ai_rpm: int = Field(default=30, description="AI endpoint requests per minute per IP")
     rate_limit_upload_rpm: int = Field(default=10, description="Upload requests per minute per IP")
 

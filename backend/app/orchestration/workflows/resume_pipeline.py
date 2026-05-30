@@ -27,7 +27,9 @@ def run_resume_pipeline_workflow(
     outputs: dict[str, dict[str, Any]] = {}
     completed: list[str] = []
 
-    with trace_workflow(workflow_id=wf_id, agent="workflow", step=WorkflowName.RESUME_PIPELINE.value):
+    with trace_workflow(
+        workflow_id=wf_id, agent="workflow", step=WorkflowName.RESUME_PIPELINE.value
+    ):
         parse_result = runner.run_agent_graph(
             AgentName.RESUME_PARSER,
             {"pdf_bytes": pdf_bytes},

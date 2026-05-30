@@ -134,8 +134,8 @@ def templates_for_pattern(
     role = "{role}"
     anchor = "{anchor}"
     skill = "{skill}"
-    weak = "{weak}"
-    name = "{name}"
+    _weak = "{weak}"
+    _name = "{name}"
 
     # Resume-based: tailor wording to the resume section (not only projects).
     if category == InterviewCategory.RESUME_BASED and resume_source:
@@ -146,23 +146,23 @@ def templates_for_pattern(
     # --- DSA / algorithmic patterns ---
     if pattern == "coding_walkthrough":
         return [
-            f"Given an unsorted array of integers, how would you find all pairs that sum to a target? Talk through your approach step by step.",
-            f"Walk me through how you would detect a cycle in a linked list. What would you write on the whiteboard first?",
-            f"Suppose you must group anagrams from a list of strings. Describe your algorithm before optimizing.",
+            "Given an unsorted array of integers, how would you find all pairs that sum to a target? Talk through your approach step by step.",
+            "Walk me through how you would detect a cycle in a linked list. What would you write on the whiteboard first?",
+            "Suppose you must group anagrams from a list of strings. Describe your algorithm before optimizing.",
         ]
 
     if pattern == "concept_explain":
         return [
             f"Explain recursion vs iteration to a junior {role}. Use a simple example, not jargon.",
             f"What is the difference between mutable and immutable data structures? When does it matter for a {role}?",
-            f"In plain language, explain Big-O notation and why interviewers care about it for this role.",
+            "In plain language, explain Big-O notation and why interviewers care about it for this role.",
         ]
 
     if pattern == "compare_structures":
         return [
-            f"Compare using a hash map versus a binary search tree for fast lookups. When would you regret each choice?",
-            f"Stack vs queue: give two real situations where picking the wrong one causes bugs.",
-            f"BFS vs DFS — pick one for exploring a social graph feed and defend your choice.",
+            "Compare using a hash map versus a binary search tree for fast lookups. When would you regret each choice?",
+            "Stack vs queue: give two real situations where picking the wrong one causes bugs.",
+            "BFS vs DFS — pick one for exploring a social graph feed and defend your choice.",
         ]
 
     if pattern == "debug_scenario":
@@ -173,21 +173,21 @@ def templates_for_pattern(
             ]
         return [
             f"A {role} sees memory climbing after each navigation in a SPA. Outline your debugging plan in order.",
-            f"Tests pass locally but fail in CI for a sorting utility. What do you check first, second, third?",
+            "Tests pass locally but fail in CI for a sorting utility. What do you check first, second, third?",
         ]
 
     if pattern == "trace_example":
         return [
             "Trace this by hand: input [2,7,11,15], target 9 — which indices do you return with a one-pass hash approach?",
             "On paper, walk through binary search on [1,3,5,7,9] looking for 6. Where does it stop and why?",
-            f"Dry-run a queue-based level-order traversal on a small tree. State the output order.",
+            "Dry-run a queue-based level-order traversal on a small tree. State the output order.",
         ]
 
     if pattern == "tradeoff_choice":
         return [
             f"Would you ship {anchor} with client-side caching or server-side caching? Argue both sides, then pick one.",
             f"For a {role} MVP: optimize for delivery speed or code perfection? What do you sacrifice either way?",
-            f"Choose: O(n) extra memory for O(1) lookups, or O(1) memory with O(n) scans. When is each acceptable?",
+            "Choose: O(n) extra memory for O(1) lookups, or O(1) memory with O(n) scans. When is each acceptable?",
         ]
 
     if pattern == "real_world_apply":
@@ -198,14 +198,14 @@ def templates_for_pattern(
             ]
         return [
             f"Design autocomplete for a {role} portfolio site: what structures and events do you need?",
-            f"How would you implement undo/redo in a form editor? Name the core data structure.",
+            "How would you implement undo/redo in a form editor? Name the core data structure.",
         ]
 
     if pattern == "estimation":
         return [
             f"Estimate how many API calls a busy {role} dashboard might make per session. Show your reasoning.",
             "Roughly how much memory might 10,000 DOM nodes use? Is that a problem? How would you verify?",
-            f"If each user action triggers 3 re-renders, how would you measure and reduce that?",
+            "If each user action triggers 3 re-renders, how would you measure and reduce that?",
         ]
 
     if pattern == "complexity_deep_dive":
@@ -217,7 +217,7 @@ def templates_for_pattern(
     if pattern == "optimization_challenge":
         return [
             f"Your solution for {anchor} is O(n²). How do you get to O(n log n) or O(n) without losing correctness?",
-            f"Can you solve two-sum in one pass? What invariant does your pointer or hash strategy maintain?",
+            "Can you solve two-sum in one pass? What invariant does your pointer or hash strategy maintain?",
         ]
 
     if pattern == "system_scale":
@@ -267,7 +267,7 @@ def templates_for_pattern(
     if pattern == "star_story":
         return [
             f"Tell me about a time you delivered under a tight deadline as a {role}. Situation, task, action, result.",
-            f"Describe a project where you exceeded expectations. What did you do differently?",
+            "Describe a project where you exceeded expectations. What did you do differently?",
         ]
 
     if pattern == "situational":
@@ -334,7 +334,7 @@ def templates_for_pattern(
     if pattern == "self_awareness":
         return [
             f"What type of work drains you, and how do you stay effective as a {role}?",
-            f"How do colleagues describe your working style?",
+            "How do colleagues describe your working style?",
         ]
 
     # --- Resume-based patterns ---
@@ -382,7 +382,7 @@ def _resume_section_templates(
     """Questions tied to a specific resume section (experience, skills, etc.)."""
     anchor = "{anchor}"
     role = "{role}"
-    skill = "{skill}"
+    _skill = "{skill}"
 
     if resume_source == "experience":
         if pattern == "deep_dive":
