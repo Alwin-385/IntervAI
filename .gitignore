@@ -14,6 +14,6 @@ out/
 coverage/
 .coverage
 *.coverage
-storage/
+/storage/
 backend/storage/
 *.egg-info/
