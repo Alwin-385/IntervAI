@@ -11,7 +11,7 @@ Production-grade monorepo for AI-powered interview preparation and evaluation.
 | Frontend | Next.js 15, React 19, TypeScript, Tailwind, shadcn/ui, Zustand, TanStack Query, Framer Motion, Recharts |
 | Backend | FastAPI, Python 3.12, SQLAlchemy 2.0, Alembic, PostgreSQL, Celery, Redis, LangGraph, Qdrant |
 | Auth | Clerk (JWT, JWKS verification) |
-| Infra | Docker Compose (dev), Railway + Vercel (prod) |
+| Infra | Docker Compose (local dev), Vercel (frontend prod) |
 | Security | Rate limiting, secure headers, prompt injection guards, PDF magic-byte validation |
 | Monitoring | Sentry, structured JSON logs |
 
@@ -115,13 +115,15 @@ cd frontend && npm run lint && npm run format:check
 cd backend && ruff check app && ruff format --check app
 ```
 
-## Deployment
+## Deployment (Vercel)
 
-See **[docs/DEPLOY.md](docs/DEPLOY.md)** for full deployment instructions:
-- Vercel (frontend) + Railway (backend) — recommended
-- Render blueprint
-- Single-server VPS with Docker Compose
-- CI/CD via GitHub Actions (automatic on push to `main`)
+1. Push this repo to GitHub.
+2. In [Vercel](https://vercel.com) → **Add New Project** → import **IntervAI**.
+3. Set **Root Directory** to `frontend`.
+4. Copy env vars from `frontend/.env.example` and `frontend/.env.production.example` into the Vercel dashboard.
+5. Deploy.
+
+The backend (`backend/`) is separate — host it on Railway, Render, or a VPS when you need the API in production.
 
 ## Phase 19 — Security, Testing & Deployment
 
@@ -133,14 +135,10 @@ See **[docs/DEPLOY.md](docs/DEPLOY.md)** for full deployment instructions:
 - [x] Sentry integration (errors + traces)
 - [x] Backend pytest suite (security, auth, API, file validation, background jobs, config)
 - [x] Frontend Jest suite (api-client, resume utils, analytics types, cn utility)
-- [x] Production Dockerfiles (multi-stage, non-root user, healthchecks)
-- [x] `docker-compose.prod.yml` (all services, named volumes, internal/external networks)
-- [x] Railway config (`railway.toml`), Render blueprint (`render.yaml`)
+- [x] Production Dockerfiles (dev stack in `docker/`)
 - [x] Vercel config (`vercel.json` with security headers)
-- [x] GitHub Actions CI (lint, test, Docker build check)
-- [x] GitHub Actions CD (build + push GHCR, deploy Railway + Vercel)
+- [x] GitHub Actions CI (lint + unit tests)
 - [x] Production env templates (`backend/.env.production.example`, `frontend/.env.production.example`)
-- [x] Deployment guide (`docs/DEPLOY.md`)
 
 ## Phase 1 status
 
