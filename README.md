@@ -1,193 +1,251 @@
-# AI Interview Intelligence Platform
+<div align="center">
 
-Production-grade monorepo for AI-powered interview preparation and evaluation.
+# IntervAI
 
-[![CI](https://github.com/yourname/intervai/actions/workflows/ci.yml/badge.svg)](https://github.com/yourname/intervai/actions/workflows/ci.yml)
+### AI Interview Intelligence Platform
 
-## Stack
+Practice role-specific mock interviews, get scored feedback, analyze your resume, and track weak areas — built for candidates who want recruiter-grade preparation.
 
-| Layer | Technologies |
-|-------|----------------|
-| Frontend | Next.js 15, React 19, TypeScript, Tailwind, shadcn/ui, Zustand, TanStack Query, Framer Motion, Recharts |
-| Backend | FastAPI, Python 3.12, SQLAlchemy 2.0, Alembic, PostgreSQL, Celery, Redis, LangGraph, Qdrant |
-| Auth | Clerk (JWT, JWKS verification) |
-| Infra | Docker Compose (local dev), Vercel (frontend prod) |
-| Security | Rate limiting, secure headers, prompt injection guards, PDF magic-byte validation |
-| Monitoring | Sentry, structured JSON logs |
+<br />
 
-## Quick start (Docker)
+[![Live App](https://img.shields.io/badge/Live_App-interv--ai--zeta.vercel.app-6366f1?style=for-the-badge)](https://interv-ai-zeta.vercel.app/)
+[![API](https://img.shields.io/badge/API-Render-46E3B7?style=for-the-badge)](https://intervai-3ycg.onrender.com/api/v1/health)
+[![CI](https://img.shields.io/github/actions/workflow/status/Alwin-385/IntervAI/ci.yml?branch=main&label=CI&style=for-the-badge)](https://github.com/Alwin-385/IntervAI/actions)
+[![License](https://img.shields.io/badge/License-Private-64748b?style=for-the-badge)]()
 
-1. Copy environment files:
+[Live Demo](https://interv-ai-zeta.vercel.app/) · [API Health](https://intervai-3ycg.onrender.com/api/v1/health) · [Report Bug](https://github.com/Alwin-385/IntervAI/issues)
 
-```bash
-cp backend/.env.example backend/.env
-cp frontend/.env.example frontend/.env.local
+</div>
+
+---
+
+## Live deployment
+
+| Service | Platform | URL |
+|---------|----------|-----|
+| **Frontend** | [Vercel](https://vercel.com) | [**https://interv-ai-zeta.vercel.app**](https://interv-ai-zeta.vercel.app/) |
+| **Backend API** | [Render](https://render.com) | [**https://intervai-3ycg.onrender.com**](https://intervai-3ycg.onrender.com) |
+| **Health check** | — | [https://intervai-3ycg.onrender.com/api/v1/health](https://intervai-3ycg.onrender.com/api/v1/health) |
+| **Source code** | GitHub | [github.com/Alwin-385/IntervAI](https://github.com/Alwin-385/IntervAI) |
+
+> **Note:** The Render free tier may sleep when idle. The first request after a while can take 30–60 seconds while the API wakes up. Refresh the app if you see a connection error.
+
+---
+
+## Features
+
+| Feature | Description |
+|---------|-------------|
+| **Adaptive mock interviews** | LangGraph-powered question generation tailored to role, difficulty, resume, and weak areas |
+| **Voice answers** | Browser speech-to-text + audio upload; practice like a real video interview |
+| **Resume intelligence** | PDF upload, extraction, rubric-based scoring, and skill-gap insights |
+| **Structured evaluation** | Technical, behavioral, and communication scores with session summaries |
+| **Weak-area tracking** | Detect recurring gaps from answers and speech; feed into future questions |
+| **Personalized roadmaps** | AI improvement plans from your interview history |
+| **Analytics dashboard** | Progress trends, readiness scores, and activity overview |
+| **Secure auth** | [Clerk](https://clerk.com) sign-in with JWT-verified API access |
+
+---
+
+## Tech stack
+
+<table>
+<tr>
+<td width="50%" valign="top">
+
+**Frontend**
+
+- Next.js 15 · React 19 · TypeScript  
+- Tailwind CSS · shadcn/ui  
+- TanStack Query · Zustand  
+- Framer Motion · Recharts  
+- Clerk authentication  
+
+</td>
+<td width="50%" valign="top">
+
+**Backend**
+
+- FastAPI · Python 3.12  
+- SQLAlchemy 2.0 · Alembic  
+- PostgreSQL ([Supabase](https://supabase.com))  
+- LangGraph orchestration  
+- S3-compatible storage (Supabase)  
+- Heuristic AI mode (no OpenAI key required)  
+
+</td>
+</tr>
+</table>
+
+**Infrastructure (production)**
+
+```
+┌─────────────────┐     HTTPS      ┌──────────────────┐
+│  Vercel         │ ──────────────▶│  Render          │
+│  Next.js app    │   REST + JWT   │  FastAPI API     │
+└─────────────────┘                └────────┬─────────┘
+                                            │
+                    ┌───────────────────────┼───────────────────────┐
+                    ▼                       ▼                       ▼
+             ┌────────────┐          ┌────────────┐          ┌────────────┐
+             │  Supabase  │          │   Clerk    │          │  Supabase  │
+             │  Postgres  │          │   Auth     │          │  Storage   │
+             └────────────┘          └────────────┘          └────────────┘
 ```
 
-2. Start all services:
+---
 
-```bash
-docker compose up --build
-```
+## Screenshots & demo
 
-3. Open:
+Open the live app and sign in to explore:
 
-- Frontend: http://localhost:3000
-- Backend API: http://localhost:8000
-- API docs: http://localhost:8000/docs
-- Health: http://localhost:8000/api/v1/health
+1. **Dashboard** — stats, recent activity, quick actions  
+2. **Resumes** — upload PDF, view analysis and scores  
+3. **Interviews** — create a session, generate questions, record answers  
+4. **Roadmaps** — one-click personalized prep plan  
+5. **Analytics** — trends and weak-area insights  
 
-## Testing by phase
+**[→ Launch IntervAI](https://interv-ai-zeta.vercel.app/)**
 
-See **[docs/TESTING.md](docs/TESTING.md)** for how to run the stack and what to verify after each phase (health, auth, logout, resume upload, etc.).
+---
 
-## Local development (hybrid)
+## Local development
 
-Start infrastructure only:
+### Prerequisites
+
+- Node.js 20+  
+- Python 3.12+  
+- PostgreSQL (or Docker Compose for infra)  
+- [Clerk](https://dashboard.clerk.com) dev keys  
+
+### Quick start
 
 ```powershell
+# 1. Clone
+git clone https://github.com/Alwin-385/IntervAI.git
+cd IntervAI
+
+# 2. Environment
+copy backend\.env.example backend\.env
+copy frontend\.env.example frontend\.env.local
+# Fill in Clerk keys, DATABASE_URL, etc.
+
+# 3. Start infra (Postgres, Redis, Qdrant) — optional for full stack
 .\scripts\start-dev.ps1
+
+# 4. Backend (terminal 1)
+.\scripts\start-backend.ps1
+
+# 5. Frontend (terminal 2)
+.\scripts\start-frontend.ps1
 ```
 
-**Windows (from project root `c:\IntervAI`, two terminals after infra):**
+| Service | URL |
+|---------|-----|
+| Frontend | http://localhost:3000 |
+| Backend API | http://localhost:8000 |
+| API docs | http://localhost:8000/docs |
+| Health | http://localhost:8000/api/v1/health |
 
-```powershell
-cd c:\IntervAI
-.\scripts\start-backend.ps1   # path: c:\IntervAI — API on :8000
-.\scripts\start-celery.ps1    # resume extraction worker (Redis required)
-.\scripts\start-frontend.ps1  # path: c:\IntervAI — Next.js on :3000
-```
+See **[docs/TESTING.md](docs/TESTING.md)** for phase-by-phase testing checklists.
 
-See **[docs/TESTING.md](docs/TESTING.md)** for which folder each command uses.
-
-**Backend (manual):** use the venv Python so `uvicorn` is found:
-
-```powershell
-cd backend
-python -m venv .venv
-.\.venv\Scripts\pip install -r requirements.txt
-copy .env.example .env
-.\.venv\Scripts\alembic upgrade head
-.\.venv\Scripts\python -m uvicorn app.main:app --reload --port 8000
-```
-
-**Frontend (manual):**
-
-```powershell
-cd frontend
-npm install
-copy .env.example .env.local
-npm run dev
-```
-
-Step-by-step checklists per phase: **[docs/TESTING.md](docs/TESTING.md)**.
+---
 
 ## Project structure
 
 ```
-├── frontend/          # Next.js application
-├── backend/           # FastAPI application
-├── docker/            # Dockerfiles
-├── docs/              # Documentation
-├── scripts/           # Dev scripts
-└── docker-compose.yml
+IntervAI/
+├── frontend/          # Next.js 15 application (Vercel)
+├── backend/           # FastAPI API (Render)
+├── docker/            # Dockerfiles for local dev
+├── docs/              # Auth, resumes, testing guides
+├── scripts/           # PowerShell dev helpers
+└── .github/workflows/ # CI (lint + tests)
 ```
 
-## Testing
+---
+
+## API overview
+
+Base URL (production): `https://intervai-3ycg.onrender.com`
+
+| Endpoint | Description |
+|----------|-------------|
+| `GET /api/v1/health` | Service health |
+| `GET /api/v1/me` | Current user (Clerk JWT) |
+| `POST /api/v1/resumes/upload` | Upload resume PDF |
+| `POST /api/v1/interviews/create` | Create interview session |
+| `POST /api/v1/interviews/{id}/generate-questions` | Generate questions |
+| `POST /api/v1/roadmap/generate` | Generate improvement roadmap |
+| `GET /api/v1/dashboard/overview` | Dashboard stats |
+
+Full interactive docs: `http://localhost:8000/docs` (local) or deploy Swagger on your API host.
+
+---
+
+## Testing & quality
 
 ```powershell
-# Backend unit tests
+# Backend
 cd backend
 .\.venv\Scripts\pytest -m unit -q
+.\.venv\Scripts\ruff.exe check app
+.\.venv\Scripts\ruff.exe format --check app
 
-# Frontend unit tests
+# Frontend
 cd frontend
 npm test
+npm run lint
+npm run format:check
 ```
 
-## Linting
+GitHub Actions runs lint and tests on every push to `main`.
 
-```bash
-# Frontend
-cd frontend && npm run lint && npm run format:check
+---
 
-# Backend
-cd backend && ruff check app && ruff format --check app
-```
+## Deployment summary
 
-## Deployment (Vercel)
+This project uses a **free-tier** production stack:
 
-1. Push this repo to GitHub.
-2. In [Vercel](https://vercel.com) → **Add New Project** → import **IntervAI**.
-3. Set **Root Directory** to `frontend`.
-4. Copy env vars from `frontend/.env.example` and `frontend/.env.production.example` into the Vercel dashboard.
-5. Deploy.
+| Layer | Service | Notes |
+|-------|---------|-------|
+| Frontend | Vercel Hobby | Root dir: `frontend` |
+| Backend | Render Free Web Service | Root dir: `backend`, Gunicorn + Uvicorn |
+| Database | Supabase PostgreSQL | Session pooler URL |
+| File storage | Supabase Storage | S3-compatible API |
+| Auth | Clerk | Test keys for development |
 
-The backend (`backend/`) is separate — host it on Railway, Render, or a VPS when you need the API in production.
+Key backend env vars for production:
 
-## Phase 19 — Security, Testing & Deployment
+- `BACKGROUND_JOBS_MODE=thread` (no separate Celery worker on free tier)  
+- `INTERVIEW_QUESTIONS_HEURISTIC_ONLY=true`  
+- `CORS_ORIGINS=https://interv-ai-zeta.vercel.app`  
 
-- [x] Rate limiting (IP-based, per-endpoint: 120/30/10 rpm)
-- [x] Secure response headers (`X-Frame-Options`, `X-Content-Type-Options`, `HSTS`, etc.)
-- [x] Prompt injection detection + sanitisation on all user-supplied text
-- [x] AI output sanitiser (strips leaked prompt markers from LLM responses)
-- [x] PDF magic-byte validation + MIME/extension allow-list
-- [x] Sentry integration (errors + traces)
-- [x] Backend pytest suite (security, auth, API, file validation, background jobs, config)
-- [x] Frontend Jest suite (api-client, resume utils, analytics types, cn utility)
-- [x] Production Dockerfiles (dev stack in `docker/`)
-- [x] Vercel config (`vercel.json` with security headers)
-- [x] GitHub Actions CI (lint + unit tests)
-- [x] Production env templates (`backend/.env.production.example`, `frontend/.env.production.example`)
+Templates: `backend/.env.production.example`, `frontend/.env.production.example`
 
-## Phase 1 status
+---
 
-- [x] Monorepo scaffold
-- [x] Health check API (`GET /api/v1/health`)
-- [x] Landing page with backend connectivity
-- [x] Docker Compose (Postgres, Redis, Qdrant, API, Celery, Frontend)
+## Documentation
 
-## Phase 3 — Authentication
+| Doc | Topic |
+|-----|-------|
+| [docs/TESTING.md](docs/TESTING.md) | Local testing by phase |
+| [docs/auth.md](docs/auth.md) | Clerk setup |
+| [docs/resumes.md](docs/resumes.md) | Resume upload & extraction |
+| [docs/resume-analysis.md](docs/resume-analysis.md) | AI resume analyzer |
 
-- [x] Clerk on frontend (sign-in, sign-up, protected dashboard)
-- [x] Clerk JWT verification on backend
-- [x] `GET /api/v1/me` and `GET /api/me`
-- [x] User sync to PostgreSQL
+---
 
-See [docs/auth.md](docs/auth.md) for Clerk setup.
+## Author
 
-## Phase 7 — AI Resume Analyzer
+**Alwin** — [GitHub @Alwin-385](https://github.com/Alwin-385)
 
-- [x] LangGraph pipeline (embeddings + structured analysis)
-- [x] OpenAI provider + heuristic fallback
-- [x] Qdrant chunk indexing
-- [x] `POST/GET` resume analysis APIs
-- [x] Analysis UI with scores, charts, recruiter feedback
+Built as a full-stack AI interview preparation platform with production deployment on Vercel + Render + Supabase.
 
-See [docs/resume-analysis.md](docs/resume-analysis.md).
+---
 
-## Phase 4 — UI foundation
+<div align="center">
 
-- [x] Full marketing landing page (hero, features, workflow, demo, CTA, footer)
-- [x] Dashboard shell with sidebar + top navbar (mobile responsive)
-- [x] Premium dashboard home (stats, quick actions, placeholders)
-- [x] Framer Motion animations, skeletons, animated counters
+**[interv-ai-zeta.vercel.app](https://interv-ai-zeta.vercel.app/)** · Practice smarter. Interview with confidence.
 
-## Phase 5 — Resume upload
-
-- [x] Secure PDF upload (validation, size limits, local/S3 storage)
-- [x] Drag-and-drop UI with progress bar
-- [x] Replace resume flow
-
-See [docs/resumes.md](docs/resumes.md).
-
-## Phase 6 — Resume text extraction
-
-- [x] Async PDF extraction (PyMuPDF → pdfplumber → pypdf fallback)
-- [x] Text cleaning, section parsing, chunking
-- [x] Structured fields (name, education, experience, skills, etc.)
-- [x] Celery worker + Redis queue (`resume.extract`)
-- [x] Status lifecycle: `queued` → `extracting_resume` → `completed` | `failed`
-- [x] Extraction status API + frontend polling
-
-**Upload fails with email error?** Add `CLERK_SECRET_KEY` to `backend/.env` (same Clerk app as the frontend). See [docs/TESTING.md](docs/TESTING.md).
+</div>
