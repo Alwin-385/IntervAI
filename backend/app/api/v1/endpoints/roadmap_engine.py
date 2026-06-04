@@ -30,8 +30,7 @@ async def generate_roadmap(
 ) -> GeneratedRoadmapResponse:
     """Generate a personalized AI improvement roadmap from interview history."""
     req = body or GenerateRoadmapRequest()
-    settings = get_settings()
-    # Roadmap generation is heuristic-only (no OpenAI) so it finishes in seconds. Run inline.
+    # Heuristic-only — fast enough to run inline without a background job.
     return await service.generate_roadmap(current_user.id, req)
 
 

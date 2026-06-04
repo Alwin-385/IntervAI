@@ -201,8 +201,24 @@ export function VoiceRecorder({
           "Live captions need Chrome or Edge. You can still record audio and type below.",
         );
       }
-    } catch {
-      toast.error("Microphone access denied or unavailable.");
+    } catch (err) {
+      const name = err instanceof Error ? err.name : "";
+      if (name === "NotAllowedError" || name === "PermissionDeniedError") {
+        toast.error(
+          "Microphone blocked — click the 🔒 lock icon in your browser's address bar, allow the microphone, then refresh the page.",
+          { duration: 8000 },
+        );
+      } else if (name === "NotFoundError" || name === "DevicesNotFoundError") {
+        toast.error(
+          "No microphone found. Plug in a microphone or headset and try again.",
+          { duration: 6000 },
+        );
+      } else {
+        toast.error(
+          "Could not start microphone. Make sure you are on HTTPS and allow mic access when prompted.",
+          { duration: 6000 },
+        );
+      }
     }
   };
 
