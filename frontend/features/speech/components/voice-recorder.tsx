@@ -209,10 +209,9 @@ export function VoiceRecorder({
           { duration: 8000 },
         );
       } else if (name === "NotFoundError" || name === "DevicesNotFoundError") {
-        toast.error(
-          "No microphone found. Plug in a microphone or headset and try again.",
-          { duration: 6000 },
-        );
+        toast.error("No microphone found. Plug in a microphone or headset and try again.", {
+          duration: 6000,
+        });
       } else {
         toast.error(
           "Could not start microphone. Make sure you are on HTTPS and allow mic access when prompted.",

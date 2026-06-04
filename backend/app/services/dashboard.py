@@ -34,9 +34,7 @@ class DashboardService:
         # Single query for all resume counts using conditional aggregation.
         resume_stmt = select(
             func.count().label("total"),
-            func.sum(
-                case((Resume.status == ResumeStatus.COMPLETED, 1), else_=0)
-            ).label("analyzed"),
+            func.sum(case((Resume.status == ResumeStatus.COMPLETED, 1), else_=0)).label("analyzed"),
             func.sum(
                 case(
                     (Resume.status.in_([ResumeStatus.QUEUED, ResumeStatus.EXTRACTING_RESUME]), 1),
