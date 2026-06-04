@@ -32,6 +32,59 @@ Practice role-specific mock interviews, get scored feedback, analyze your resume
 
 ---
 
+## Screenshots
+
+<p align="center">
+  <img src="./docs/images/landing.png" alt="IntervAI landing page" width="800" />
+  <br />
+  <em>Landing page — AI-native interview preparation</em>
+</p>
+
+<table>
+<tr>
+<td width="50%" align="center">
+  <img src="./docs/images/dashboard.png" alt="Dashboard overview" width="100%" />
+  <br />
+  <sub><b>Dashboard</b> — stats, activity, quick actions</sub>
+</td>
+<td width="50%" align="center">
+  <img src="./docs/images/interview-questions.png" alt="Generated interview questions" width="100%" />
+  <br />
+  <sub><b>Interview questions</b> — role-tailored AI generation</sub>
+</td>
+</tr>
+<tr>
+<td width="50%" align="center">
+  <img src="./docs/images/interview-session.png" alt="Mock interview session with voice recording" width="100%" />
+  <br />
+  <sub><b>Mock interview</b> — voice answers & live captions</sub>
+</td>
+<td width="50%" align="center">
+  <img src="./docs/images/resume-analysis.png" alt="Resume analysis scores" width="100%" />
+  <br />
+  <sub><b>Resume analysis</b> — rubric scores & feedback</sub>
+</td>
+</tr>
+<tr>
+<td width="50%" align="center">
+  <img src="./docs/images/roadmap.png" alt="Personalized improvement roadmap" width="100%" />
+  <br />
+  <sub><b>Roadmap</b> — personalized prep plan</sub>
+</td>
+<td width="50%" align="center">
+  <img src="./docs/images/analytics.png" alt="Analytics dashboard" width="100%" />
+  <br />
+  <sub><b>Analytics</b> — progress & weak areas</sub>
+</td>
+</tr>
+</table>
+
+> **Add your images:** Save screenshots as PNG files in [`docs/images/`](./docs/images/) using the filenames above. See [`docs/images/README.md`](./docs/images/README.md) for capture steps.
+
+**[→ Try the live app](https://interv-ai-zeta.vercel.app/)**
+
+---
+
 ## Features
 
 | Feature | Description |
@@ -92,20 +145,6 @@ Practice role-specific mock interviews, get scored feedback, analyze your resume
              │  Postgres  │          │   Auth     │          │  Storage   │
              └────────────┘          └────────────┘          └────────────┘
 ```
-
----
-
-## Screenshots & demo
-
-Open the live app and sign in to explore:
-
-1. **Dashboard** — stats, recent activity, quick actions  
-2. **Resumes** — upload PDF, view analysis and scores  
-3. **Interviews** — create a session, generate questions, record answers  
-4. **Roadmaps** — one-click personalized prep plan  
-5. **Analytics** — trends and weak-area insights  
-
-**[→ Launch IntervAI](https://interv-ai-zeta.vercel.app/)**
 
 ---
 
