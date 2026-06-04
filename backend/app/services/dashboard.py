@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from uuid import UUID
 
-from sqlalchemy import func, select
+from sqlalchemy import case, func, select
 
 from app.models.enums import InterviewSessionStatus, ResumeStatus
 from app.models.interview_session import InterviewSession
@@ -31,41 +31,36 @@ class DashboardService:
     async def _build_stats(self, user_id: UUID) -> DashboardStats:
         session = self.resume_repo.session
 
-        total_stmt = select(func.count()).select_from(Resume).where(Resume.user_id == user_id)
-        analyzed_stmt = (
-            select(func.count())
-            .select_from(Resume)
-            .where(Resume.user_id == user_id, Resume.status == ResumeStatus.COMPLETED)
-        )
-        processing_stmt = (
-            select(func.count())
-            .select_from(Resume)
-            .where(
-                Resume.user_id == user_id,
-                Resume.status.in_([ResumeStatus.QUEUED, ResumeStatus.EXTRACTING_RESUME]),
-            )
-        )
+        # Single query for all resume counts using conditional aggregation.
+        resume_stmt = select(
+            func.count().label("total"),
+            func.sum(
+                case((Resume.status == ResumeStatus.COMPLETED, 1), else_=0)
+            ).label("analyzed"),
+            func.sum(
+                case(
+                    (Resume.status.in_([ResumeStatus.QUEUED, ResumeStatus.EXTRACTING_RESUME]), 1),
+                    else_=0,
+                )
+            ).label("processing"),
+        ).where(Resume.user_id == user_id)
 
-        total = int((await session.execute(total_stmt)).scalar_one())
-        analyzed = int((await session.execute(analyzed_stmt)).scalar_one())
-        processing = int((await session.execute(processing_stmt)).scalar_one())
+        # Single query for all interview counts using conditional aggregation.
+        interview_stmt = select(
+            func.count().label("total"),
+            func.sum(
+                case((InterviewSession.status == InterviewSessionStatus.COMPLETED, 1), else_=0)
+            ).label("completed"),
+        ).where(InterviewSession.user_id == user_id)
 
-        interviews_stmt = (
-            select(func.count())
-            .select_from(InterviewSession)
-            .where(InterviewSession.user_id == user_id)
-        )
-        interviews = int((await session.execute(interviews_stmt)).scalar_one())
+        resume_row = (await session.execute(resume_stmt)).one()
+        interview_row = (await session.execute(interview_stmt)).one()
 
-        completed_sessions_stmt = (
-            select(func.count())
-            .select_from(InterviewSession)
-            .where(
-                InterviewSession.user_id == user_id,
-                InterviewSession.status == InterviewSessionStatus.COMPLETED,
-            )
-        )
-        completed_sessions = int((await session.execute(completed_sessions_stmt)).scalar_one())
+        total = int(resume_row.total or 0)
+        analyzed = int(resume_row.analyzed or 0)
+        processing = int(resume_row.processing or 0)
+        interviews = int(interview_row.total or 0)
+        completed_sessions = int(interview_row.completed or 0)
 
         return DashboardStats(
             mock_interviews=interviews,

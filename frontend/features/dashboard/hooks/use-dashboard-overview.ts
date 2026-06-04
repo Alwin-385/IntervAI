@@ -18,10 +18,10 @@ export function useDashboardOverview() {
       return fetchDashboardOverview(token);
     },
     enabled: isLoaded && isSignedIn,
-    staleTime: 5_000,
+    staleTime: 30_000,
     refetchInterval: (query) => {
       const processing = query.state.data?.stats.resumes_processing ?? 0;
-      return processing > 0 ? 2_000 : false;
+      return processing > 0 ? 5_000 : false;
     },
   });
 }

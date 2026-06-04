@@ -92,11 +92,14 @@ class InterviewQuestionGeneratorService:
         }
 
         settings = get_settings()
-        if (
+        # Only dispatch async when OpenAI is configured. Heuristic mode is fast enough inline.
+        use_async = (
             not run_inline
             and settings.background_jobs_enabled
             and settings.background_jobs_async_question_generation
-        ):
+            and bool(settings.openai_api_key)
+        )
+        if use_async:
             from app.repositories.background_job import BackgroundJobRepository
             from app.services.background_job_dispatch import (
                 BackgroundJobDispatcher,
