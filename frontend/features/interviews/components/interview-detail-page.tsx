@@ -49,6 +49,9 @@ export function InterviewDetailPage({ sessionId }: InterviewDetailPageProps) {
   const handleGenerate = () => {
     generate.mutate(true, {
       onSuccess: (data) => {
+        if (data.status === "processing" && data.job_id) {
+          return;
+        }
         const planned = session?.question_count ?? data.count;
         if (data.count < planned) {
           toast.warning(`Generated ${data.count} of ${planned} questions`);

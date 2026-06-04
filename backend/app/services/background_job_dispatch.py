@@ -87,6 +87,9 @@ class BackgroundJobDispatcher:
         job_id = job.id
         payload_with_job = {**(payload or {}), "job_id": str(job_id)}
 
+        # Commit before Celery/thread workers so they can update job status (same DB row).
+        await self.job_repo.session.commit()
+
         if _use_celery():
             task_name = _TASK_MAP.get(job_type)
             if task_name and self._enqueue_celery(task_name, job_id, payload_with_job):

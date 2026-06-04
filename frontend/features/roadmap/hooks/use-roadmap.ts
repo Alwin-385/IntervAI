@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@clerk/nextjs";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 import { useBackgroundJob } from "@/features/jobs/hooks/use-background-job";
 import { fetchRoadmap, generateRoadmap, updateRoadmapItem } from "@/features/roadmap/api";
@@ -33,11 +34,13 @@ export function useGenerateRoadmap() {
     if (jobQuery.data?.status === "completed" && activeJobId) {
       qc.invalidateQueries({ queryKey: QUERY_KEY });
       setActiveJobId(null);
+      toast.success("Your roadmap is ready");
     }
     if (jobQuery.data?.status === "failed" && activeJobId) {
       setActiveJobId(null);
+      toast.error(jobQuery.data.error_message ?? "Roadmap generation failed");
     }
-  }, [jobQuery.data?.status, activeJobId, qc]);
+  }, [jobQuery.data?.status, jobQuery.data?.error_message, activeJobId, qc]);
 
   const mutation = useMutation({
     mutationFn: async (targetRole?: string) => {

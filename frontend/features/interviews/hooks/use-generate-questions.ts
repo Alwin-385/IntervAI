@@ -2,11 +2,12 @@
 
 import { useAuth } from "@clerk/nextjs";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { useEffect, useState } from "react";
 
 import { generateInterviewQuestions } from "@/features/interviews/api";
 import { useBackgroundJob } from "@/features/jobs/hooks/use-background-job";
 import type { InterviewQuestionDetail } from "@/features/interviews/types";
-import { useEffect, useState } from "react";
 
 export function useGenerateQuestions(sessionId: string) {
   const { getToken } = useAuth();
@@ -20,11 +21,19 @@ export function useGenerateQuestions(sessionId: string) {
     if (jobQuery.data?.status === "completed" && activeJobId) {
       queryClient.invalidateQueries({ queryKey: questionsKey });
       setActiveJobId(null);
+      toast.success("Interview questions are ready");
     }
     if (jobQuery.data?.status === "failed" && activeJobId) {
       setActiveJobId(null);
+      toast.error(jobQuery.data.error_message ?? "Question generation failed");
     }
-  }, [jobQuery.data?.status, activeJobId, queryClient, questionsKey]);
+  }, [
+    jobQuery.data?.status,
+    jobQuery.data?.error_message,
+    activeJobId,
+    queryClient,
+    questionsKey,
+  ]);
 
   const mutation = useMutation({
     mutationFn: async (replaceExisting?: boolean) => {
