@@ -48,10 +48,13 @@ export async function apiClient<T>(path: string, options: RequestOptions = {}): 
     if (err instanceof Error && err.name === "TimeoutError") {
       throw new ApiError("Request timed out. Check that the backend is running and try again.", 0);
     }
-    throw new ApiError(
-      `Cannot reach API at ${getApiBaseUrl()}. From c:\\IntervAI run .\\scripts\\start-backend.ps1, then open http://127.0.0.1:8000/api/v1/health (use 127.0.0.1, not localhost, on Windows).`,
-      0,
-    );
+    const apiUrl = getApiBaseUrl();
+    const isLocal =
+      apiUrl.includes("127.0.0.1") || apiUrl.includes("localhost") || apiUrl.startsWith("http://");
+    const hint = isLocal
+      ? "From c:\\IntervAI run .\\scripts\\start-backend.ps1, then open http://127.0.0.1:8000/api/v1/health."
+      : "The backend may be waking up (Render free tier). Wait 30s, open the /api/v1/health URL in a tab, then refresh. Use https://interv-ai-zeta.vercel.app for the live app.";
+    throw new ApiError(`Cannot reach API at ${apiUrl}. ${hint}`, 0);
   }
 
   const contentType = response.headers.get("content-type");
