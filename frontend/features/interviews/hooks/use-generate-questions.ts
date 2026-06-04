@@ -1,9 +1,9 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useAuth } from "@clerk/nextjs";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { useEffect, useState } from "react";
 
 import { generateInterviewQuestions } from "@/features/interviews/api";
 import { useBackgroundJob } from "@/features/jobs/hooks/use-background-job";
@@ -27,13 +27,7 @@ export function useGenerateQuestions(sessionId: string) {
       setActiveJobId(null);
       toast.error(jobQuery.data.error_message ?? "Question generation failed");
     }
-  }, [
-    jobQuery.data?.status,
-    jobQuery.data?.error_message,
-    activeJobId,
-    queryClient,
-    questionsKey,
-  ]);
+  }, [jobQuery.data?.status, jobQuery.data?.error_message, activeJobId, queryClient, questionsKey]);
 
   const mutation = useMutation({
     mutationFn: async (replaceExisting?: boolean) => {
