@@ -46,7 +46,7 @@ async def get_analytics_dashboard(
     pagination: Annotated[PaginationQuery, Depends(get_pagination)],
     target_role: str | None = Query(default=None),
     category: str | None = Query(default=None),
-    days: int | None = Query(default=90, ge=7, le=365),
+    days: int | None = Query(default=30, ge=7, le=365),
 ) -> AnalyticsDashboardResponse:
     """Full analytics dashboard: trends, history, weak areas, role readiness."""
     return await service.get_dashboard(
@@ -55,7 +55,7 @@ async def get_analytics_dashboard(
         page_size=min(pagination.page_size, 50),
         target_role=target_role,
         category=category,
-        days=days or 90,
+        days=days or 30,
     )
 
 
@@ -67,12 +67,12 @@ async def get_analytics_progress(
     ],
     target_role: str | None = Query(default=None),
     category: str | None = Query(default=None),
-    days: int | None = Query(default=90, ge=7, le=365),
+    days: int | None = Query(default=30, ge=7, le=365),
 ) -> AnalyticsProgressResponse:
     """Improvement progress time series and roadmap completion trends."""
     return await service.get_progress(
         current_user.id,
         target_role=target_role,
         category=category,
-        days=days or 90,
+        days=days or 30,
     )

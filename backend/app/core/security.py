@@ -85,7 +85,6 @@ _AI_PATHS = (
     "/api/v1/interviews",
     "/api/v1/answers",
     "/api/v1/roadmap",
-    "/api/v1/analytics",
     "/api/v1/speech",
 )
 _UPLOAD_PATHS = ("/api/v1/resumes", "/api/resumes")

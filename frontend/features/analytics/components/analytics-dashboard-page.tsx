@@ -22,10 +22,11 @@ import {
   useAnalyticsProgress,
 } from "@/features/analytics/hooks/use-analytics-dashboard";
 
-const DEFAULT_FILTERS: AnalyticsFilterState = { page: 1, days: 90 };
+const DEFAULT_FILTERS: AnalyticsFilterState = { page: 1, days: 30 };
 
 export function AnalyticsDashboardPage() {
   const [filters, setFilters] = useState<AnalyticsFilterState>(DEFAULT_FILTERS);
+  const [loadProgressCharts, setLoadProgressCharts] = useState(false);
   const [elapsedSec, setElapsedSec] = useState(0);
 
   const dashboardParams = {
@@ -33,7 +34,7 @@ export function AnalyticsDashboardPage() {
     page_size: 10,
     target_role: filters.target_role,
     category: filters.category,
-    days: filters.days ?? 90,
+    days: filters.days ?? 30,
   };
 
   const { data, isPending, isError, error, isFetching, refetch, fetchStatus } =
@@ -43,10 +44,18 @@ export function AnalyticsDashboardPage() {
     {
       target_role: filters.target_role,
       category: filters.category,
-      days: filters.days ?? 90,
+      days: filters.days ?? 30,
     },
-    { enabled: Boolean(data) },
+    { enabled: Boolean(data) && loadProgressCharts },
   );
+
+  useEffect(() => {
+    if (data && !loadProgressCharts) {
+      const timer = window.setTimeout(() => setLoadProgressCharts(true), 1500);
+      return () => window.clearTimeout(timer);
+    }
+    return undefined;
+  }, [data, loadProgressCharts]);
 
   useEffect(() => {
     if (!isPending && !isFetching) {
@@ -58,6 +67,7 @@ export function AnalyticsDashboardPage() {
   }, [isPending, isFetching]);
 
   function updateFilters(next: Partial<AnalyticsFilterState>) {
+    setLoadProgressCharts(false);
     setFilters((prev) => ({ ...prev, ...next }));
   }
 
@@ -66,16 +76,14 @@ export function AnalyticsDashboardPage() {
       <div className="flex min-h-[400px] flex-col items-center justify-center gap-3 px-4 text-center">
         <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
         <p className="text-sm text-muted-foreground">
-          Loading analytics… {elapsedSec > 0 ? `(${elapsedSec}s)` : ""}
+          {elapsedSec < 3
+            ? "Waking up API…"
+            : `Loading analytics… ${elapsedSec > 0 ? `(${elapsedSec}s)` : ""}`}
         </p>
-        <p className="max-w-md text-xs text-muted-foreground">
-          First load can take up to a minute on Render free tier while the API aggregates your
-          interview history.
-        </p>
-        {elapsedSec >= 45 && (
+        {elapsedSec >= 20 && (
           <Button variant="outline" size="sm" onClick={() => void refetch()}>
             <RefreshCw className="mr-2 h-4 w-4" />
-            Retry now
+            Retry
           </Button>
         )}
       </div>
@@ -87,6 +95,18 @@ export function AnalyticsDashboardPage() {
       <div className="space-y-3 rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3">
         <p className="text-sm text-destructive">
           {(error as Error)?.message ?? "Failed to load analytics"}
+        </p>
+        <p className="text-xs text-muted-foreground">
+          Open{" "}
+          <a
+            href="https://intervai-3ycg.onrender.com/api/v1/health"
+            target="_blank"
+            rel="noreferrer"
+            className="underline"
+          >
+            API health
+          </a>{" "}
+          in a new tab, wait for a JSON response, then retry.
         </p>
         <Button variant="outline" size="sm" onClick={() => void refetch()}>
           <RefreshCw className="mr-2 h-4 w-4" />
@@ -107,7 +127,7 @@ export function AnalyticsDashboardPage() {
           AI-powered interview performance, trends, and improvement tracking
         </p>
         {fetchStatus === "fetching" && (
-          <p className="mt-1 text-xs text-muted-foreground">Refreshing data…</p>
+          <p className="mt-1 text-xs text-muted-foreground">Refreshing…</p>
         )}
       </motion.div>
 

@@ -177,13 +177,22 @@ class AnalyticsDashboardEngineService:
         answer_rows = await self.analytics_repo.list_answer_evaluations_for_user(
             user_id,
             since=since,
-            limit=300,
+            limit=150,
         )
         speech_rows = await self.analytics_repo.list_speech_analyses_for_user(
             user_id,
             since=since,
-            limit=300,
+            limit=150,
         )
+
+        if not answer_rows and not speech_rows:
+            all_sessions_page = await self.session_repo.list_by_user(user_id, page=1, page_size=100)
+            return self._empty_context(
+                available_roles=sorted(
+                    {s.target_role for s in all_sessions_page.items if s.target_role}
+                ),
+                available_categories=sorted({s.category.value for s in all_sessions_page.items}),
+            )
 
         if filters.target_role:
             answer_rows = [r for r in answer_rows if r[3].target_role == filters.target_role]
@@ -246,6 +255,26 @@ class AnalyticsDashboardEngineService:
             "roadmap_snapshots": roadmap_snapshots,
             "session_role_map": session_role_map,
             "session_category_map": session_category_map,
+        }
+
+    def _empty_context(
+        self,
+        *,
+        available_roles: list[str] | None = None,
+        available_categories: list[str] | None = None,
+    ) -> dict:
+        return {
+            "answers": [],
+            "speeches": [],
+            "session_ids": set(),
+            "session_metrics": {},
+            "detected": [],
+            "available_roles": available_roles or [],
+            "available_categories": available_categories or [],
+            "roadmap_milestones": [],
+            "roadmap_snapshots": [],
+            "session_role_map": {},
+            "session_category_map": {},
         }
 
 
