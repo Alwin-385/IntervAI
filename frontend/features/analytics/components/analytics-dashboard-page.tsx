@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { BarChart3, Loader2 } from "lucide-react";
+import { BarChart3, Loader2, RefreshCw } from "lucide-react";
 
+import { Button } from "@/components/ui/button";
 import {
   AnalyticsFilters,
   type AnalyticsFilterState,
@@ -21,48 +22,77 @@ import {
   useAnalyticsProgress,
 } from "@/features/analytics/hooks/use-analytics-dashboard";
 
+const DEFAULT_FILTERS: AnalyticsFilterState = { page: 1, days: 90 };
+
 export function AnalyticsDashboardPage() {
-  const [filters, setFilters] = useState<AnalyticsFilterState>({ page: 1 });
+  const [filters, setFilters] = useState<AnalyticsFilterState>(DEFAULT_FILTERS);
+  const [elapsedSec, setElapsedSec] = useState(0);
 
   const dashboardParams = {
     page: filters.page,
     page_size: 10,
     target_role: filters.target_role,
     category: filters.category,
-    days: filters.days,
+    days: filters.days ?? 90,
   };
 
-  const { data, isLoading, isError, error, isFetching } = useAnalyticsDashboard(dashboardParams);
+  const { data, isPending, isError, error, isFetching, refetch, fetchStatus } =
+    useAnalyticsDashboard(dashboardParams);
 
   const { data: progress } = useAnalyticsProgress(
     {
       target_role: filters.target_role,
       category: filters.category,
-      days: filters.days,
+      days: filters.days ?? 90,
     },
     { enabled: Boolean(data) },
   );
+
+  useEffect(() => {
+    if (!isPending && !isFetching) {
+      setElapsedSec(0);
+      return;
+    }
+    const timer = window.setInterval(() => setElapsedSec((s) => s + 1), 1000);
+    return () => window.clearInterval(timer);
+  }, [isPending, isFetching]);
 
   function updateFilters(next: Partial<AnalyticsFilterState>) {
     setFilters((prev) => ({ ...prev, ...next }));
   }
 
-  if (isLoading || (isFetching && !data)) {
+  if (isPending) {
     return (
-      <div className="flex min-h-[400px] flex-col items-center justify-center gap-2">
+      <div className="flex min-h-[400px] flex-col items-center justify-center gap-3 px-4 text-center">
         <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
         <p className="text-sm text-muted-foreground">
-          Loading analytics… this can take up to a minute on the free tier.
+          Loading analytics… {elapsedSec > 0 ? `(${elapsedSec}s)` : ""}
         </p>
+        <p className="max-w-md text-xs text-muted-foreground">
+          First load can take up to a minute on Render free tier while the API aggregates your
+          interview history.
+        </p>
+        {elapsedSec >= 45 && (
+          <Button variant="outline" size="sm" onClick={() => void refetch()}>
+            <RefreshCw className="mr-2 h-4 w-4" />
+            Retry now
+          </Button>
+        )}
       </div>
     );
   }
 
   if (isError || !data) {
     return (
-      <p className="rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
-        {(error as Error)?.message ?? "Failed to load analytics"}
-      </p>
+      <div className="space-y-3 rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3">
+        <p className="text-sm text-destructive">
+          {(error as Error)?.message ?? "Failed to load analytics"}
+        </p>
+        <Button variant="outline" size="sm" onClick={() => void refetch()}>
+          <RefreshCw className="mr-2 h-4 w-4" />
+          Try again
+        </Button>
+      </div>
     );
   }
 
@@ -76,6 +106,9 @@ export function AnalyticsDashboardPage() {
         <p className="mt-1 text-sm text-muted-foreground">
           AI-powered interview performance, trends, and improvement tracking
         </p>
+        {fetchStatus === "fetching" && (
+          <p className="mt-1 text-xs text-muted-foreground">Refreshing data…</p>
+        )}
       </motion.div>
 
       <div className="grid gap-6 lg:grid-cols-4">

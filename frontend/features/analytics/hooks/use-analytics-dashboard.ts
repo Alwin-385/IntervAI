@@ -13,8 +13,8 @@ export function useAnalyticsDashboard(params: AnalyticsDashboardParams) {
     queryFn: () => fetchAnalyticsDashboard({ getToken }, params),
     enabled: isLoaded && isSignedIn,
     staleTime: 30_000,
-    retry: 2,
-    retryDelay: (attempt) => Math.min(5000 * (attempt + 1), 15000),
+    retry: 1,
+    retryDelay: 4000,
   });
 }
 

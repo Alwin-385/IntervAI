@@ -8,6 +8,11 @@ import type {
 
 type Auth = { getToken?: ClerkGetToken; refreshToken?: TokenRefresh; token?: string };
 
+/** Backend accepts 7–365; default 90 keeps Render free tier responsive. */
+function resolveDays(days: number | undefined): string {
+  return String(days ?? 90);
+}
+
 function authOpts(auth: Auth) {
   return { getToken: auth.getToken, refreshToken: auth.refreshToken, token: auth.token };
 }
@@ -18,14 +23,14 @@ export async function fetchAnalyticsDashboard(
 ): Promise<AnalyticsDashboard> {
   return apiClient<AnalyticsDashboard>("/api/v1/analytics/dashboard", {
     ...authOpts(auth),
-    timeoutMs: 120_000,
-    networkRetries: 3,
+    timeoutMs: 60_000,
+    networkRetries: 1,
     params: {
       page: String(params.page ?? 1),
       page_size: String(params.page_size ?? 10),
+      days: resolveDays(params.days),
       ...(params.target_role ? { target_role: params.target_role } : {}),
       ...(params.category ? { category: params.category } : {}),
-      ...(params.days != null ? { days: String(params.days) } : {}),
     },
   });
 }
@@ -36,12 +41,12 @@ export async function fetchAnalyticsProgress(
 ): Promise<AnalyticsProgress> {
   return apiClient<AnalyticsProgress>("/api/v1/analytics/progress", {
     ...authOpts(auth),
-    timeoutMs: 120_000,
-    networkRetries: 2,
+    timeoutMs: 60_000,
+    networkRetries: 1,
     params: {
+      days: resolveDays(params.days),
       ...(params.target_role ? { target_role: params.target_role } : {}),
       ...(params.category ? { category: params.category } : {}),
-      ...(params.days != null ? { days: String(params.days) } : {}),
     },
   });
 }

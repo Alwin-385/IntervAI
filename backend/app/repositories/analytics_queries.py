@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from datetime import datetime
 from uuid import UUID
 
 from sqlalchemy import select
@@ -21,7 +22,11 @@ class AnalyticsQueryRepository:
         self.session = session
 
     async def list_answer_evaluations_for_user(
-        self, user_id: UUID
+        self,
+        user_id: UUID,
+        *,
+        since: datetime | None = None,
+        limit: int = 500,
     ) -> list[tuple[AnswerEvaluation, InterviewAnswer, InterviewQuestion, InterviewSession]]:
         stmt = (
             select(AnswerEvaluation, InterviewAnswer, InterviewQuestion, InterviewSession)
@@ -29,19 +34,27 @@ class AnalyticsQueryRepository:
             .join(InterviewQuestion, InterviewAnswer.question_id == InterviewQuestion.id)
             .join(InterviewSession, InterviewQuestion.session_id == InterviewSession.id)
             .where(InterviewSession.user_id == user_id)
-            .order_by(AnswerEvaluation.updated_at.desc())
         )
+        if since is not None:
+            stmt = stmt.where(AnswerEvaluation.updated_at >= since)
+        stmt = stmt.order_by(AnswerEvaluation.updated_at.desc()).limit(limit)
         result = await self.session.execute(stmt)
         return list(result.all())
 
     async def list_speech_analyses_for_user(
-        self, user_id: UUID
+        self,
+        user_id: UUID,
+        *,
+        since: datetime | None = None,
+        limit: int = 500,
     ) -> list[tuple[SpeechAnalysis, InterviewSession]]:
         stmt = (
             select(SpeechAnalysis, InterviewSession)
             .join(InterviewSession, SpeechAnalysis.session_id == InterviewSession.id)
             .where(InterviewSession.user_id == user_id)
-            .order_by(SpeechAnalysis.updated_at.desc())
         )
+        if since is not None:
+            stmt = stmt.where(SpeechAnalysis.updated_at >= since)
+        stmt = stmt.order_by(SpeechAnalysis.updated_at.desc()).limit(limit)
         result = await self.session.execute(stmt)
         return list(result.all())

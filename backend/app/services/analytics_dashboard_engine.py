@@ -170,8 +170,20 @@ class AnalyticsDashboardEngineService:
         user_id: UUID,
         filters: AnalyticsFiltersApplied,
     ) -> dict:
-        answer_rows = await self.analytics_repo.list_answer_evaluations_for_user(user_id)
-        speech_rows = await self.analytics_repo.list_speech_analyses_for_user(user_id)
+        since = None
+        if filters.days is not None:
+            since = datetime.now(UTC) - timedelta(days=filters.days)
+
+        answer_rows = await self.analytics_repo.list_answer_evaluations_for_user(
+            user_id,
+            since=since,
+            limit=300,
+        )
+        speech_rows = await self.analytics_repo.list_speech_analyses_for_user(
+            user_id,
+            since=since,
+            limit=300,
+        )
 
         if filters.target_role:
             answer_rows = [r for r in answer_rows if r[3].target_role == filters.target_role]

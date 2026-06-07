@@ -10,7 +10,7 @@ Practice role-specific mock interviews, get scored feedback, analyze your resume
 
 [![Live App](https://img.shields.io/badge/Live_App-interv--ai--zeta.vercel.app-6366f1?style=for-the-badge)](https://interv-ai-zeta.vercel.app/)
 [![API](https://img.shields.io/badge/API-Render-46E3B7?style=for-the-badge)](https://intervai-3ycg.onrender.com/api/v1/health)
-[![CI](https://img.shields.io/github/actions/workflow/status/Alwin-385/IntervAI/ci.yml?branch=main&label=CI&style=for-the-badge)](https://github.com/Alwin-385/IntervAI/actions)
+[![CI](https://img.shields.io/badge/CI-GitHub_Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white)](https://github.com/Alwin-385/IntervAI/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/License-Private-64748b?style=for-the-badge)]()
 
 [Live Demo](https://interv-ai-zeta.vercel.app/) · [API Health](https://intervai-3ycg.onrender.com/api/v1/health) · [Report Bug](https://github.com/Alwin-385/IntervAI/issues)
