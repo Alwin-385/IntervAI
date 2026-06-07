@@ -1,0 +1,49 @@
+/**
+ * Linear-style dark theme (original IntervAI look).
+ * To restore: in globals.css change the import to this file.
+ */
+:root {
+  --background: 222 47% 6%;
+  --foreground: 210 40% 98%;
+  --card: 222 47% 8%;
+  --card-foreground: 210 40% 98%;
+  --primary: 217 91% 60%;
+  --primary-foreground: 222 47% 6%;
+  --secondary: 217 33% 17%;
+  --secondary-foreground: 210 40% 98%;
+  --muted: 217 33% 14%;
+  --muted-foreground: 215 20% 65%;
+  --accent: 262 83% 58%;
+  --accent-foreground: 210 40% 98%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 217 33% 18%;
+  --input: 217 33% 18%;
+  --ring: 217 91% 60%;
+  --radius: 0.75rem;
+
+  --gradient-accent: linear-gradient(
+    135deg,
+    hsl(217 91% 60%) 0%,
+    hsl(262 83% 58%) 100%
+  );
+  --gradient-accent-subtle: linear-gradient(
+    135deg,
+    hsl(217 91% 60% / 0.12) 0%,
+    hsl(262 83% 58% / 0.08) 100%
+  );
+  --gradient-glow: radial-gradient(
+    ellipse 80% 50% at 50% -20%,
+    hsl(217 91% 60% / 0.18) 0%,
+    hsl(222 47% 6% / 0.4) 50%,
+    transparent 72%
+  );
+  --gradient-border: linear-gradient(
+    135deg,
+    hsl(217 91% 60% / 0.45) 0%,
+    hsl(217 33% 18% / 0.9) 100%
+  );
+  --elevation-sm: 0 2px 10px hsl(222 47% 3% / 0.45);
+  --elevation-md: 0 4px 18px hsl(222 47% 3% / 0.5);
+  --glow-blue: 0 0 80px -20px hsl(217 91% 60% / 0.45);
+}

@@ -1,72 +1,56 @@
-import { getApiBaseUrl } from "@/lib/env";
+import { apiClient } from "@/lib/api-client";
+import type { ClerkGetToken, TokenRefresh } from "@/lib/auth-client";
 import type {
   AnswerEvaluationDetail,
   SessionAnswerEvaluationResults,
 } from "@/features/evaluations/types";
 
-export class EvaluationApiError extends Error {
-  constructor(
-    message: string,
-    public readonly status: number,
-    public readonly body?: unknown,
-  ) {
-    super(message);
-    this.name = "EvaluationApiError";
-  }
+type Auth = { getToken?: ClerkGetToken; refreshToken?: TokenRefresh; token?: string };
+
+function authOpts(auth: Auth) {
+  return {
+    getToken: auth.getToken,
+    refreshToken: auth.refreshToken,
+    token: auth.token,
+  };
 }
 
 export async function evaluateAnswer(
-  token: string,
+  auth: Auth,
   answerId: string,
   force = false,
 ): Promise<AnswerEvaluationDetail> {
-  const res = await fetch(`${getApiBaseUrl()}/api/v1/answers/${answerId}/evaluate`, {
+  return apiClient<AnswerEvaluationDetail>(`/api/v1/answers/${answerId}/evaluate`, {
     method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
     body: JSON.stringify({ force }),
+    ...authOpts(auth),
   });
-  const body = await res.json();
-  if (!res.ok) throw new EvaluationApiError(parseError(body), res.status, body);
-  return body as AnswerEvaluationDetail;
 }
 
 export async function fetchAnswerEvaluation(
-  token: string,
+  auth: Auth,
   answerId: string,
 ): Promise<AnswerEvaluationDetail> {
-  const res = await fetch(`${getApiBaseUrl()}/api/v1/answers/${answerId}/evaluation`, {
-    headers: { Authorization: `Bearer ${token}` },
-    cache: "no-store",
+  return apiClient<AnswerEvaluationDetail>(`/api/v1/answers/${answerId}/evaluation`, {
+    ...authOpts(auth),
   });
-  const body = await res.json();
-  if (!res.ok) throw new EvaluationApiError(parseError(body), res.status, body);
-  return body as AnswerEvaluationDetail;
 }
 
 export async function fetchSessionAnswerEvaluations(
-  token: string,
+  auth: Auth,
   sessionId: string,
 ): Promise<SessionAnswerEvaluationResults> {
-  const res = await fetch(`${getApiBaseUrl()}/api/v1/answers/session/${sessionId}/evaluation`, {
-    headers: { Authorization: `Bearer ${token}` },
-    cache: "no-store",
-  });
-  const body = await res.json();
-  if (!res.ok) throw new EvaluationApiError(parseError(body), res.status, body);
-  return body as SessionAnswerEvaluationResults;
+  return apiClient<SessionAnswerEvaluationResults>(
+    `/api/v1/answers/session/${sessionId}/evaluation`,
+    { ...authOpts(auth) },
+  );
 }
 
-function parseError(body: unknown): string {
-  if (
-    typeof body === "object" &&
-    body !== null &&
-    "error" in body &&
-    typeof (body as { error?: { message?: string } }).error?.message === "string"
-  ) {
-    return (body as { error: { message: string } }).error.message;
-  }
-  return "Answer evaluation request failed";
+/** @deprecated pass auth object with getToken instead */
+export async function fetchSessionAnswerEvaluationsWithToken(
+  token: string,
+  sessionId: string,
+  refreshToken?: TokenRefresh,
+): Promise<SessionAnswerEvaluationResults> {
+  return fetchSessionAnswerEvaluations({ token, refreshToken }, sessionId);
 }

@@ -96,7 +96,7 @@ export function AnalyticsDashboardPage() {
               title="Confidence trend"
               subtitle="From speech analysis"
               data={data.confidence_trend}
-              color="hsl(262 83% 58%)"
+              color="hsl(var(--accent))"
             />
             <MetricTrendChart
               title="Technical trend"

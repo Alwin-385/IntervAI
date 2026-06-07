@@ -47,10 +47,18 @@ export function WeakAreasPageContent() {
             Progress score
           </p>
           <p className="mt-2 text-4xl font-bold tabular-nums text-primary">
-            {Math.round(summary.overall_improvement_score)}
-            <span className="text-lg font-normal text-muted-foreground"> / 100</span>
+            {hasHistory ? (
+              <>
+                {Math.round(summary.overall_improvement_score)}
+                <span className="text-lg font-normal text-muted-foreground"> / 100</span>
+              </>
+            ) : (
+              <span className="text-lg font-normal text-muted-foreground">Not enough data yet</span>
+            )}
           </p>
-          <Progress value={summary.overall_improvement_score} className="mt-4 h-2" />
+          {hasHistory && (
+            <Progress value={summary.overall_improvement_score} className="mt-4 h-2" />
+          )}
           <p className="mt-2 text-sm text-muted-foreground">
             Based on {summary.interviews_analyzed} interview(s), {summary.answers_analyzed} answer
             reviews, and {summary.speech_analyses_analyzed} speech analyses.

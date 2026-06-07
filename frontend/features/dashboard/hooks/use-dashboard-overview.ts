@@ -1,22 +1,18 @@
 "use client";
 
-import { useAuth } from "@clerk/nextjs";
 import { useQuery } from "@tanstack/react-query";
 
 import { fetchDashboardOverview } from "@/features/dashboard/api";
+import { useAuthToken } from "@/hooks/use-auth-token";
 
 export const DASHBOARD_QUERY_KEY = ["dashboard", "overview"] as const;
 
 export function useDashboardOverview() {
-  const { getToken, isLoaded, isSignedIn } = useAuth();
+  const { getToken, isLoaded, isSignedIn } = useAuthToken();
 
   return useQuery({
     queryKey: DASHBOARD_QUERY_KEY,
-    queryFn: async () => {
-      const token = await getToken();
-      if (!token) throw new Error("Not authenticated");
-      return fetchDashboardOverview(token);
-    },
+    queryFn: () => fetchDashboardOverview({ getToken }),
     enabled: isLoaded && isSignedIn,
     staleTime: 30_000,
     refetchInterval: (query) => {

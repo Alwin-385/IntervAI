@@ -1,38 +1,20 @@
-import { getApiBaseUrl } from "@/lib/env";
+import { apiClient } from "@/lib/api-client";
+import type { ClerkGetToken, TokenRefresh } from "@/lib/auth-client";
 import type { BackgroundJob } from "@/features/jobs/types";
 
-async function handleResponse<T>(res: Response): Promise<T> {
-  const body = await res.json().catch(() => null);
-  if (!res.ok) {
-    const msg =
-      typeof body === "object" &&
-      body !== null &&
-      "error" in body &&
-      typeof (body as { error?: { message?: string } }).error?.message === "string"
-        ? (body as { error: { message: string } }).error.message
-        : "Job request failed";
-    throw new Error(msg);
-  }
-  return body as T;
-}
+type Auth = { getToken?: ClerkGetToken; refreshToken?: TokenRefresh; token?: string };
 
-export async function fetchJob(token: string, jobId: string): Promise<BackgroundJob> {
-  const res = await fetch(`${getApiBaseUrl()}/api/v1/jobs/${jobId}`, {
-    headers: { Authorization: `Bearer ${token}` },
-    cache: "no-store",
-  });
-  return handleResponse<BackgroundJob>(res);
+export async function fetchJob(auth: Auth, jobId: string): Promise<BackgroundJob> {
+  return apiClient<BackgroundJob>(`/api/v1/jobs/${jobId}`, auth);
 }
 
 export async function fetchJobsForResource(
-  token: string,
+  auth: Auth,
   resourceType: string,
   resourceId: string,
 ): Promise<{ items: BackgroundJob[]; total: number }> {
-  const q = new URLSearchParams({ resource_type: resourceType, resource_id: resourceId });
-  const res = await fetch(`${getApiBaseUrl()}/api/v1/jobs?${q}`, {
-    headers: { Authorization: `Bearer ${token}` },
-    cache: "no-store",
+  return apiClient<{ items: BackgroundJob[]; total: number }>("/api/v1/jobs", {
+    ...auth,
+    params: { resource_type: resourceType, resource_id: resourceId },
   });
-  return handleResponse<{ items: BackgroundJob[]; total: number }>(res);
 }

@@ -25,6 +25,8 @@ export interface TranscribeOptions {
   file: Blob;
   filename: string;
   token: string;
+  getToken?: () => Promise<string | null>;
+  refreshToken?: () => Promise<string | null>;
   sessionId?: string;
   questionId?: string;
   durationSeconds?: number;

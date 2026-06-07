@@ -1,6 +1,5 @@
 "use client";
 
-import { useAuth } from "@clerk/nextjs";
 import { motion, AnimatePresence } from "framer-motion";
 import { CheckCircle2, FileUp, Loader2, Upload, XCircle } from "lucide-react";
 import { useCallback, useRef, useState } from "react";
@@ -9,6 +8,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { uploadResume, UploadError } from "@/lib/upload-client";
+import { useAuthToken } from "@/hooks/use-auth-token";
 import type { Resume, ResumeUploadResponse } from "@/features/resumes/types";
 import { cn } from "@/lib/utils";
 
@@ -24,7 +24,7 @@ interface ResumeUploaderProps {
 }
 
 export function ResumeUploader({ replaceResume, onSuccess, onCancelReplace }: ResumeUploaderProps) {
-  const { getToken } = useAuth();
+  const { requireToken, getToken } = useAuthToken();
   const inputRef = useRef<HTMLInputElement>(null);
   const [state, setState] = useState<UploadState>("idle");
   const [progress, setProgress] = useState(0);
@@ -57,12 +57,12 @@ export function ResumeUploader({ replaceResume, onSuccess, onCancelReplace }: Re
       setErrorMessage(null);
 
       try {
-        const token = await getToken();
-        if (!token) throw new Error("Not authenticated");
+        const token = await requireToken();
 
         const result = await uploadResume({
           file,
           token,
+          getToken,
           title: file.name.replace(/\.pdf$/i, ""),
           replaceResumeId: replaceResume?.id,
           onProgress: setProgress,

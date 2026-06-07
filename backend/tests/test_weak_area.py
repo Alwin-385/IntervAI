@@ -132,3 +132,18 @@ class TestWeakAreaDetector:
 
         result = detect_weak_areas([], [])
         assert result == []
+
+
+class TestWeakAreaProgressScore:
+    def test_score_uses_average_rubric_not_zero_from_penalties(self):
+        from app.services.weak_area_detection_engine import _build_summary
+
+        answers = [_make_answer_item(rubric_score=72.0) for _ in range(4)]
+        summary = _build_summary(interviews=1, answers=answers, speeches=[], items=[])
+        assert summary.overall_improvement_score >= 70.0
+
+    def test_score_zero_when_no_history(self):
+        from app.services.weak_area_detection_engine import _build_summary
+
+        summary = _build_summary(interviews=0, answers=[], speeches=[], items=[])
+        assert summary.overall_improvement_score == 0.0

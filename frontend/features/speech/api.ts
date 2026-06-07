@@ -1,4 +1,5 @@
 import { getApiBaseUrl } from "@/lib/env";
+import { fetchWithAuth, type ClerkGetToken, type TokenRefresh } from "@/lib/auth-client";
 import type {
   SpeechAnalysisResult,
   SpeechAnalyzeRequest,
@@ -8,33 +9,41 @@ import type {
   TranscribeResponse,
 } from "@/features/speech/types";
 
-export class SpeechApiError extends Error {
-  constructor(
-    message: string,
-    public readonly status: number,
-    public readonly body?: unknown,
-  ) {
-    super(message);
-    this.name = "SpeechApiError";
-  }
+export type Auth = { getToken?: ClerkGetToken; refreshToken?: TokenRefresh; token?: string };
+
+function refreshFromAuth(auth: Auth): TokenRefresh | undefined {
+  return auth.refreshToken ?? (auth.getToken ? () => auth.getToken!({ skipCache: true }) : undefined);
 }
 
-export async function fetchSpeechCapabilities(token: string): Promise<SpeechCapabilities> {
-  const res = await fetch(`${getApiBaseUrl()}/api/v1/speech/capabilities`, {
-    headers: { Authorization: `Bearer ${token}` },
-    cache: "no-store",
-  });
+async function parseJsonResponse<T>(
+  auth: Auth,
+  url: string,
+  init: RequestInit | undefined,
+): Promise<T> {
+  const token = auth.token ?? (auth.getToken ? await auth.getToken() : null);
+  if (!token) throw new Error("Not authenticated");
+  const res = await fetchWithAuth(token, url, init, refreshFromAuth(auth));
   const body = await res.json();
   if (!res.ok) {
-    throw new SpeechApiError(parseError(body), res.status, body);
+    throw new Error(parseError(body));
   }
-  return body as SpeechCapabilities;
+  return body as T;
+}
+
+export async function fetchSpeechCapabilities(auth: Auth): Promise<SpeechCapabilities> {
+  return parseJsonResponse<SpeechCapabilities>(
+    auth,
+    `${getApiBaseUrl()}/api/v1/speech/capabilities`,
+    undefined,
+  );
 }
 
 export function transcribeAudio({
   file,
   filename,
   token,
+  refreshToken,
+  getToken,
   sessionId,
   questionId,
   durationSeconds,
@@ -42,101 +51,105 @@ export function transcribeAudio({
   previousTranscript,
   onProgress,
 }: TranscribeOptions): Promise<TranscribeResponse> {
-  return new Promise((resolve, reject) => {
-    const formData = new FormData();
-    formData.append("file", file, filename);
-    if (sessionId) formData.append("session_id", sessionId);
-    if (questionId) formData.append("question_id", questionId);
-    if (durationSeconds != null) {
-      formData.append("duration_seconds", String(durationSeconds));
-    }
-    if (browserTranscript?.trim()) {
-      formData.append("browser_transcript", browserTranscript.trim());
-    }
-    if (previousTranscript?.trim()) {
-      formData.append("previous_transcript", previousTranscript.trim());
-    }
+  const auth: Auth = { token, refreshToken, getToken };
+  const refresh = refreshFromAuth(auth);
 
-    const xhr = new XMLHttpRequest();
-    const url = `${getApiBaseUrl()}/api/v1/speech/transcribe`;
-
-    xhr.upload.addEventListener("progress", (event) => {
-      if (event.lengthComputable && onProgress) {
-        onProgress(Math.round((event.loaded / event.total) * 100));
+  const send = (authToken: string, retried: boolean): Promise<TranscribeResponse> =>
+    new Promise((resolve, reject) => {
+      const formData = new FormData();
+      formData.append("file", file, filename);
+      if (sessionId) formData.append("session_id", sessionId);
+      if (questionId) formData.append("question_id", questionId);
+      if (durationSeconds != null) {
+        formData.append("duration_seconds", String(durationSeconds));
       }
+      if (browserTranscript?.trim()) {
+        formData.append("browser_transcript", browserTranscript.trim());
+      }
+      if (previousTranscript?.trim()) {
+        formData.append("previous_transcript", previousTranscript.trim());
+      }
+
+      const xhr = new XMLHttpRequest();
+      const url = `${getApiBaseUrl()}/api/v1/speech/transcribe`;
+
+      xhr.upload.addEventListener("progress", (event) => {
+        if (event.lengthComputable && onProgress) {
+          onProgress(Math.round((event.loaded / event.total) * 100));
+        }
+      });
+
+      xhr.addEventListener("load", () => {
+        void (async () => {
+          if (xhr.status === 401 && refresh && !retried) {
+            const freshToken = await refresh();
+            if (freshToken) {
+              try {
+                resolve(await send(freshToken, true));
+              } catch (err) {
+                reject(err);
+              }
+              return;
+            }
+          }
+
+          let body: unknown = null;
+          try {
+            body = xhr.responseText ? JSON.parse(xhr.responseText) : null;
+          } catch {
+            body = xhr.responseText;
+          }
+          if (xhr.status >= 200 && xhr.status < 300) {
+            resolve(body as TranscribeResponse);
+            return;
+          }
+          reject(new Error(parseError(body)));
+        })();
+      });
+
+      xhr.addEventListener("error", () => {
+        reject(new Error("Failed to upload audio for transcription."));
+      });
+
+      xhr.open("POST", url);
+      xhr.setRequestHeader("Authorization", `Bearer ${authToken}`);
+      xhr.send(formData);
     });
 
-    xhr.addEventListener("load", () => {
-      let body: unknown = null;
-      try {
-        body = xhr.responseText ? JSON.parse(xhr.responseText) : null;
-      } catch {
-        body = xhr.responseText;
-      }
-      if (xhr.status >= 200 && xhr.status < 300) {
-        resolve(body as TranscribeResponse);
-        return;
-      }
-      reject(new SpeechApiError(parseError(body), xhr.status, body));
-    });
-
-    xhr.addEventListener("error", () => {
-      reject(new SpeechApiError("Failed to upload audio for transcription.", 0));
-    });
-
-    xhr.open("POST", url);
-    xhr.setRequestHeader("Authorization", `Bearer ${token}`);
-    xhr.send(formData);
-  });
+  return send(token, false);
 }
 
 export async function analyzeSpeech(
-  token: string,
+  auth: Auth,
   payload: SpeechAnalyzeRequest,
 ): Promise<SpeechAnalysisResult> {
-  const res = await fetch(`${getApiBaseUrl()}/api/v1/speech/analyze`, {
+  return parseJsonResponse<SpeechAnalysisResult>(auth, `${getApiBaseUrl()}/api/v1/speech/analyze`, {
     method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
-  const body = await res.json();
-  if (!res.ok) {
-    throw new SpeechApiError(parseError(body), res.status, body);
-  }
-  return body as SpeechAnalysisResult;
 }
 
 export async function fetchSpeechSessionResults(
-  token: string,
+  auth: Auth,
   sessionId: string,
 ): Promise<SpeechSessionResults> {
-  const res = await fetch(`${getApiBaseUrl()}/api/v1/speech/session/${sessionId}/results`, {
-    headers: { Authorization: `Bearer ${token}` },
-    cache: "no-store",
-  });
-  const body = await res.json();
-  if (!res.ok) {
-    throw new SpeechApiError(parseError(body), res.status, body);
-  }
-  return body as SpeechSessionResults;
+  return parseJsonResponse<SpeechSessionResults>(
+    auth,
+    `${getApiBaseUrl()}/api/v1/speech/session/${sessionId}/results`,
+    undefined,
+  );
 }
 
 export async function fetchSpeechAnalysis(
-  token: string,
+  auth: Auth,
   answerId: string,
 ): Promise<SpeechAnalysisResult> {
-  const res = await fetch(`${getApiBaseUrl()}/api/v1/speech/analysis/${answerId}`, {
-    headers: { Authorization: `Bearer ${token}` },
-    cache: "no-store",
-  });
-  const body = await res.json();
-  if (!res.ok) {
-    throw new SpeechApiError(parseError(body), res.status, body);
-  }
-  return body as SpeechAnalysisResult;
+  return parseJsonResponse<SpeechAnalysisResult>(
+    auth,
+    `${getApiBaseUrl()}/api/v1/speech/analysis/${answerId}`,
+    undefined,
+  );
 }
 
 function parseError(body: unknown): string {

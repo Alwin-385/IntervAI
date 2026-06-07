@@ -1,20 +1,16 @@
 "use client";
 
-import { useAuth } from "@clerk/nextjs";
 import { useQuery } from "@tanstack/react-query";
 
 import { fetchResume } from "@/features/resumes/api";
+import { useAuthToken } from "@/hooks/use-auth-token";
 
 export function useResume(resumeId: string) {
-  const { getToken, isLoaded, isSignedIn } = useAuth();
+  const { getToken, isLoaded, isSignedIn } = useAuthToken();
 
   return useQuery({
     queryKey: ["resume", resumeId],
-    queryFn: async () => {
-      const token = await getToken();
-      if (!token) throw new Error("Not authenticated");
-      return fetchResume(token, resumeId);
-    },
+    queryFn: () => fetchResume({ getToken }, resumeId),
     enabled: isLoaded && isSignedIn && Boolean(resumeId),
   });
 }

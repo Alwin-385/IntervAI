@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowLeft, Loader2, Sparkles } from "lucide-react";
+import { ArrowLeft, Loader2, RefreshCw, Sparkles } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { InterviewSessionPlayer } from "@/features/interviews/components/interview-session-player";
@@ -13,7 +13,7 @@ interface InterviewSessionPageProps {
 }
 
 export function InterviewSessionPage({ sessionId }: InterviewSessionPageProps) {
-  const { data, isLoading, isError, error } = useInterviewRuntime(sessionId);
+  const { data, isLoading, isError, error, refetch, isFetching } = useInterviewRuntime(sessionId);
 
   if (isLoading) {
     return (
@@ -30,6 +30,7 @@ export function InterviewSessionPage({ sessionId }: InterviewSessionPageProps) {
         : error instanceof Error
           ? error.message
           : "Unable to load interview session.";
+    const isAuthError = error instanceof ApiError && error.status === 401;
     const needsQuestions =
       error instanceof ApiError &&
       (error.status === 422 || message.toLowerCase().includes("no questions"));
@@ -44,8 +45,22 @@ export function InterviewSessionPage({ sessionId }: InterviewSessionPageProps) {
           Back to interview details
         </Link>
         <p className="rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
-          {message}
+          {isAuthError
+            ? "Your sign-in session expired. Refresh to get a new token, or sign in again."
+            : message}
         </p>
+        {isAuthError && (
+          <Button
+            type="button"
+            variant="outline"
+            className="gap-2"
+            disabled={isFetching}
+            onClick={() => void refetch()}
+          >
+            <RefreshCw className={`h-4 w-4 ${isFetching ? "animate-spin" : ""}`} />
+            Retry
+          </Button>
+        )}
         {needsQuestions && (
           <Button asChild className="gap-2">
             <Link href={`/dashboard/interviews/${sessionId}`}>

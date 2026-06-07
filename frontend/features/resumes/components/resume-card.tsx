@@ -1,6 +1,5 @@
 "use client";
 
-import { useAuth } from "@clerk/nextjs";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import Link from "next/link";
@@ -27,6 +26,7 @@ import { DASHBOARD_QUERY_KEY } from "@/features/dashboard/hooks/use-dashboard-ov
 import { ExtractionProgress } from "@/features/resumes/components/extraction-progress";
 import { ExtractionViewDialog } from "@/features/resumes/components/extraction-view-dialog";
 import { formatFileSize, retryExtraction } from "@/features/resumes/api";
+import { useAuthToken } from "@/hooks/use-auth-token";
 import type { Resume, ResumeStatus } from "@/features/resumes/types";
 import { hasExtractedContent, normalizeResumeStatus } from "@/features/resumes/utils";
 
@@ -52,7 +52,7 @@ const statusVariant: Record<ResumeStatus, "default" | "secondary" | "success" | 
 };
 
 export function ResumeCard({ resume, onReplace, onDelete, isPrimary }: ResumeCardProps) {
-  const { getToken } = useAuth();
+  const { getToken } = useAuthToken();
   const queryClient = useQueryClient();
   const [detailsOpen, setDetailsOpen] = useState(false);
   const status = normalizeResumeStatus(resume.status);
@@ -63,11 +63,7 @@ export function ResumeCard({ resume, onReplace, onDelete, isPrimary }: ResumeCar
     (Boolean(extracted && hasExtractedContent(extracted)) || Boolean(resume.cleaned_text));
 
   const retryMutation = useMutation({
-    mutationFn: async () => {
-      const token = await getToken();
-      if (!token) throw new Error("Not authenticated");
-      return retryExtraction(token, resume.id);
-    },
+    mutationFn: () => retryExtraction({ getToken }, resume.id),
     onSuccess: async () => {
       toast.success("Extraction started");
       await queryClient.invalidateQueries({ queryKey: ["resumes"] });

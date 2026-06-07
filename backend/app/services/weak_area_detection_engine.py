@@ -61,8 +61,8 @@ class WeakAreaDetectionEngineService:
         items = [_to_api_item(d) for d in detected]
         summary = _build_summary(
             interviews=len(session_ids),
-            answers=len(answers),
-            speeches=len(speeches),
+            answers=answers,
+            speeches=speeches,
             items=items,
         )
         recommendations = _personalized_recommendations(items)
@@ -113,8 +113,10 @@ class WeakAreaDetectionEngineService:
 def _map_answer_row(row) -> AnswerHistoryItem | None:
     ev, ans, question, session = row
     breakdown = ev.criteria_breakdown or {}
+    if not breakdown and ev.overall_score is None:
+        return None
     version = str(breakdown.get("version", ""))
-    if not version.startswith("phase13"):
+    if version and not version.startswith("phase13"):
         return None
     scores = breakdown.get("scores") or {}
     star = breakdown.get("star_feedback") or {}
@@ -180,8 +182,8 @@ def _to_api_item(d) -> DetectedWeakAreaItem:
 def _build_summary(
     *,
     interviews: int,
-    answers: int,
-    speeches: int,
+    answers: list[AnswerHistoryItem],
+    speeches: list[SpeechHistoryItem],
     items: list[DetectedWeakAreaItem],
 ) -> WeakAreaProgressSummary:
     high = sum(1 for i in items if i.priority == "high")
@@ -189,16 +191,29 @@ def _build_summary(
     low = sum(1 for i in items if i.priority == "low")
     improving = sum(1 for i in items if i.trend == "improving")
     declining = sum(1 for i in items if i.trend == "declining")
-    base = 85.0
-    base -= high * 12
-    base -= med * 6
-    base -= declining * 5
-    base += improving * 4
-    score = max(0.0, min(100.0, base))
+
+    if answers:
+        performance = sum(a.rubric_score for a in answers) / len(answers)
+    elif speeches:
+        performance = sum(
+            (s.communication_score + s.confidence_score + s.fluency_score) / 3.0
+            for s in speeches
+        ) / len(speeches)
+    else:
+        performance = None
+
+    penalty = min(30.0, high * 6.0 + med * 3.0 + declining * 2.0)
+    bonus = min(12.0, improving * 3.0)
+
+    if performance is not None:
+        score = max(0.0, min(100.0, performance - penalty + bonus))
+    else:
+        score = 0.0
+
     return WeakAreaProgressSummary(
         interviews_analyzed=interviews,
-        answers_analyzed=answers,
-        speech_analyses_analyzed=speeches,
+        answers_analyzed=len(answers),
+        speech_analyses_analyzed=len(speeches),
         overall_improvement_score=round(score, 1),
         high_priority_count=high,
         medium_priority_count=med,

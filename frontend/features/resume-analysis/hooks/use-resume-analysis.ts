@@ -1,25 +1,21 @@
 "use client";
 
-import { useAuth } from "@clerk/nextjs";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { fetchResumeAnalysis, startResumeAnalysis } from "@/features/resume-analysis/api";
 import type { ResumeAnalyzeRequest } from "@/features/resume-analysis/types";
+import { useAuthToken } from "@/hooks/use-auth-token";
 
 export function analysisQueryKey(resumeId: string) {
   return ["resume-analysis", resumeId] as const;
 }
 
 export function useResumeAnalysis(resumeId: string) {
-  const { getToken, isLoaded, isSignedIn } = useAuth();
+  const { getToken, isLoaded, isSignedIn } = useAuthToken();
 
   return useQuery({
     queryKey: analysisQueryKey(resumeId),
-    queryFn: async () => {
-      const token = await getToken();
-      if (!token) throw new Error("Not authenticated");
-      return fetchResumeAnalysis(token, resumeId);
-    },
+    queryFn: () => fetchResumeAnalysis({ getToken }, resumeId),
     enabled: isLoaded && isSignedIn && Boolean(resumeId),
     retry: 1,
     refetchInterval: (query) => {
@@ -31,15 +27,12 @@ export function useResumeAnalysis(resumeId: string) {
 }
 
 export function useStartResumeAnalysis(resumeId: string) {
-  const { getToken } = useAuth();
+  const { getToken } = useAuthToken();
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (body?: ResumeAnalyzeRequest) => {
-      const token = await getToken();
-      if (!token) throw new Error("Not authenticated");
-      return startResumeAnalysis(token, resumeId, body);
-    },
+    mutationFn: (body?: ResumeAnalyzeRequest) =>
+      startResumeAnalysis({ getToken }, resumeId, body),
     onSuccess: (data) => {
       queryClient.setQueryData(analysisQueryKey(resumeId), data);
     },

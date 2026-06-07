@@ -1,51 +1,9 @@
-import { getApiBaseUrl } from "@/lib/env";
+import { apiClient } from "@/lib/api-client";
+import type { ClerkGetToken, TokenRefresh } from "@/lib/auth-client";
 import type { WeakAreasAnalytics } from "@/features/weak-areas/types";
 
-export class WeakAreasApiError extends Error {
-  constructor(
-    message: string,
-    public readonly status: number,
-    public readonly body?: unknown,
-  ) {
-    super(message);
-    this.name = "WeakAreasApiError";
-  }
-}
+type Auth = { getToken?: ClerkGetToken; refreshToken?: TokenRefresh; token?: string };
 
-export async function fetchWeakAreasAnalytics(token: string): Promise<WeakAreasAnalytics> {
-  let res: Response;
-  try {
-    res = await fetch(`${getApiBaseUrl()}/api/v1/analytics/weak-areas`, {
-      headers: { Authorization: `Bearer ${token}` },
-      cache: "no-store",
-    });
-  } catch {
-    throw new WeakAreasApiError(
-      "Cannot reach the API. Start the backend with .\\scripts\\start-backend.ps1",
-      0,
-    );
-  }
-
-  let body: unknown = null;
-  try {
-    body = await res.json();
-  } catch {
-    body = null;
-  }
-  if (!res.ok) {
-    throw new WeakAreasApiError(parseError(body), res.status, body);
-  }
-  return body as WeakAreasAnalytics;
-}
-
-function parseError(body: unknown): string {
-  if (
-    typeof body === "object" &&
-    body !== null &&
-    "error" in body &&
-    typeof (body as { error?: { message?: string } }).error?.message === "string"
-  ) {
-    return (body as { error: { message: string } }).error.message;
-  }
-  return "Could not load weak areas analytics";
+export async function fetchWeakAreasAnalytics(auth: Auth): Promise<WeakAreasAnalytics> {
+  return apiClient<WeakAreasAnalytics>("/api/v1/analytics/weak-areas", auth);
 }

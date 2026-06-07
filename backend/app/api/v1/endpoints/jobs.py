@@ -21,7 +21,7 @@ async def get_job_status(
     service: Annotated[BackgroundJobService, Depends(get_background_job_service)],
 ) -> BackgroundJobResponse:
     """Poll background job progress and result."""
-    return await service.get_job(job_id, current_user.id)
+    return await service.get_job(current_user.id, job_id)
 
 
 @router.get("", response_model=BackgroundJobListResponse)

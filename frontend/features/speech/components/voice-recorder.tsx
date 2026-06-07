@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Loader2, Mic, Square, Upload } from "lucide-react";
-import { useAuth } from "@clerk/nextjs";
+import { useAuthToken } from "@/hooks/use-auth-token";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -49,7 +49,7 @@ export function VoiceRecorder({
   onDurationChange,
   disabled = false,
 }: VoiceRecorderProps) {
-  const { getToken } = useAuth();
+  const { requireToken, getToken } = useAuthToken();
   const { data: capabilities } = useSpeechCapabilities();
 
   const [phase, setPhase] = useState<RecorderPhase>("idle");
@@ -255,13 +255,13 @@ export function VoiceRecorder({
     );
 
     try {
-      const token = await getToken();
-      if (!token) throw new Error("Not authenticated");
+      const token = await requireToken();
 
       const result = await transcribeAudio({
         file: blob,
         filename: "recording.webm",
         token,
+        getToken,
         sessionId,
         questionId,
         durationSeconds: duration,

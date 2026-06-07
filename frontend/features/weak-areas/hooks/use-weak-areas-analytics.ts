@@ -1,20 +1,16 @@
 "use client";
 
-import { useAuth } from "@clerk/nextjs";
 import { useQuery } from "@tanstack/react-query";
 
 import { fetchWeakAreasAnalytics } from "@/features/weak-areas/api";
+import { useAuthToken } from "@/hooks/use-auth-token";
 
 export function useWeakAreasAnalytics() {
-  const { getToken, isLoaded, isSignedIn } = useAuth();
+  const { getToken, isLoaded, isSignedIn } = useAuthToken();
 
   return useQuery({
     queryKey: ["weak-areas-analytics"],
-    queryFn: async () => {
-      const token = await getToken();
-      if (!token) throw new Error("Not authenticated");
-      return fetchWeakAreasAnalytics(token);
-    },
+    queryFn: () => fetchWeakAreasAnalytics({ getToken }),
     enabled: isLoaded && isSignedIn,
     staleTime: 60_000,
   });

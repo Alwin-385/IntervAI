@@ -42,6 +42,8 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 $healthUrl = "http://127.0.0.1:$Port/api/v1/health"
+Write-Host 'Using BACKGROUND_JOBS_MODE=thread (local dev - no Celery worker required)' -ForegroundColor DarkGray
+$env:BACKGROUND_JOBS_MODE = "thread"
 Write-Host "Starting API on $healthUrl" -ForegroundColor Green
 Write-Host "Stop: Ctrl+C in this terminal, or run .\scripts\stop-backend.ps1 (kills port $Port + reload workers)" -ForegroundColor DarkGray
 Write-Host "Frontend should use NEXT_PUBLIC_API_URL=http://127.0.0.1:$Port (see frontend\.env.local)" -ForegroundColor DarkGray

@@ -17,3 +17,11 @@ coverage/
 /storage/
 backend/storage/
 *.egg-info/
+# Local interview prep (keep on your machine only)
+docs/INTERVIEW-PREP*
+docs/IntervAI-Interview-Prep*
+scripts/generate-interview-prep-pdf.py
+# Local interview prep (keep on your machine only)
+docs/INTERVIEW-PREP*
+docs/IntervAI-Interview-Prep*
+scripts/generate-interview-prep-pdf.py

@@ -40,8 +40,10 @@ if ($portBlocker) {
     }
 }
 
+Write-Host "Starting frontend at  http://localhost:3000 (dev mode - first click per page compiles)" -ForegroundColor Green
+Write-Host "Tip: for instant clicks locally, use  .\scripts\start-frontend-prod.ps1" -ForegroundColor DarkGray
 Write-Host ""
-Write-Host "Starting frontend at  http://localhost:3000" -ForegroundColor Green
+Write-Host "Ignore harmless HMR 'ping' lines in this window if they appear." -ForegroundColor DarkGray
 Write-Host "Keep this window open. Press Ctrl+C to stop." -ForegroundColor DarkGray
 Write-Host ""
 

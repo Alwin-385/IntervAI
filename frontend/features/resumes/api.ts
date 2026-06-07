@@ -1,4 +1,5 @@
 import { apiClient } from "@/lib/api-client";
+import type { ClerkGetToken, TokenRefresh } from "@/lib/auth-client";
 
 import { normalizeResume, normalizeResumeList } from "./utils";
 import type {
@@ -8,39 +9,39 @@ import type {
   ResumeUploadResponse,
 } from "./types";
 
+type Auth = { getToken?: ClerkGetToken; refreshToken?: TokenRefresh; token?: string };
+
 export async function fetchResumes(
-  token: string,
+  auth: Auth,
   page = 1,
   pageSize = 20,
 ): Promise<PaginatedResumes> {
   const data = await apiClient<PaginatedResumes>("/api/v1/resumes", {
-    token,
+    ...auth,
     params: { page: String(page), page_size: String(pageSize) },
   });
   return normalizeResumeList(data);
 }
 
-export async function fetchResume(token: string, resumeId: string): Promise<Resume> {
-  const resume = await apiClient<Resume>(`/api/v1/resumes/${resumeId}`, { token });
+export async function fetchResume(auth: Auth, resumeId: string): Promise<Resume> {
+  const resume = await apiClient<Resume>(`/api/v1/resumes/${resumeId}`, auth);
   return normalizeResume(resume);
 }
 
 export async function fetchExtractionStatus(
-  token: string,
+  auth: Auth,
   resumeId: string,
 ): Promise<ResumeExtractionStatus> {
-  return apiClient<ResumeExtractionStatus>(`/api/v1/resumes/${resumeId}/extraction`, {
-    token,
-  });
+  return apiClient<ResumeExtractionStatus>(`/api/v1/resumes/${resumeId}/extraction`, auth);
 }
 
 export async function retryExtraction(
-  token: string,
+  auth: Auth,
   resumeId: string,
 ): Promise<ResumeExtractionStatus> {
   return apiClient<ResumeExtractionStatus>(`/api/v1/resumes/${resumeId}/extraction/retry`, {
     method: "POST",
-    token,
+    ...auth,
   });
 }
 

@@ -97,6 +97,40 @@ class TestJobsApiEndpoint:
             response = client.get(f"/api/v1/jobs/{job.id}", headers=auth_headers)
         assert response.status_code == 200
 
+    def test_get_job_passes_user_id_before_job_id(self, client, auth_headers, mock_user):
+        from app.schemas.background_job import BackgroundJobResponse
+        from app.services.background_job_service import BackgroundJobService
+
+        job = _make_job()
+        job.user_id = mock_user.id
+        mock_response = BackgroundJobResponse(
+            id=job.id,
+            created_at=job.created_at,
+            updated_at=job.updated_at,
+            user_id=job.user_id,
+            job_type=job.job_type,
+            status=job.status,
+            celery_task_id=job.celery_task_id,
+            resource_type=job.resource_type,
+            resource_id=job.resource_id,
+            progress_percent=job.progress_percent,
+            progress_step=job.progress_step,
+            progress_message=job.progress_message,
+            result=job.result,
+            error_message=job.error_message,
+            retry_count=job.retry_count,
+            max_retries=job.max_retries,
+            started_at=job.started_at,
+            completed_at=job.completed_at,
+            is_terminal=False,
+        )
+        with patch.object(
+            BackgroundJobService, "get_job", new_callable=AsyncMock, return_value=mock_response
+        ) as mock_get:
+            response = client.get(f"/api/v1/jobs/{job.id}", headers=auth_headers)
+        assert response.status_code == 200
+        mock_get.assert_awaited_once_with(mock_user.id, job.id)
+
     def test_get_job_not_found_returns_404(self, client, auth_headers):
         from app.core.exceptions import NotFoundError
         from app.services.background_job_service import BackgroundJobService

@@ -1,15 +1,6 @@
-export const dynamic = "force-dynamic";
-
-import { auth } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
-
 import { DashboardShell } from "@/components/layout/dashboard-shell";
 
-export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const { userId } = await auth();
-  if (!userId) {
-    redirect("/sign-in");
-  }
-
+/** Auth is enforced in middleware (clerkMiddleware + auth.protect). */
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return <DashboardShell>{children}</DashboardShell>;
 }

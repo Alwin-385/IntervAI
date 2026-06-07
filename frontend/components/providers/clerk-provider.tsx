@@ -7,10 +7,10 @@ export function AppClerkProvider({ children }: { children: React.ReactNode }) {
     <ClerkProvider
       appearance={{
         variables: {
-          colorPrimary: "hsl(217 91% 60%)",
-          colorBackground: "hsl(222 47% 6%)",
-          colorInputBackground: "hsl(217 33% 14%)",
-          colorText: "hsl(210 40% 98%)",
+          colorPrimary: "hsl(211 100% 52%)",
+          colorBackground: "hsl(240 2% 11%)",
+          colorInputBackground: "hsl(240 2% 17%)",
+          colorText: "hsl(0 0% 98%)",
         },
       }}
     >

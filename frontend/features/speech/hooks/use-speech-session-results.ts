@@ -1,20 +1,16 @@
 "use client";
 
-import { useAuth } from "@clerk/nextjs";
 import { useQuery } from "@tanstack/react-query";
 
 import { fetchSpeechSessionResults } from "@/features/speech/api";
+import { useAuthToken } from "@/hooks/use-auth-token";
 
 export function useSpeechSessionResults(sessionId: string) {
-  const { getToken, isLoaded, isSignedIn } = useAuth();
+  const { getToken, isLoaded, isSignedIn } = useAuthToken();
 
   return useQuery({
     queryKey: ["speech-session-results", sessionId],
-    queryFn: async () => {
-      const token = await getToken();
-      if (!token) throw new Error("Not authenticated");
-      return fetchSpeechSessionResults(token, sessionId);
-    },
+    queryFn: () => fetchSpeechSessionResults({ getToken }, sessionId),
     enabled: isLoaded && isSignedIn && Boolean(sessionId),
     staleTime: 30_000,
   });

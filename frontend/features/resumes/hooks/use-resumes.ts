@@ -1,21 +1,19 @@
 "use client";
 
-import { useAuth } from "@clerk/nextjs";
 import { useQuery } from "@tanstack/react-query";
 
 import { fetchResumes } from "@/features/resumes/api";
 import { normalizeResumeList } from "@/features/resumes/utils";
 import { EXTRACTION_POLL_STATUSES } from "@/features/resumes/types";
+import { useAuthToken } from "@/hooks/use-auth-token";
 
 export function useResumes(page = 1, pageSize = 20) {
-  const { getToken, isLoaded, isSignedIn } = useAuth();
+  const { getToken, isLoaded, isSignedIn } = useAuthToken();
 
   return useQuery({
     queryKey: ["resumes", page, pageSize],
     queryFn: async () => {
-      const token = await getToken();
-      if (!token) throw new Error("Not authenticated");
-      const data = await fetchResumes(token, page, pageSize);
+      const data = await fetchResumes({ getToken }, page, pageSize);
       return normalizeResumeList(data);
     },
     enabled: isLoaded && isSignedIn,

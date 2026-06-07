@@ -1,6 +1,5 @@
 "use client";
 
-import { useAuth } from "@clerk/nextjs";
 import { useQueryClient } from "@tanstack/react-query";
 import { FileText } from "lucide-react";
 import { useCallback, useState } from "react";
@@ -8,6 +7,7 @@ import { toast } from "sonner";
 
 import { Skeleton } from "@/components/ui/skeleton";
 import { apiClient } from "@/lib/api-client";
+import { useAuthToken } from "@/hooks/use-auth-token";
 import { ResumeCard } from "@/features/resumes/components/resume-card";
 import { ResumeUploader } from "@/features/resumes/components/resume-uploader";
 import { useResumes } from "@/features/resumes/hooks/use-resumes";
@@ -18,7 +18,7 @@ import { normalizeResume } from "@/features/resumes/utils";
 const LIST_KEY = ["resumes", 1, 20] as const;
 
 export function ResumesPage() {
-  const { getToken } = useAuth();
+  const { getToken } = useAuthToken();
   const queryClient = useQueryClient();
   const { data, isLoading, isError, error, refetch } = useResumes();
   const [replaceTarget, setReplaceTarget] = useState<Resume | null>(null);
@@ -65,11 +65,9 @@ export function ResumesPage() {
   const handleDelete = async (resume: Resume) => {
     if (!confirm(`Delete "${resume.title}"?`)) return;
     try {
-      const token = await getToken();
-      if (!token) throw new Error("Not authenticated");
       await apiClient(`/api/v1/resumes/${resume.id}`, {
         method: "DELETE",
-        token,
+        getToken,
       });
       toast.success("Resume deleted");
       await queryClient.invalidateQueries({ queryKey: ["resumes"] });

@@ -1,6 +1,5 @@
 "use client";
 
-import { useAuth } from "@clerk/nextjs";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import {
@@ -14,20 +13,17 @@ import type {
   SubmitAnswerRequest,
   SubmitAnswerResponse,
 } from "@/features/interviews/types";
+import { useAuthToken } from "@/hooks/use-auth-token";
 
 export function useInterviewRuntime(sessionId: string) {
-  const { getToken, isLoaded, isSignedIn } = useAuth();
+  const { getToken, isLoaded, isSignedIn } = useAuthToken();
 
   return useQuery({
     queryKey: ["interview-runtime", sessionId],
-    queryFn: async () => {
-      const token = await getToken();
-      if (!token) throw new Error("Not authenticated");
-      return fetchInterviewSessionState(token, sessionId);
-    },
+    queryFn: () => fetchInterviewSessionState({ getToken }, sessionId),
     enabled: isLoaded && isSignedIn && Boolean(sessionId),
-    staleTime: 60_000,
-    refetchOnWindowFocus: false,
+    staleTime: 30_000,
+    refetchOnWindowFocus: true,
   });
 }
 
@@ -46,16 +42,13 @@ function mergeSubmitResponse(
 }
 
 export function useSubmitInterviewAnswer(sessionId: string) {
-  const { getToken } = useAuth();
+  const { getToken } = useAuthToken();
   const queryClient = useQueryClient();
   const runtimeKey = ["interview-runtime", sessionId] as const;
 
   return useMutation({
-    mutationFn: async (body: SubmitAnswerRequest) => {
-      const token = await getToken();
-      if (!token) throw new Error("Not authenticated");
-      return submitInterviewAnswer(token, sessionId, body);
-    },
+    mutationFn: (body: SubmitAnswerRequest) =>
+      submitInterviewAnswer({ getToken }, sessionId, body),
     onSuccess: (response, body) => {
       const previous = queryClient.getQueryData<InterviewSessionStateResponse>(runtimeKey);
       if (!previous) return;
@@ -71,15 +64,11 @@ export function useSubmitInterviewAnswer(sessionId: string) {
 }
 
 export function useCompleteInterview(sessionId: string) {
-  const { getToken } = useAuth();
+  const { getToken } = useAuthToken();
   const queryClient = useQueryClient();
 
   return useMutation<CompleteInterviewResponse, Error>({
-    mutationFn: async () => {
-      const token = await getToken();
-      if (!token) throw new Error("Not authenticated");
-      return completeInterviewSession(token, sessionId);
-    },
+    mutationFn: () => completeInterviewSession({ getToken }, sessionId),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["interview-runtime", sessionId] });
       await queryClient.invalidateQueries({ queryKey: ["interview-session", sessionId] });

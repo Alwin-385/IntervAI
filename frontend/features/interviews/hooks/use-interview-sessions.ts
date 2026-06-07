@@ -1,10 +1,10 @@
 "use client";
 
-import { useAuth } from "@clerk/nextjs";
 import { useQuery } from "@tanstack/react-query";
 
 import { apiClient, ApiError } from "@/lib/api-client";
 import type { InterviewSetupResponse } from "@/features/interviews/types";
+import { useAuthToken } from "@/hooks/use-auth-token";
 
 interface PaginatedSessions {
   items: InterviewSetupResponse[];
@@ -15,34 +15,29 @@ interface PaginatedSessions {
 }
 
 export function useInterviewSessions(page = 1, pageSize = 20) {
-  const { getToken, isLoaded, isSignedIn } = useAuth();
+  const { getToken, isLoaded, isSignedIn } = useAuthToken();
 
   return useQuery({
     queryKey: ["interview-sessions", page, pageSize],
-    queryFn: async () => {
-      const token = await getToken();
-      if (!token) throw new Error("Not authenticated");
-      return apiClient<PaginatedSessions>("/api/v1/interview-sessions/me", {
-        token,
+    queryFn: () =>
+      apiClient<PaginatedSessions>("/api/v1/interview-sessions/me", {
+        getToken,
         params: { page: String(page), page_size: String(pageSize) },
-      });
-    },
+      }),
     enabled: isLoaded && isSignedIn,
     staleTime: 5_000,
   });
 }
 
 export function useInterviewSession(sessionId: string) {
-  const { getToken, isLoaded, isSignedIn } = useAuth();
+  const { getToken, isLoaded, isSignedIn } = useAuthToken();
 
   return useQuery({
     queryKey: ["interview-session", sessionId],
     queryFn: async () => {
-      const token = await getToken();
-      if (!token) throw new Error("Not authenticated");
       try {
         return await apiClient<InterviewSetupResponse>(`/api/v1/interview-sessions/${sessionId}`, {
-          token,
+          getToken,
         });
       } catch (err) {
         if (err instanceof ApiError && err.status === 404) return null;
