@@ -11,11 +11,7 @@ import type {
 
 type Auth = { getToken?: ClerkGetToken; refreshToken?: TokenRefresh; token?: string };
 
-export async function fetchResumes(
-  auth: Auth,
-  page = 1,
-  pageSize = 20,
-): Promise<PaginatedResumes> {
+export async function fetchResumes(auth: Auth, page = 1, pageSize = 20): Promise<PaginatedResumes> {
   const data = await apiClient<PaginatedResumes>("/api/v1/resumes", {
     ...auth,
     params: { page: String(page), page_size: String(pageSize) },

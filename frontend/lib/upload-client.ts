@@ -36,8 +36,7 @@ export function uploadResume({
   replaceResumeId,
   onProgress,
 }: UploadResumeOptions): Promise<UploadResumeResult> {
-  const refresh =
-    refreshToken ?? (getToken ? () => getToken({ skipCache: true }) : undefined);
+  const refresh = refreshToken ?? (getToken ? () => getToken({ skipCache: true }) : undefined);
 
   const send = (authToken: string, retried: boolean): Promise<UploadResumeResult> =>
     new Promise((resolve, reject) => {

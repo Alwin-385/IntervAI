@@ -8,10 +8,7 @@ function authOpts(auth: Auth) {
   return { getToken: auth.getToken, refreshToken: auth.refreshToken, token: auth.token };
 }
 
-export async function generateRoadmap(
-  auth: Auth,
-  targetRole?: string,
-): Promise<GeneratedRoadmap> {
+export async function generateRoadmap(auth: Auth, targetRole?: string): Promise<GeneratedRoadmap> {
   return apiClient<GeneratedRoadmap>("/api/v1/roadmap/generate", {
     method: "POST",
     body: JSON.stringify({ target_role: targetRole ?? null, force_regenerate: true }),

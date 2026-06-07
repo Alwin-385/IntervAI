@@ -47,10 +47,7 @@ export async function fetchInterviewQuestions(
   return apiClient<InterviewQuestionDetail[]>(`/api/v1/interviews/${sessionId}/questions`, auth);
 }
 
-export async function deleteInterview(
-  auth: Auth,
-  sessionId: string,
-): Promise<{ message: string }> {
+export async function deleteInterview(auth: Auth, sessionId: string): Promise<{ message: string }> {
   return apiClient<{ message: string }>(`/api/v1/interviews/${sessionId}`, {
     method: "DELETE",
     ...auth,

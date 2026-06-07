@@ -196,8 +196,7 @@ def _build_summary(
         performance = sum(a.rubric_score for a in answers) / len(answers)
     elif speeches:
         performance = sum(
-            (s.communication_score + s.confidence_score + s.fluency_score) / 3.0
-            for s in speeches
+            (s.communication_score + s.confidence_score + s.fluency_score) / 3.0 for s in speeches
         ) / len(speeches)
     else:
         performance = None

@@ -31,8 +31,7 @@ export function useStartResumeAnalysis(resumeId: string) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (body?: ResumeAnalyzeRequest) =>
-      startResumeAnalysis({ getToken }, resumeId, body),
+    mutationFn: (body?: ResumeAnalyzeRequest) => startResumeAnalysis({ getToken }, resumeId, body),
     onSuccess: (data) => {
       queryClient.setQueryData(analysisQueryKey(resumeId), data);
     },

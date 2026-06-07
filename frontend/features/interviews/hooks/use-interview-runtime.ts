@@ -47,8 +47,7 @@ export function useSubmitInterviewAnswer(sessionId: string) {
   const runtimeKey = ["interview-runtime", sessionId] as const;
 
   return useMutation({
-    mutationFn: (body: SubmitAnswerRequest) =>
-      submitInterviewAnswer({ getToken }, sessionId, body),
+    mutationFn: (body: SubmitAnswerRequest) => submitInterviewAnswer({ getToken }, sessionId, body),
     onSuccess: (response, body) => {
       const previous = queryClient.getQueryData<InterviewSessionStateResponse>(runtimeKey);
       if (!previous) return;

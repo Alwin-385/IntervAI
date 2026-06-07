@@ -12,7 +12,9 @@ import type {
 export type Auth = { getToken?: ClerkGetToken; refreshToken?: TokenRefresh; token?: string };
 
 function refreshFromAuth(auth: Auth): TokenRefresh | undefined {
-  return auth.refreshToken ?? (auth.getToken ? () => auth.getToken!({ skipCache: true }) : undefined);
+  return (
+    auth.refreshToken ?? (auth.getToken ? () => auth.getToken!({ skipCache: true }) : undefined)
+  );
 }
 
 async function parseJsonResponse<T>(
