@@ -24,28 +24,36 @@ import {
 export function AnalyticsDashboardPage() {
   const [filters, setFilters] = useState<AnalyticsFilterState>({ page: 1 });
 
-  const { data, isLoading, isError, error } = useAnalyticsDashboard({
+  const dashboardParams = {
     page: filters.page,
     page_size: 10,
     target_role: filters.target_role,
     category: filters.category,
     days: filters.days,
-  });
+  };
 
-  const { data: progress } = useAnalyticsProgress({
-    target_role: filters.target_role,
-    category: filters.category,
-    days: filters.days,
-  });
+  const { data, isLoading, isError, error, isFetching } = useAnalyticsDashboard(dashboardParams);
+
+  const { data: progress } = useAnalyticsProgress(
+    {
+      target_role: filters.target_role,
+      category: filters.category,
+      days: filters.days,
+    },
+    { enabled: Boolean(data) },
+  );
 
   function updateFilters(next: Partial<AnalyticsFilterState>) {
     setFilters((prev) => ({ ...prev, ...next }));
   }
 
-  if (isLoading) {
+  if (isLoading || (isFetching && !data)) {
     return (
-      <div className="flex min-h-[400px] items-center justify-center">
+      <div className="flex min-h-[400px] flex-col items-center justify-center gap-2">
         <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        <p className="text-sm text-muted-foreground">
+          Loading analytics… this can take up to a minute on the free tier.
+        </p>
       </div>
     );
   }

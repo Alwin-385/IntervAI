@@ -186,11 +186,11 @@ class AnalyticsDashboardEngineService:
             if item is not None and _within_days(item.recorded_at, filters.days):
                 answers.append(item)
 
-        speeches = [
-            _map_speech_row(row)
-            for row in speech_rows
-            if _within_days(_map_speech_row(row).recorded_at, filters.days)
-        ]
+        speeches: list[SpeechHistoryItem] = []
+        for row in speech_rows:
+            item = _map_speech_row(row)
+            if _within_days(item.recorded_at, filters.days):
+                speeches.append(item)
 
         session_ids = {a.session_id for a in answers} | {s.session_id for s in speeches}
         session_metrics = _aggregate_session_metrics(answers, speeches, answer_rows)
@@ -203,7 +203,7 @@ class AnalyticsDashboardEngineService:
             session_role_map.setdefault(session.id, session.target_role)
             session_category_map.setdefault(session.id, session.category.value)
 
-        all_sessions_page = await self.session_repo.list_by_user(user_id, page=1, page_size=500)
+        all_sessions_page = await self.session_repo.list_by_user(user_id, page=1, page_size=100)
         available_roles = sorted({s.target_role for s in all_sessions_page.items if s.target_role})
         available_categories = sorted({s.category.value for s in all_sessions_page.items})
 

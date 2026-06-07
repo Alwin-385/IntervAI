@@ -20,14 +20,33 @@ type RequestOptions = RequestInit & {
   getToken?: ClerkGetToken;
   timeoutMs?: number;
   refreshToken?: TokenRefresh;
+  /** Retry transient network failures (Render cold start / OOM restart). Default 2 on production. */
+  networkRetries?: number;
 };
 
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function isLocalApiUrl(apiUrl: string): boolean {
+  return (
+    apiUrl.includes("127.0.0.1") || apiUrl.includes("localhost") || apiUrl.startsWith("http://")
+  );
+}
+
 export async function apiClient<T>(path: string, options: RequestOptions = {}): Promise<T> {
-  const { params, headers, token, getToken, timeoutMs, refreshToken, ...init } = options;
+  const { params, headers, token, getToken, timeoutMs, refreshToken, networkRetries, ...init } =
+    options;
   const refresh = refreshToken ?? (getToken ? createTokenRefresh(getToken) : undefined);
   const initialToken = token ?? (getToken ? await getToken() : null);
+  const apiUrl = getApiBaseUrl();
+  const maxNetworkRetries = networkRetries ?? (isLocalApiUrl(apiUrl) ? 0 : 2);
 
-  const send = async (authToken: string | null | undefined, retried: boolean): Promise<T> => {
+  const send = async (
+    authToken: string | null | undefined,
+    authRetried: boolean,
+    networkAttempt = 0,
+  ): Promise<T> => {
     const url = new URL(`${getApiBaseUrl()}${path}`);
 
     if (params) {
@@ -55,27 +74,36 @@ export async function apiClient<T>(path: string, options: RequestOptions = {}): 
       });
     } catch (err) {
       if (err instanceof Error && err.name === "TimeoutError") {
+        if (networkAttempt < maxNetworkRetries) {
+          await sleep(3000 * (networkAttempt + 1));
+          return send(authToken, authRetried, networkAttempt + 1);
+        }
         throw new ApiError(
-          "Request timed out. Check that the backend is running and try again.",
+          "Request timed out. The analytics request may be heavy — wait a moment and try again.",
           0,
         );
       }
-      const apiUrl = getApiBaseUrl();
-      const isLocal =
-        apiUrl.includes("127.0.0.1") ||
-        apiUrl.includes("localhost") ||
-        apiUrl.startsWith("http://");
+      if (networkAttempt < maxNetworkRetries) {
+        await sleep(3000 * (networkAttempt + 1));
+        return send(authToken, authRetried, networkAttempt + 1);
+      }
+      const isLocal = isLocalApiUrl(apiUrl);
       const hint = isLocal
         ? "From c:\\IntervAI run .\\scripts\\start-backend.ps1, then open http://127.0.0.1:8000/api/v1/health."
-        : "The backend may be waking up (Render free tier). Wait 30s, open the /api/v1/health URL in a tab, then refresh. Use https://interv-ai-zeta.vercel.app for the live app.";
+        : "The backend may be waking up (Render free tier). Wait 30s, open the /api/v1/health URL in a tab, then refresh.";
       throw new ApiError(`Cannot reach API at ${apiUrl}. ${hint}`, 0);
     }
 
-    if (response.status === 401 && refresh && !retried) {
+    if (response.status === 401 && refresh && !authRetried) {
       const freshToken = await refresh();
       if (freshToken) {
-        return send(freshToken, true);
+        return send(freshToken, true, networkAttempt);
       }
+    }
+
+    if (response.status === 503 && networkAttempt < maxNetworkRetries) {
+      await sleep(3000 * (networkAttempt + 1));
+      return send(authToken, authRetried, networkAttempt + 1);
     }
 
     const contentType = response.headers.get("content-type");

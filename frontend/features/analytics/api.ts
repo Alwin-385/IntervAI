@@ -18,6 +18,8 @@ export async function fetchAnalyticsDashboard(
 ): Promise<AnalyticsDashboard> {
   return apiClient<AnalyticsDashboard>("/api/v1/analytics/dashboard", {
     ...authOpts(auth),
+    timeoutMs: 120_000,
+    networkRetries: 3,
     params: {
       page: String(params.page ?? 1),
       page_size: String(params.page_size ?? 10),
@@ -34,6 +36,8 @@ export async function fetchAnalyticsProgress(
 ): Promise<AnalyticsProgress> {
   return apiClient<AnalyticsProgress>("/api/v1/analytics/progress", {
     ...authOpts(auth),
+    timeoutMs: 120_000,
+    networkRetries: 2,
     params: {
       ...(params.target_role ? { target_role: params.target_role } : {}),
       ...(params.category ? { category: params.category } : {}),
