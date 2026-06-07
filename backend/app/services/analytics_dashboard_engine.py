@@ -68,8 +68,8 @@ class AnalyticsDashboardEngineService:
         weak_items = [_to_api_item(d) for d in ctx["detected"]]
         weak_summary = build_weak_summary(
             interviews=len(ctx["session_ids"]),
-            answers=len(ctx["answers"]),
-            speeches=len(ctx["speeches"]),
+            answers=ctx["answers"],
+            speeches=ctx["speeches"],
             items=weak_items,
         )
 
@@ -139,8 +139,8 @@ class AnalyticsDashboardEngineService:
         weak_items = [_to_api_item(d) for d in ctx["detected"]]
         weak_summary = build_weak_summary(
             interviews=len(ctx["session_ids"]),
-            answers=len(ctx["answers"]),
-            speeches=len(ctx["speeches"]),
+            answers=ctx["answers"],
+            speeches=ctx["speeches"],
             items=weak_items,
         )
         improvement = _build_improvement_progress(

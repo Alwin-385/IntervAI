@@ -70,8 +70,8 @@ def _execute(state: AgentWorkflowState) -> AgentWorkflowState:
     session_ids = {a.session_id for a in answers} | {s.session_id for s in speeches}
     summary = _build_summary(
         interviews=len(session_ids),
-        answers=len(answers),
-        speeches=len(speeches),
+        answers=answers,
+        speeches=speeches,
         items=items,
     )
     recommendations = _personalized_recommendations(items)
