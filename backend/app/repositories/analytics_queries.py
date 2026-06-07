@@ -5,7 +5,7 @@ from __future__ import annotations
 from datetime import datetime
 from uuid import UUID
 
-from sqlalchemy import select
+from sqlalchemy import distinct, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.answer_evaluation import AnswerEvaluation
@@ -26,7 +26,7 @@ class AnalyticsQueryRepository:
         user_id: UUID,
         *,
         since: datetime | None = None,
-        limit: int = 500,
+        limit: int = 120,
     ) -> list[tuple[AnswerEvaluation, InterviewAnswer, InterviewQuestion, InterviewSession]]:
         stmt = (
             select(AnswerEvaluation, InterviewAnswer, InterviewQuestion, InterviewSession)
@@ -46,7 +46,7 @@ class AnalyticsQueryRepository:
         user_id: UUID,
         *,
         since: datetime | None = None,
-        limit: int = 500,
+        limit: int = 120,
     ) -> list[tuple[SpeechAnalysis, InterviewSession]]:
         stmt = (
             select(SpeechAnalysis, InterviewSession)
@@ -58,3 +58,20 @@ class AnalyticsQueryRepository:
         stmt = stmt.order_by(SpeechAnalysis.updated_at.desc()).limit(limit)
         result = await self.session.execute(stmt)
         return list(result.all())
+
+    async def list_session_filter_options(self, user_id: UUID) -> tuple[list[str], list[str]]:
+        role_stmt = (
+            select(distinct(InterviewSession.target_role))
+            .where(InterviewSession.user_id == user_id)
+            .where(InterviewSession.target_role.is_not(None))
+        )
+        category_stmt = select(distinct(InterviewSession.category)).where(
+            InterviewSession.user_id == user_id
+        )
+        roles = [r for r in (await self.session.execute(role_stmt)).scalars().all() if r]
+        categories = [
+            c.value if hasattr(c, "value") else str(c)
+            for c in (await self.session.execute(category_stmt)).scalars().all()
+            if c
+        ]
+        return sorted(roles), sorted(categories)

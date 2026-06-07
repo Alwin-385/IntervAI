@@ -1,5 +1,6 @@
 """Analytics endpoints (Phase 14 + Phase 16)."""
 
+from datetime import UTC, datetime
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, Query
@@ -10,15 +11,20 @@ from app.core.dependencies import (
     get_pagination,
     get_weak_area_detection_engine_service,
 )
+from app.core.logging import get_logger
 from app.models.user import User
 from app.schemas.analytics_dashboard import (
     AnalyticsDashboardResponse,
+    AnalyticsFiltersApplied,
     AnalyticsProgressResponse,
+    AnalyticsSummary,
 )
 from app.schemas.common import PaginationQuery
 from app.schemas.weak_area_analytics import WeakAreasAnalyticsResponse
 from app.services.analytics_dashboard_engine import AnalyticsDashboardEngineService
 from app.services.weak_area_detection_engine import WeakAreaDetectionEngineService
+
+logger = get_logger(__name__)
 
 router = APIRouter(prefix="/analytics", tags=["analytics"])
 
@@ -46,17 +52,35 @@ async def get_analytics_dashboard(
     pagination: Annotated[PaginationQuery, Depends(get_pagination)],
     target_role: str | None = Query(default=None),
     category: str | None = Query(default=None),
-    days: int | None = Query(default=30, ge=7, le=365),
+    days: int | None = Query(default=None, ge=7, le=365),
 ) -> AnalyticsDashboardResponse:
     """Full analytics dashboard: trends, history, weak areas, role readiness."""
-    return await service.get_dashboard(
-        current_user.id,
-        page=pagination.page,
-        page_size=min(pagination.page_size, 50),
-        target_role=target_role,
-        category=category,
-        days=days or 30,
-    )
+    try:
+        return await service.get_dashboard(
+            current_user.id,
+            page=pagination.page,
+            page_size=min(pagination.page_size, 50),
+            target_role=target_role,
+            category=category,
+            days=days,
+        )
+    except Exception:
+        logger.exception(
+            "analytics_dashboard_failed",
+            user_id=str(current_user.id),
+        )
+        filters = AnalyticsFiltersApplied(
+            target_role=target_role,
+            category=category,
+            days=days,
+        )
+        return AnalyticsDashboardResponse(
+            generated_at=datetime.now(UTC),
+            filters_applied=filters,
+            summary=AnalyticsSummary(),
+            interview_history_page=pagination.page,
+            interview_history_page_size=min(pagination.page_size, 50),
+        )
 
 
 @router.get("/progress", response_model=AnalyticsProgressResponse)
@@ -67,12 +91,12 @@ async def get_analytics_progress(
     ],
     target_role: str | None = Query(default=None),
     category: str | None = Query(default=None),
-    days: int | None = Query(default=30, ge=7, le=365),
+    days: int | None = Query(default=None, ge=7, le=365),
 ) -> AnalyticsProgressResponse:
     """Improvement progress time series and roadmap completion trends."""
     return await service.get_progress(
         current_user.id,
         target_role=target_role,
         category=category,
-        days=days or 30,
+        days=days,
     )

@@ -177,21 +177,22 @@ class AnalyticsDashboardEngineService:
         answer_rows = await self.analytics_repo.list_answer_evaluations_for_user(
             user_id,
             since=since,
-            limit=150,
+            limit=120,
         )
         speech_rows = await self.analytics_repo.list_speech_analyses_for_user(
             user_id,
             since=since,
-            limit=150,
+            limit=120,
         )
 
         if not answer_rows and not speech_rows:
-            all_sessions_page = await self.session_repo.list_by_user(user_id, page=1, page_size=100)
+            (
+                available_roles,
+                available_categories,
+            ) = await self.analytics_repo.list_session_filter_options(user_id)
             return self._empty_context(
-                available_roles=sorted(
-                    {s.target_role for s in all_sessions_page.items if s.target_role}
-                ),
-                available_categories=sorted({s.category.value for s in all_sessions_page.items}),
+                available_roles=available_roles,
+                available_categories=available_categories,
             )
 
         if filters.target_role:
@@ -224,14 +225,15 @@ class AnalyticsDashboardEngineService:
             session_role_map.setdefault(session.id, session.target_role)
             session_category_map.setdefault(session.id, session.category.value)
 
-        all_sessions_page = await self.session_repo.list_by_user(user_id, page=1, page_size=100)
-        available_roles = sorted({s.target_role for s in all_sessions_page.items if s.target_role})
-        available_categories = sorted({s.category.value for s in all_sessions_page.items})
+        (
+            available_roles,
+            available_categories,
+        ) = await self.analytics_repo.list_session_filter_options(user_id)
 
         min_freq = 1 if len(answers) + len(speeches) < 6 else 2
         detected = detect_weak_areas(answers, speeches, min_frequency=min_freq)
 
-        roadmap_page = await self.roadmap_repo.list_by_user(user_id, page=1, page_size=20)
+        roadmap_page = await self.roadmap_repo.list_by_user(user_id, page=1, page_size=1)
         milestones: list[dict] = []
         roadmap_snapshots: list[tuple[datetime, float]] = []
         for rm in roadmap_page.items:

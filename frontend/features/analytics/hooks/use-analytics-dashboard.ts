@@ -14,23 +14,6 @@ export function useAnalyticsDashboard(params: AnalyticsDashboardParams) {
     enabled: isLoaded && isSignedIn,
     staleTime: 30_000,
     retry: 1,
-    retryDelay: 4000,
-  });
-}
-
-export function useAnalyticsProgress(
-  params: Omit<AnalyticsDashboardParams, "page" | "page_size">,
-  options?: { enabled?: boolean },
-) {
-  const { getToken, isLoaded, isSignedIn } = useAuthToken();
-  const extraEnabled = options?.enabled ?? true;
-
-  return useQuery({
-    queryKey: ["analytics-progress", params],
-    queryFn: () => fetchAnalyticsProgress({ getToken }, params),
-    enabled: isLoaded && isSignedIn && extraEnabled,
-    staleTime: 30_000,
-    retry: 1,
-    retryDelay: 5000,
+    retryDelay: 3000,
   });
 }

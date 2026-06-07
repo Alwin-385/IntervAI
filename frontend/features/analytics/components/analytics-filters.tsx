@@ -17,10 +17,10 @@ interface Props {
 }
 
 const DAY_OPTIONS = [
+  { label: "All time", value: undefined },
   { label: "30 days", value: 30 },
   { label: "90 days", value: 90 },
   { label: "180 days", value: 180 },
-  { label: "1 year", value: 365 },
 ];
 
 const CATEGORY_LABELS: Record<string, string> = {

@@ -38,8 +38,8 @@ class WeakAreaDetectionEngineService:
         *,
         sync_to_profile: bool = True,
     ) -> WeakAreasAnalyticsResponse:
-        answer_rows = await self.analytics_repo.list_answer_evaluations_for_user(user_id)
-        speech_rows = await self.analytics_repo.list_speech_analyses_for_user(user_id)
+        answer_rows = await self.analytics_repo.list_answer_evaluations_for_user(user_id, limit=120)
+        speech_rows = await self.analytics_repo.list_speech_analyses_for_user(user_id, limit=120)
 
         answers = []
         for row in answer_rows:

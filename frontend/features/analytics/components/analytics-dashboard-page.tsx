@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { BarChart3, Loader2, RefreshCw } from "lucide-react";
 
@@ -17,75 +17,30 @@ import { MetricTrendChart } from "@/features/analytics/components/metric-trend-c
 import { RoleReadinessPanel } from "@/features/analytics/components/role-readiness-panel";
 import { ScoreTrendChart } from "@/features/analytics/components/score-trend-chart";
 import { WeakAreaFrequencyChart } from "@/features/analytics/components/weak-area-frequency-chart";
-import {
-  useAnalyticsDashboard,
-  useAnalyticsProgress,
-} from "@/features/analytics/hooks/use-analytics-dashboard";
-
-const DEFAULT_FILTERS: AnalyticsFilterState = { page: 1, days: 30 };
+import { useAnalyticsDashboard } from "@/features/analytics/hooks/use-analytics-dashboard";
 
 export function AnalyticsDashboardPage() {
-  const [filters, setFilters] = useState<AnalyticsFilterState>(DEFAULT_FILTERS);
-  const [loadProgressCharts, setLoadProgressCharts] = useState(false);
-  const [elapsedSec, setElapsedSec] = useState(0);
+  const [filters, setFilters] = useState<AnalyticsFilterState>({ page: 1 });
 
   const dashboardParams = {
     page: filters.page,
     page_size: 10,
     target_role: filters.target_role,
     category: filters.category,
-    days: filters.days ?? 30,
+    days: filters.days,
   };
 
-  const { data, isPending, isError, error, isFetching, refetch, fetchStatus } =
+  const { data, isPending, isError, error, isFetching, refetch } =
     useAnalyticsDashboard(dashboardParams);
 
-  const { data: progress } = useAnalyticsProgress(
-    {
-      target_role: filters.target_role,
-      category: filters.category,
-      days: filters.days ?? 30,
-    },
-    { enabled: Boolean(data) && loadProgressCharts },
-  );
-
-  useEffect(() => {
-    if (data && !loadProgressCharts) {
-      const timer = window.setTimeout(() => setLoadProgressCharts(true), 1500);
-      return () => window.clearTimeout(timer);
-    }
-    return undefined;
-  }, [data, loadProgressCharts]);
-
-  useEffect(() => {
-    if (!isPending && !isFetching) {
-      setElapsedSec(0);
-      return;
-    }
-    const timer = window.setInterval(() => setElapsedSec((s) => s + 1), 1000);
-    return () => window.clearInterval(timer);
-  }, [isPending, isFetching]);
-
   function updateFilters(next: Partial<AnalyticsFilterState>) {
-    setLoadProgressCharts(false);
     setFilters((prev) => ({ ...prev, ...next }));
   }
 
   if (isPending) {
     return (
-      <div className="flex min-h-[400px] flex-col items-center justify-center gap-3 px-4 text-center">
+      <div className="flex min-h-[400px] items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-        <p className="text-sm text-muted-foreground">
-          {elapsedSec < 3
-            ? "Waking up API…"
-            : `Loading analytics… ${elapsedSec > 0 ? `(${elapsedSec}s)` : ""}`}
-        </p>
-        {elapsedSec >= 20 && (
-          <Button variant="outline" size="sm" onClick={() => void refetch()}>
-            <RefreshCw className="mr-2 h-4 w-4" />
-            Retry
-          </Button>
-        )}
       </div>
     );
   }
@@ -95,18 +50,6 @@ export function AnalyticsDashboardPage() {
       <div className="space-y-3 rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3">
         <p className="text-sm text-destructive">
           {(error as Error)?.message ?? "Failed to load analytics"}
-        </p>
-        <p className="text-xs text-muted-foreground">
-          Open{" "}
-          <a
-            href="https://intervai-3ycg.onrender.com/api/v1/health"
-            target="_blank"
-            rel="noreferrer"
-            className="underline"
-          >
-            API health
-          </a>{" "}
-          in a new tab, wait for a JSON response, then retry.
         </p>
         <Button variant="outline" size="sm" onClick={() => void refetch()}>
           <RefreshCw className="mr-2 h-4 w-4" />
@@ -126,9 +69,7 @@ export function AnalyticsDashboardPage() {
         <p className="mt-1 text-sm text-muted-foreground">
           AI-powered interview performance, trends, and improvement tracking
         </p>
-        {fetchStatus === "fetching" && (
-          <p className="mt-1 text-xs text-muted-foreground">Refreshing…</p>
-        )}
+        {isFetching && <p className="mt-1 text-xs text-muted-foreground">Refreshing…</p>}
       </motion.div>
 
       <div className="grid gap-6 lg:grid-cols-4">
@@ -174,7 +115,7 @@ export function AnalyticsDashboardPage() {
 
           <RoleReadinessPanel items={data.role_readiness} />
 
-          <ImprovementProgressPanel snapshot={data.improvement_progress} progress={progress} />
+          <ImprovementProgressPanel snapshot={data.improvement_progress} />
 
           <InterviewHistoryTable
             items={data.interview_history}
