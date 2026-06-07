@@ -18,6 +18,7 @@ from app.schemas.analytics_dashboard import (
     AnalyticsFiltersApplied,
     AnalyticsProgressResponse,
     AnalyticsSummary,
+    ImprovementProgressSnapshot,
 )
 from app.schemas.common import PaginationQuery
 from app.schemas.weak_area_analytics import WeakAreasAnalyticsResponse
@@ -78,6 +79,7 @@ async def get_analytics_dashboard(
             generated_at=datetime.now(UTC),
             filters_applied=filters,
             summary=AnalyticsSummary(),
+            improvement_progress=ImprovementProgressSnapshot(roadmap_completion_rate=0.0),
             interview_history_page=pagination.page,
             interview_history_page_size=min(pagination.page_size, 50),
         )

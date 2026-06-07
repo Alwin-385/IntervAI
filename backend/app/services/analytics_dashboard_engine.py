@@ -371,8 +371,8 @@ def _build_summary(ctx: dict) -> AnalyticsSummary:
     weak_items = [_to_api_item(d) for d in ctx["detected"]]
     weak_summary = build_weak_summary(
         interviews=len(ctx["session_ids"]),
-        answers=len(answers),
-        speeches=len(speeches),
+        answers=answers,
+        speeches=speeches,
         items=weak_items,
     )
 
